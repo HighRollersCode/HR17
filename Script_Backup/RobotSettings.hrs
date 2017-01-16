@@ -1,0 +1,8 @@
+//SetAuto 1 is AUTO_ONEBALL_LOWBAR
+//SetAuto 999 is EMPTY
+
+SetAuto 1
+DriveTrainSettings .05
+//.013
+//EBrakeSettings .5
+

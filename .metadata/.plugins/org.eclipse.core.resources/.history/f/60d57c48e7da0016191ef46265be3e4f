@@ -1,0 +1,60 @@
+/*
+ * ShooterWheel.h
+ *
+ *  Created on: Jan 8, 2017
+ *      Author: 987
+ */
+
+#include "WPILib.h"
+
+#ifndef SRC_ShooterWheel_H_
+#define SRC_ShooterWheel_H_
+
+#include "Defines.h"
+#include "GearTooth.h"
+
+enum ShooterState
+{
+	ShooterState_off = 0,
+	ShooterState_Low,
+	ShooterState_override,
+	ShooterState_overrideRPM
+};
+class ShooterWheelClass
+{
+
+	int prevlow;
+	int prevoverride;
+	int State;
+	float currentPresetSpeed;
+
+	TalonSRX *Shooter;
+	GearTooth *GearSensor;
+	double DTIME;
+	double DCOUNT;
+
+public:
+	static double Shooter_WheelK;
+	int INDICATOR;
+	double RPMCOUNT;
+	double RPM;
+	double PREVRPMCOUNT;
+	float OverrideCommand;
+	int ShooterToggle;
+
+	ShooterWheelClass();
+	virtual ~ShooterWheelClass();
+
+	void SetSpeed(float command);
+	void WheelOff();
+	/*void UpdateShooter(int EnableLow,int EnableOverride,double RobotTime);
+	void ShooterOverride(float input);
+	void ShooterOverrideRPM(float rpm);
+	float EstimatePower(float desiredRPM);
+
+	float PUpdate(float dist);
+	void SetState(int newstate);
+	void SendData();*/
+};
+
+#endif /* SRC_ShooterWheel_H_ */

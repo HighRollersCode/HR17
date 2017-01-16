@@ -1,0 +1,35 @@
+/*
+ * Intake.h
+ *
+ *  Created on: Jan 7, 2017
+ *      Author: 987
+ */
+
+#ifndef SRC_INTAKE_H_
+#define SRC_INTAKE_H_
+
+#include "WPILib.h"
+#include "Defines.h"
+#include "CANSpeedController.h"
+
+
+class IntakeClass {
+
+	Victor *Intake;
+	TalonSRX *Uptake;
+
+public:
+
+	//int IsIntakeOn;
+	//int IsOuttakeOn;
+
+	IntakeClass();
+	virtual ~IntakeClass();
+
+	void UpdateIntake(float intake, float outtake);
+	void IntakeIn();
+	void IntakeOut();
+	void IntakeOff();
+};
+
+#endif /* SRC_INTAKE_H_ */
