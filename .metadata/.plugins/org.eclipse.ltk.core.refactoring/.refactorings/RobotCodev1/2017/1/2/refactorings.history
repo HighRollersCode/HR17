@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;RobotCodev1/src/Drivertrain.cpp&apos; to &apos;Drivetrain.cpp&apos;" description="Rename resource &apos;Drivertrain.cpp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/Drivertrain.cpp" name="Drivetrain.cpp" stamp="1483843923666" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;RobotCodev1/src/Drivertrain.h&apos; to &apos;Drivetrain.h&apos;" description="Rename resource &apos;Drivertrain.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/Drivertrain.h" name="Drivetrain.h" stamp="1483843986552" updateReferences="true"/>
-</session>
