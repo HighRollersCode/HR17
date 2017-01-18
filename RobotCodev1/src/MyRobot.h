@@ -19,6 +19,7 @@
 #include "TargetingSystemClient.h"
 #include "HRscript.h"
 #include "Auton.h"
+#include "XboxController.h"
 
 class MyRobot : public SampleRobot
 {
@@ -31,6 +32,8 @@ public:
 	Joystick *leftStick;
 	Joystick *rightStick;
 	Joystick *turretStick;
+	XboxController *XBoxController;
+
 	Drivetrainclass *Drivetrain;
 	IntakeClass *Intake;
 	ShooterWheelClass *ShooterWheel;

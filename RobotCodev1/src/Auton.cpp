@@ -94,7 +94,7 @@ void Auton::AutonWait2(float Seconds,int brake)
 void Auton::AutonWaitForTarget(float Seconds)
 {
 	const float MAX_X_ERROR = 1.75f; //1.8f;
-	const float MAX_Y_ERROR = 2.0f; //2.7f;
+	//const float MAX_Y_ERROR = 2.0f; //2.7f;
 	const float MIN_LOCK_TIME = 0.30f;
 
 	float targ = AutonTimer->Get() + Seconds;
@@ -110,7 +110,7 @@ void Auton::AutonWaitForTarget(float Seconds)
 		prevtime = curtime;
 
 		Auto_System_Update();
-		if ((fabs(Turret->LastMoveByDegreesX) < MAX_X_ERROR) && (fabs(Turret->LastMoveByDegreesY) < MAX_Y_ERROR))
+		if ((fabs(Turret->LastMoveByDegreesX) < MAX_X_ERROR))// && (fabs(Turret->LastMoveByDegreesY) < MAX_Y_ERROR))
 		{
 			lock_time += deltatime;
 		}
@@ -191,7 +191,7 @@ void Auton::Auto_GYROSTRAIGHT(float forward, float ticks, float desheading)
 	float turn = GYRO_P * angle_error;
 	if(ticks > 0)
 	{
-		while((DriveTrain->GetLeftEncoder() < ticks)&&(Running()))
+		while((DriveTrain->GetLeftEncoder() < ticks)&&(DriveTrain->GetRightEncoder() < ticks)&&(Running()))
 		{
 			float err = DriveTrain->ComputeAngleDelta(MAINTAIN);
 			turn = err * GYRO_P;
@@ -201,14 +201,14 @@ void Auton::Auto_GYROSTRAIGHT(float forward, float ticks, float desheading)
 			//DriveTrain->FailSafe_Update;
 		}
 	}
-	else
+	else if (ticks < 0)
 	{
-		while((DriveTrain->GetLeftEncoder() > ticks)&&(Running()))
+		while((DriveTrain->GetLeftEncoder() > ticks)&&(DriveTrain->GetRightEncoder() > ticks)&&(Running()))
 		{
 			float err = DriveTrain->ComputeAngleDelta(MAINTAIN);
 			turn = err * GYRO_P;
 
-			DriveTrain->StandardArcade(forward, turn);
+			DriveTrain->StandardArcade(-forward, turn);
 			Auto_System_Update();
 			//DriveTrain->Failsafe_Update();
 		}

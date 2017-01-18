@@ -500,7 +500,8 @@ void MyRobot::Load_Scripts()
 	m_ScriptSystem->Load_And_Run_Script("RobotSettings.hrs");
 
 	// Load all of the auto-mode scripts
-	m_ScriptSystem->Set_Auto_Script(1,"TEST.hrs");
+	m_ScriptSystem->Set_Auto_Script(1,"GEAR_SHOOTER_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(2,"GEAR_SHOOTER_BLUE.hrs");
 	m_ScriptSystem->Set_Auto_Script(999,"EMPTY.hrs");
 
 	/*m_ScriptSystem->Set_Auto_Script(2,"SerpentineStrafe.hrs");

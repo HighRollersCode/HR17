@@ -39,10 +39,10 @@ MyRobot::MyRobot()
 	leftStick = new Joystick(0);
 	rightStick = new Joystick(1);
 	turretStick = new Joystick(2);
+	XBoxController = new XboxController(3);
 
 	Drivetrain = new Drivetrainclass();
 	Intake = new IntakeClass();
-	ShooterWheel = new ShooterWheelClass();
 	Turret = new TurretClass();
 	printf("Basic Initialization\r\n");
 	TargClient = new TargetingSystemClient();
@@ -117,8 +117,13 @@ void MyRobot::Autonomous(void)
 }
 void MyRobot::UpdateInputs()
 {
-	commandLeft = -leftStick->GetY();
-	commandRight = rightStick->GetY();
+	#if !USING_GAMEPAD
+		commandLeft = -leftStick->GetY();
+		commandRight = rightStick->GetY();
+	#else
+		commandLeft = XBoxController->GetRawAxis(1);
+		commandRight = XBoxController->GetRawAxis(4);
+	#endif
 }
 void MyRobot::Send_Data()
 {
@@ -137,6 +142,7 @@ void MyRobot::Send_Data()
 void MyRobot::OperatorControl(void)
 {
 	LightRelay->Set(Relay::kForward);
+	Turret->Tele_Start();
 	while (IsOperatorControl() && IsEnabled())
 	{
 
@@ -144,16 +150,27 @@ void MyRobot::OperatorControl(void)
 
 		UpdateInputs();
 		Drivetrain->StandardTank(commandLeft, commandRight);
-		Drivetrain->Shifter_Update(rightStick->GetTrigger());
 		Intake->UpdateIntake(leftStick->GetRawButton(3), leftStick->GetTrigger());
-		//ShooterWheel->SetSpeed(turretStick->GetZ());
-		float RPM = (((turretStick->GetZ() + 1)*.5f)* 5000.0f);
-		if(RPM < 0)
-		{
-			RPM = 0;
-		}
-		ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),
-		turretStick->GetRawButton(10),RPM, GameTimer->Get());
+		#if !USING_GAMEPAD
+			float RPM = (((turretStick->GetZ() + 1)*.5f)* 5000.0f);
+			if(RPM < 0)
+			{
+				RPM = 0;
+			}
+			//ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM, GameTimer->Get());
+			Drivetrain->Shifter_Update(rightStick->GetTrigger());
+			Turret->Update(turretStick->GetX(),TargClient->m_XOffset,0,TargClient->xCal,0,TargClient->m_TargetArea);
+
+		#else
+			float RPM = ((XBoxController->GetRawAxis(3)())* 5000.0f);
+			if(RPM < 0)
+			{
+				RPM = 0;
+			}
+			ShooterWheel->UpdateShooter(XBoxController->GetRawButton(1),XBoxController->GetRawButton(5),RPM, GameTimer->Get());
+			Drivetrain->Shifter_Update(XBoxController->GetRawButton(6));
+		#endif
+
 		Wait(0.002);
 	}
 }

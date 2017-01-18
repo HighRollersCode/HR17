@@ -9,6 +9,7 @@
 #define SRC_DEFINES_H_
 
 #define USING_GAMEPAD 0
+
 #define USING_MXP 0
 #define USING_GYRO 1
 
@@ -25,6 +26,8 @@
 #define Tal_Turret 6
 
 #define Tal_Shooter_Wheel 7
+
+#deifine
 
 
 #define Sol_Shifter_In 0 //On Solenoid block tubes plug into port 1

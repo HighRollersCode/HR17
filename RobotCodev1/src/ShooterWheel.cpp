@@ -165,6 +165,10 @@ void ShooterWheelClass::UpdateShooter(
 	prevlow = EnableLow;
 	prevoverride = EnableOverride;
 }
+void ShooterWheelClass::HandleTarget(float tx, float crossX,float target_area)
+{
+
+}
 void ShooterWheelClass::SetState(int newstate)
 {
 	ShooterToggle = -ShooterToggle;

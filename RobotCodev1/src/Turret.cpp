@@ -8,8 +8,7 @@
 #include <Turret.h>
 #include "Defines.h"
 
-const float MIN_TURRET_CMD_HIGH_ANGLE = 0.10f;
-const float MIN_TURRET_CMD_LOW_ANGLE = 0.10f;
+const float MIN_TURRET_CMD = 0.10f;
 
 const float TURRET_P = -.00075f;
 const float TURRET_I = -.0000035f;
@@ -18,11 +17,9 @@ const float TURRET_D = 0.0f;
 const float TURRET_TOLERANCE = 1;
 
 const float LOCKON_DEGREES_X = 2.5f;
-const float LOCKON_DEGREES_Y = 2.0f;
 const float LOCKON_SECONDS = 0.35f;
 
 const float LOCKON_DEGREES_X_CLOSE = 2.5f;
-const float LOCKON_DEGREES_Y_CLOSE = 3.0f;
 const float LOCKON_CLOSE_AREA = 0.03f;
 const float LOCKON_FAR_AREA = 0.0175f;
 
@@ -31,6 +28,8 @@ TurretClass::TurretClass()
 	Turret = new TalonSRX(Tal_Turret);
 
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
+
+	ShooterWheel = new ShooterWheelClass();
 
 	Resetting = false;
 
@@ -41,19 +40,13 @@ TurretClass::TurretClass()
 	PrevEnableTracking = false;
 
 	LastMoveByDegreesX = 360.0f;
-	LastMoveByDegreesY = 360.0f;
 	LockonDegreesX = LOCKON_DEGREES_X;
-	LockonDegreesY = LOCKON_DEGREES_Y;
 
 	TurretEncoder_Cur = 0;
 	TurretEncoder_Targ = 0;
 
 	TurretCommand_Cur = 0.0f;
 	TurretCommand_Prev = 0.0f;
-	kpTurret = .00095f;
-
-	Min = 0;
-	Angle= 0;
 
 	ArmTimer = new Timer();
 	ArmTimer->Reset();
@@ -118,27 +111,26 @@ void TurretClass::Tele_Start()
 	TurretPIDController->Reset();
 	SetTurret(GetTurretEncoder());
 }
-void TurretClass::Update(float turret,float cx,float cy,
-		float calx,float caly,float target_area)
+void TurretClass::Update(float turret,float cx,float calx,float target_area)
 {
 
-	/*if(CurrentEnableTracking)
+	if(CurrentEnableTracking)
 	{
 		TurretPIDController->Enable();
-		isLockedOn = (fabs(LastMoveByDegreesX) < LockonDegreesX) && (fabs(LastMoveByDegreesY) < LockOnDegreesY);
+		isLockedOn = (fabs(LastMoveByDegreesX) < LockonDegreesX)
 		if(!isLockedOn)
 		{
-			ArmLockOnTimer->Reset();
+			ArmLockonTimer->Reset();
 		}
 		else if(ArmLockonTimer->Get() > LOCKON_SECONDS)
 		{
-			if(Shooter == 1.0f)
+			if(ShooterWheel->Shooter->Get() > 0)
 			{
-				if(LastShotTimer->Get() > 1.5f)
+				if(LastShotTimer->Get() > 0.0f)
 				{
-					FullShotQuick();
+					//FullShotQuick();
 					printf("SHOT!\r\n");
-					ArmLockOnTimer->Reset();
+					ArmLockonTimer->Reset();
 					LastShotTimer->Reset();
 					LastShotTimer->Start();
 				}
@@ -148,21 +140,21 @@ void TurretClass::Update(float turret,float cx,float cy,
 				printf("SHOT!\r\n");
 			}
 		}
-		else if (Ball)
+		/*else if (Ball)
 		{
-			FullShotQuick();
+			//FullShotQuick();
 			printf("Manual shot during tracking!\r\n");
 			ArmLockonTimer->Reset();
-		}
+		}*/
 	}
-	FullShotUpdate();
+	//FullShotUpdate();
 
 	if(ArmTimer->Get() > .01f)
 	{
-		HandleTarget(cx,cy,calx,caly,target_area);
+		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
 		ArmTimer->Start();
-	}*/
+	}
 	UpdateTurret(turret);
 
 }
@@ -171,7 +163,7 @@ void TurretClass::StartTracking(int enable)
 	isTracking = enable;
 	PrevEnableTracking = false;
 }
-void TurretClass::AutonomousTrackingUpdate(float tx, float ty, float crossX,float crossY)
+void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
 {
 	if(fabs(TurretPIDController->GetError()) < 200)
 	{
@@ -183,7 +175,7 @@ void TurretClass::AutonomousTrackingUpdate(float tx, float ty, float crossX,floa
 	}
 	if(ArmTimer->Get() > .01f)
 	{
-		HandleTarget(tx,ty,crossX,crossY,0.001f);
+		HandleTarget(tx,crossX,0.001f);
 		ArmTimer->Reset();
 		ArmTimer->Start();
 	}
@@ -212,13 +204,12 @@ int TurretClass::GetTurretEncoder()
 {
 	return TurretEncoder->Get();
 }
-void TurretClass::HandleTarget(float centerX,float centerY,float calX,float calY,float target_a)
+void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 {
-	if(fabs(centerX) >= 1 || fabs(centerY) >= 1)
+	if(fabs(centerX) >= 1)
 	{
-		LastMoveByDegreesX = LastMoveByDegreesY = 360.0f;
+		LastMoveByDegreesX = 360.0f;
 		LockonDegreesX = LOCKON_DEGREES_X;
-		LockonDegreesY = LOCKON_DEGREES_Y;
 
 		if (CurrentEnableTracking)
 		{
@@ -232,31 +223,18 @@ void TurretClass::HandleTarget(float centerX,float centerY,float calX,float calY
 		if (t < 0.0f) t = 0.0f;
 		if (t > 1.0f) t = 1.0f;
 		LockonDegreesX = LOCKON_DEGREES_X + (LOCKON_DEGREES_X_CLOSE- LOCKON_DEGREES_X) * t;
-		LockonDegreesY = LOCKON_DEGREES_Y + (LOCKON_DEGREES_Y_CLOSE - LOCKON_DEGREES_Y) * t;
 
 		float moveByX_Degrees = 0;
-		float moveByY_Degrees = 0;
 
 		float moveByX_Ticks = 0;
-		float moveByY_Ticks = 0;
 
 		float xFOV = 76.00f;
-		float yFOV = 61.2f;
 
 		moveByX_Degrees = (calX - centerX) * (xFOV*.5f);
-		moveByY_Degrees = (calY - centerY) * (yFOV*.5f);
 
 		LastMoveByDegreesX = moveByX_Degrees;
-		LastMoveByDegreesY = moveByY_Degrees;
 
 		moveByX_Ticks = moveByX_Degrees / ARM_TURRET_DEGREES_PER_TICK;
-		//moveByY_Ticks = moveByX_Degrees / ARM_LIFT_DEGREES_PER_TICK;
-
-		/*if(GetLifterEncoder() >= 0)
-		{
-			moveByX_Ticks *=-1.0f;
-			moveByY_Ticks *=-1.0f;
-		}*/
 
 		if(CurrentEnableTracking)
 		{
@@ -274,31 +252,7 @@ float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
 {
 	if(ispidcmd)
 	{
-		float min = 0;
-		float dif = MIN_TURRET_CMD_LOW_ANGLE-MIN_TURRET_CMD_HIGH_ANGLE;
-		/*float arm_angle = Lift_Encoder_To_Degrees(LifterEncoder->Get());
-		if(arm_angle < 20)
-		{
-			arm_angle = 20;
-		}
-		if(arm_angle > 160)
-		{
-			arm_angle = 160;
-		}
-		if(arm_angle < 90.0f)
-		{
-			float norm = arm_angle / 70.0f;
-			norm *= -1;
-			norm += 1;
-			min = (norm * dif) + MIN_TURRET_CMD_HIGH_ANGLE;
-		}
-		else
-		{
-			float norm = (arm_angle - 90.0f) / 70.0f;*/
-			min = (/*norm */ dif) + MIN_TURRET_CMD_HIGH_ANGLE;
-		//}
-		Min = min;
-		//Angle = arm_angle;
+		float min = MIN_TURRET_CMD;
 		if(cmd > 0.0f)
 		{
 			cmd = fmaxf(cmd, min);

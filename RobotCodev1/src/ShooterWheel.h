@@ -30,12 +30,13 @@ class ShooterWheelClass
 	int State;
 	float currentPresetSpeed;
 
-	Victor *Shooter;
 	GearTooth *GearSensor;
 	double DTIME;
 	double DCOUNT;
 
 public:
+	Victor *Shooter;
+
 	static double Shooter_WheelK;
 	int INDICATOR;
 	double RPMCOUNT;
@@ -57,6 +58,10 @@ public:
 	float EstimatePower(float desiredRPM);
 
 	float PUpdate(float dist);
+	float ClampTarget(float tar, float lowerlim, float upperlim);
+
+	void HandleTarget(float centerX,float calX,float target_area);
+	void AutonomousTrackingUpdate(float tx, float crossX, float target_area);
 	void SetState(int newstate);
 	void SendData();
 };

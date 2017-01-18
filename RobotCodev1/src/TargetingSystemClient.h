@@ -15,7 +15,7 @@
 #include "Timer.h"
 #include "WPILib.h"
 
-#define JETSON_IP "10.9.87.11"
+#define JETSON_IP "10.20.17.11"
 #define JETSON_PORT 5800
 
 class TargetingSystemClient {
