@@ -48,7 +48,7 @@ MyRobot::MyRobot()
 	TargClient = new TargetingSystemClient();
 	TargClient->Connect(JETSON_IP,JETSON_PORT);
 	printf("TargClient Initialized\r\n");
-	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,ShooterWheel,TargClient);
+	//AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,ShooterWheelClass,TargClient);
 
 	LightRelay = new Relay(0,Relay::kBothDirections);
 
@@ -104,6 +104,13 @@ void MyRobot::Shutdown_Jetson(void)
 {
 	TargClient->Shutdown_Jetson();
 }
+
+void MyRobot::Disabled(void)
+{
+	printf("Disabled\r\n");
+	Wait(0.005);
+}
+
 void MyRobot::Autonomous(void)
 {
 	Load_Scripts();
@@ -134,9 +141,12 @@ void MyRobot::Send_Data()
 		SmartDashboard::PutNumber("Shooter Speed", turretStick->GetZ());
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
 		SmartDashboard::PutNumber("RPM", (((turretStick->GetZ() + 1)*.5f)* 5000.0f));
+		SmartDashboard::PutNumber("Turret Speed", Turret->Turret->Get());
+		SmartDashboard::PutNumber("Turret Encoder", Turret->TurretEncoder->Get());
 
 		Drivetrain->Send_Data();
-		ShooterWheel->Send_Data();
+		//ShooterWheel->Send_Data();
+		TargClient->SmartDashboardUpdate();
 	}
 }
 void MyRobot::OperatorControl(void)
@@ -149,6 +159,7 @@ void MyRobot::OperatorControl(void)
 		Send_Data();
 
 		UpdateInputs();
+		TargClient->Update();
 		Drivetrain->StandardTank(commandLeft, commandRight);
 		Intake->UpdateIntake(leftStick->GetRawButton(3), leftStick->GetTrigger());
 		#if !USING_GAMEPAD
@@ -159,7 +170,7 @@ void MyRobot::OperatorControl(void)
 			}
 			//ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM, GameTimer->Get());
 			Drivetrain->Shifter_Update(rightStick->GetTrigger());
-			Turret->Update(turretStick->GetX(),TargClient->m_XOffset,0,TargClient->xCal,0,TargClient->m_TargetArea);
+			Turret->Update(turretStick->GetX(),turretStick->GetRawButton(2),TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_TargetArea());
 
 		#else
 			float RPM = ((XBoxController->GetRawAxis(3)())* 5000.0f);

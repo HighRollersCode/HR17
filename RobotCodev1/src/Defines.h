@@ -27,14 +27,14 @@
 
 #define Tal_Shooter_Wheel 7
 
-#deifine
+#define Vic_Hopper 8
 
 
 #define Sol_Shifter_In 0 //On Solenoid block tubes plug into port 1
 #define Sol_Shifter_Out 1 //On Solenoid block tubes plug into port 6
 
-#define Sol_PTO_Enable 2 //On Solenoid block tubes plug into port 2
-#define Sol_PTO_Disable 3 //On Solenoid block tubes plug into port 5
+#define Sol_Hood_Up 2 //On Solenoid block tubes plug into port 2
+#define Sol_Hood_Down 3 //On Solenoid block tubes plug into port 5
 
 #define Sol_Shot_Extend 4 //On Solenoid block tubes plug into port 3
 #define Sol_Shot_Retract 5 //On Solenoid block tubes plug into port 4
@@ -81,12 +81,11 @@
 //
 
 // The turret is zero'd when it is centered pointing forward.
-#define ARM_TURRET_DEGREES_PER_TICK (90.0f / (1210.0f* (60.0f/24.0f)))
-#define ARM_TURRET_MIN_ENCODER	-4600  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
-#define ARM_TURRET_MAX_ENCODER	(1200 * (60.0f/24.0f))
+#define TURRET_DEGREES_PER_TICK .1f
+#define TURRET_MIN_ENCODER	-2000  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
+#define TURRET_MAX_ENCODER	2000
 
-#define ARM_TURRET_CORRECTION_P 0.001f   // motor power per tick to correct invalid turret configurations
-
+#define TURRET_CORRECTION_P 0.001f   // motor power per tick to correct invalid turret configurations
 
 
 

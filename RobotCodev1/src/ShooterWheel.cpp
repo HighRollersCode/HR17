@@ -25,6 +25,9 @@ ShooterWheelClass::ShooterWheelClass()
 {
 	Shooter = new Victor(Tal_Shooter_Wheel);
 
+	HoodUp = new Solenoid(Sol_Hood_Up);
+	HoodDown = new Solenoid(Sol_Hood_Down);
+
 	GearSensor = new GearTooth(4);
 	GearSensor->Reset();
 
@@ -44,6 +47,8 @@ ShooterWheelClass::ShooterWheelClass()
 	DTIME = 0.0;
 	DCOUNT = 0.0;
 	INDICATOR = 0;
+
+	isDesiredRPM = false;
 }
 ShooterWheelClass::~ShooterWheelClass() {
 	// TODO Auto-generated destructor stub
@@ -91,6 +96,21 @@ float ShooterWheelClass::PUpdate(float desrpm)
 	rpEr= error;
 	return command;
 }
+float ShooterWheelClass::ClampTarget(float tar, float lowerlim, float upperlim)
+{
+	if(tar >= upperlim)
+	{
+		return upperlim;
+	}
+	else if(tar <= lowerlim)
+	{
+		return lowerlim;
+	}
+	else
+	{
+		return tar;
+	}
+}
 void ShooterWheelClass::ShooterOverride(float input)
 {
 
@@ -110,11 +130,7 @@ void ShooterWheelClass::WheelOff()
 	Shooter->Set(0.0f);
 	ShooterToggle = 1;
 }
-void ShooterWheelClass::UpdateShooter(
-		int EnableLow,
-		int EnableOverride,
-		float OverrideRPM,
-		double RobotTime)
+void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,double RobotTime,bool HoodEnable)
 {
 	PREVRPMCOUNT = RPMCOUNT;
 	RPMCOUNT = GearSensor->Get();
@@ -166,6 +182,10 @@ void ShooterWheelClass::UpdateShooter(
 	prevoverride = EnableOverride;
 }
 void ShooterWheelClass::HandleTarget(float tx, float crossX,float target_area)
+{
+
+}
+void ShooterWheelClass::AutonomousTrackingUpdate(float tx,float crossX,float target_area)
 {
 
 }

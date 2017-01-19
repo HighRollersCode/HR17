@@ -7,39 +7,38 @@
 
 #include <Hopper.h>
 
-Hopper::Hopper()
+HopperClass::HopperClass()
 {
-
-	Hopper = new Victor();
+	Hopper = new Victor(Vic_Hopper);
 }
 
-Hopper::~Hopper() {
+HopperClass::~HopperClass() {
 	// TODO Auto-generated destructor stub
 }
-void Hopper::UpdateIntake(float uptake,float downtake)
+void HopperClass::UpdateHopper(float uptake,float downtake)
 {
 	if(uptake)
 	{
-		Hopper->Set(1);
+		HopperUp();
 	}
 	else if(downtake)
 	{
-		Hopper->Set(-1);
+		HopperDown();
 	}
 	else
 	{
-		Hopper->Set(0);
+		HopperOff();
 	}
 }
-void Hopper::HopperUp()
+void HopperClass::HopperUp()
 {
 	Hopper->Set(1);
 }
-void Hopper::HopperDown()
+void HopperClass::HopperDown()
 {
 	Hopper->Set(-1);
 }
-void Hopper::HopperOff()
+void HopperClass::HopperOff()
 {
 	Hopper->Set(0);
 }

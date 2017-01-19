@@ -6,18 +6,19 @@
  */
 
 #include "WPILib.h"
+#include "Defines.h"
 
 #ifndef SRC_HOPPER_H_
 #define SRC_HOPPER_H_
 
-class Hopper {
+class HopperClass {
 public:
 
 	Victor *Hopper;
 
 
-	Hopper();
-	virtual ~Hopper();
+	HopperClass();
+	virtual ~HopperClass();
 
 	void UpdateHopper(float uptake,float downtake);
 	void HopperUp();

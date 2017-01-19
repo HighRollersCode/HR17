@@ -37,6 +37,9 @@ class ShooterWheelClass
 public:
 	Victor *Shooter;
 
+	Solenoid *HoodUp;
+	Solenoid *HoodDown;
+
 	static double Shooter_WheelK;
 	int INDICATOR;
 	double RPMCOUNT;
@@ -46,13 +49,15 @@ public:
 	float OverrideCommand;
 	int ShooterToggle;
 
+	bool isDesiredRPM;
+
 	ShooterWheelClass();
 	virtual ~ShooterWheelClass();
 
 	void SetSpeed(float command);
 	void Send_Data();
 	void WheelOff();
-	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,double RobotTime);
+	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,double RobotTime,bool HoodEnable);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
 	float EstimatePower(float desiredRPM);

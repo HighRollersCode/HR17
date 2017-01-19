@@ -18,6 +18,7 @@
 #include "errno.h"
 
 TargetingSystemClient::TargetingSystemClient() :
+
 	m_TurretAngle(0.0f),
 	m_XOffset(0.0f),
 	m_YOffset(0.0f),
@@ -66,8 +67,13 @@ bool TargetingSystemClient::Connect(const char * server, unsigned short port)
 	m_Connected = true;
 
 	printf("Jetson Connected! server: %s port: %d\n",server,port);
+
 	Send("0\r\n",4);
 	Send("5\r\n",3);
+
+	m_CommTimer->Reset();
+	m_CommTimer->Start();
+
 	return true;
 }
 void TargetingSystemClient::Shutdown_Jetson()
@@ -112,12 +118,12 @@ bool TargetingSystemClient::Update()
 		}
 		else
 		{
-			msg_buffer[4096] = 0;
+			msg_buffer[4095] = 0;
 			Handle_Incoming_Data(msg_buffer,sizeof(msg_buffer));
 		}
 	}
 
-	if (m_CommTimer->Get() >0.0125f)
+	if (m_CommTimer->Get() > 0.0125f)
 	{
 		char buff[256];
 		sprintf(buff,"2 %f\n",m_TurretAngle);
@@ -199,6 +205,7 @@ void TargetingSystemClient::Handle_CalibrationRefresh(char * data)
 void TargetingSystemClient::SmartDashboardUpdate()
 {
 	SmartDashboard::PutBoolean("Connected",m_Connected);
+	SmartDashboard::PutNumber("X Offset", m_XOffset);
 }
 void TargetingSystemClient::Disconnect()
 {

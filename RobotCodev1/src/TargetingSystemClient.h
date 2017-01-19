@@ -5,15 +5,16 @@
  *      Author: 987
  */
 
-#ifndef SRC_TARGETINGSYSTEMCLIENT_H_
-#define SRC_TARGETINGSYSTEMCLIENT_H_
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include "stdio.h"
 #include "Timer.h"
 #include "WPILib.h"
+
+#ifndef SRC_TARGETINGSYSTEMCLIENT_H_
+#define SRC_TARGETINGSYSTEMCLIENT_H_
+
 
 #define JETSON_IP "10.20.17.11"
 #define JETSON_PORT 5800
@@ -46,6 +47,7 @@ protected:
 	void Handle_Target(char *data);
 	void Handle_Calibration(char *data);
 	void Handle_CalibrationRefresh(char *data);
+
 	float m_TurretAngle;
 	float m_XOffset;
 	float m_YOffset;

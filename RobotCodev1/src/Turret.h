@@ -49,7 +49,7 @@ public:
 	void Auto_Start();
 	void Tele_Start();
 
-	void Update(float Turret, float cx, float calx, float target_area);
+	void Update(float Turret, bool TrackingEnable, float cx, float calx, float target_area);
 	void UpdateTurret(float turret);
 	int GetTurretEncoder();
 	void SetTurret(int targ);

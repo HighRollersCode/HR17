@@ -14,9 +14,9 @@
 
 #include "Drivetrain.h"
 #include "Intake.h"
-#include "ShooterWheel.h"
 #include "Turret.h"
 #include "TargetingSystemClient.h"
+#include "ShooterWheel.h"
 #include "HRscript.h"
 #include "Auton.h"
 #include "XboxController.h"
@@ -36,7 +36,6 @@ public:
 
 	Drivetrainclass *Drivetrain;
 	IntakeClass *Intake;
-	ShooterWheelClass *ShooterWheel;
 	TurretClass *Turret;
 	TargetingSystemClient *TargClient;
 	Auton *AutonomousControl;
@@ -61,6 +60,7 @@ public:
 
 	static MyRobot * Get() { return TheRobot; }
 
+	void Disabled(void);
 	void Autonomous(void);
 	void UpdateInputs();
 	void Init_Scripts_System();

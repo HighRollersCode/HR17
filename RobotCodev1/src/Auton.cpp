@@ -229,7 +229,7 @@ bool Auton::Auto_System_Update()
 	{
 		Targeting->Update();
 //		Arm->AutonomousTrackingUpdate(Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),Targeting->Get_Cal_X(),Targeting->Get_Cal_Y());
-		Turret->Update(0,0,0,/*Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),*/Targeting->Get_Cal_X(),Targeting->Get_Cal_Y(),Targeting->Get_TargetArea());
+		//Turret->Update(0,0,0,/*Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),*/Targeting->Get_Cal_X(),Targeting->Get_Cal_Y(),Targeting->Get_TargetArea());
 		//MyRobot::Get()->LightUpdate();
 		//Turret->FullShotUpdate();
 

@@ -8,10 +8,10 @@
 #include <Turret.h>
 #include "Defines.h"
 
-const float MIN_TURRET_CMD = 0.10f;
+const float MIN_TURRET_CMD = 0.20f;
 
-const float TURRET_P = -.00075f;
-const float TURRET_I = -.0000035f;
+const float TURRET_P = .005f;
+const float TURRET_I = 0.0f; //-.0000035f;
 const float TURRET_D = 0.0f;
 
 const float TURRET_TOLERANCE = 1;
@@ -55,6 +55,7 @@ TurretClass::TurretClass()
 	ArmLockonTimer = new Timer();
 	ArmLockonTimer->Reset();
 	ArmLockonTimer->Start();
+
 	LastShotTimer = new Timer();
 	LastShotTimer->Reset();
 	LastShotTimer->Start();
@@ -66,8 +67,8 @@ TurretClass::TurretClass()
 
 	TurretPIDController->SetContinuous(false);
 	TurretPIDController->Enable();
-	TurretPIDController->SetOutputRange(-.75f,.75f);
-	TurretPIDController->SetInputRange(-100,100);
+	TurretPIDController->SetOutputRange(-1.0f,1.0f);
+	TurretPIDController->SetInputRange(TURRET_MIN_ENCODER,TURRET_MAX_ENCODER);
 }
 
 TurretClass::~TurretClass() {
@@ -111,13 +112,16 @@ void TurretClass::Tele_Start()
 	TurretPIDController->Reset();
 	SetTurret(GetTurretEncoder());
 }
-void TurretClass::Update(float turret,float cx,float calx,float target_area)
+void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,float target_area)
 {
+	isTracking = TrackingEnable;
+	PrevEnableTracking = CurrentEnableTracking;
+	CurrentEnableTracking = TrackingEnable;
 
 	if(CurrentEnableTracking)
 	{
 		TurretPIDController->Enable();
-		isLockedOn = (fabs(LastMoveByDegreesX) < LockonDegreesX)
+		isLockedOn = (fabs(LastMoveByDegreesX) < LockonDegreesX);
 		if(!isLockedOn)
 		{
 			ArmLockonTimer->Reset();
@@ -149,19 +153,13 @@ void TurretClass::Update(float turret,float cx,float calx,float target_area)
 	}
 	//FullShotUpdate();
 
-	if(ArmTimer->Get() > .01f)
-	{
+	//if(ArmTimer->Get() > .01f)
+	//{
 		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
 		ArmTimer->Start();
-	}
+	//}
 	UpdateTurret(turret);
-
-}
-void TurretClass::StartTracking(int enable)
-{
-	isTracking = enable;
-	PrevEnableTracking = false;
 }
 void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
 {
@@ -222,7 +220,7 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 		float t = (target_a - LOCKON_FAR_AREA) / (LOCKON_CLOSE_AREA - LOCKON_FAR_AREA);
 		if (t < 0.0f) t = 0.0f;
 		if (t > 1.0f) t = 1.0f;
-		LockonDegreesX = LOCKON_DEGREES_X + (LOCKON_DEGREES_X_CLOSE- LOCKON_DEGREES_X) * t;
+		LockonDegreesX = LOCKON_DEGREES_X + (LOCKON_DEGREES_X_CLOSE - LOCKON_DEGREES_X) * t;
 
 		float moveByX_Degrees = 0;
 
@@ -234,19 +232,20 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 
 		LastMoveByDegreesX = moveByX_Degrees;
 
-		moveByX_Ticks = moveByX_Degrees / ARM_TURRET_DEGREES_PER_TICK;
+		moveByX_Ticks = moveByX_Degrees / TURRET_DEGREES_PER_TICK;
 
 		if(CurrentEnableTracking)
 		{
 			const float FRACTION = 1.0f;
 			int new_turret_target = GetTurretEncoder()-(moveByX_Ticks* FRACTION);
 			SetTurret(new_turret_target);
+			SmartDashboard::PutNumber("Turret Targ", new_turret_target);
 		}
 	}
 }
 float TurretClass::Turret_Encoder_To_Degrees(int enc)
 {
-	return enc * ARM_TURRET_DEGREES_PER_TICK;
+	return enc * TURRET_DEGREES_PER_TICK;
 }
 float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
 {
