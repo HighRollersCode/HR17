@@ -5,12 +5,12 @@
  *      Author: 987
  */
 
-#ifndef SRC_DRIVETRAIN_H_
-#define SRC_DRIVETRAIN_H_
-
 #include "WPILib.h"
 #include "Defines.h"
 #include "AnalogGyro.h"
+
+#ifndef SRC_DRIVETRAIN_H_
+#define SRC_DRIVETRAIN_H_
 
 class Drivetrainclass {
 

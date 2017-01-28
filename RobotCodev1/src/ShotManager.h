@@ -22,12 +22,14 @@ public:
 		Free = 0,
 		Shooting
 	};
-	/*TurretClass *Turret;
+	TurretClass *Turret;
 	HopperClass *Hopper;
 	ShooterWheelClass *ShooterWheel;
 
 	bool ShooterState_Cur;
 	bool ShooterState_Prev;
+	bool ShouldTrack;
+	bool isReady;
 
 	Timer *PresetTimer;
 
@@ -36,12 +38,12 @@ public:
 	bool transitioning;
 
 	RobotMode currentMode;
-	ShotManager(TurretClass *Turret,HopperClass *Hopper,ShooterWheelClass *ShooterWheel);
+	ShotManager(TurretClass *RobotTurret,HopperClass *RobotHopper,ShooterWheelClass *RobotShooterWheel);
 	virtual ~ShotManager();
 
 	void EnterState(RobotMode mode);
-	void Update(bool ShootingState);
-*/
+	void Update(float turret,bool ShootingState,float tx,float ty);
+
 };
 
 #endif /* SRC_SHOTMANAGER_H_ */

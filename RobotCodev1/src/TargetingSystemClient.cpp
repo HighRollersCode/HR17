@@ -27,7 +27,8 @@ TargetingSystemClient::TargetingSystemClient() :
 	m_SocketHandle(-1),
 	gotdata(false),
 	xCal(0.0f),
-	yCal(0.0f)
+	yCal(0.0f),
+	m_CamMode(CAM_FRONT)
 {
 	m_CommTimer = new Timer();
 }
@@ -172,7 +173,7 @@ void TargetingSystemClient::Handle_Command(char * data)
 void TargetingSystemClient::Handle_Target(char*data)
 {
 	float tmpx,tmpy,tmparea;
-	sscanf(data, "0 %f %f %f",&tmpx,&tmpy,&tmparea);
+	sscanf(data, " %f %f %f",&tmpx,&tmpy,&tmparea);
 
 	m_XOffset = tmpx;
 	m_YOffset = tmpy;
@@ -234,5 +235,19 @@ bool TargetingSystemClient::Send(const char * data_out, int size)
 	{
 		printf("Crash at send, Check Jetson \n");
 		return false;
+	}
+}
+void TargetingSystemClient::Send_Camera_Mode_Msg(CameraMode mode)
+{
+	char buffer [256];
+	sprintf(buffer,"7 %d\r\n",mode);
+	Send(buffer,strlen(buffer));
+}
+void TargetingSystemClient::Set_Camera_Mode(CameraMode mode)
+{
+	if(m_CamMode != mode)
+	{
+		Send_Camera_Mode_Msg(mode);
+		m_CamMode = mode;
 	}
 }

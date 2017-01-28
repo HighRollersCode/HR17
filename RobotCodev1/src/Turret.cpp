@@ -5,14 +5,14 @@
  *      Author: 987
  */
 
-#include <Turret.h>
+#include "Turret.h"
 #include "Defines.h"
 
 const float MIN_TURRET_CMD = 0.20f;
 
 const float TURRET_P = .005f;
-const float TURRET_I = 0.0f; //-.0000035f;
-const float TURRET_D = 0.0f;
+const float TURRET_I = 0.00001f; //-.0000035f;
+const float TURRET_D = 0.01;
 
 const float TURRET_TOLERANCE = 1;
 
@@ -25,16 +25,15 @@ const float LOCKON_FAR_AREA = 0.0175f;
 
 TurretClass::TurretClass()
 {
-	Turret = new TalonSRX(Tal_Turret);
+	Turret = new CANTalon(Tal_Turret);
 
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
-
-	ShooterWheel = new ShooterWheelClass();
 
 	Resetting = false;
 
 	isTracking = false;
 	isLockedOn = false;
+	isReady = false;
 
 	CurrentEnableTracking = false;
 	PrevEnableTracking = false;
@@ -128,37 +127,18 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 		}
 		else if(ArmLockonTimer->Get() > LOCKON_SECONDS)
 		{
-			if(ShooterWheel->Shooter->Get() > 0)
-			{
-				if(LastShotTimer->Get() > 0.0f)
-				{
-					//FullShotQuick();
-					printf("SHOT!\r\n");
-					ArmLockonTimer->Reset();
-					LastShotTimer->Reset();
-					LastShotTimer->Start();
-				}
-			}
-			else
-			{
-				printf("SHOT!\r\n");
-			}
-		}
-		/*else if (Ball)
-		{
-			//FullShotQuick();
-			printf("Manual shot during tracking!\r\n");
-			ArmLockonTimer->Reset();
-		}*/
-	}
-	//FullShotUpdate();
 
-	//if(ArmTimer->Get() > .01f)
-	//{
+		}
+		isReady = isLockedOn;
+	}
+	else
+	{
+		isReady = true;
+	}
 		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
 		ArmTimer->Start();
-	//}
+
 	UpdateTurret(turret);
 }
 void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
@@ -262,4 +242,9 @@ float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
 		}
 	}
 	return cmd;
+}
+void TurretClass::Send_Data()
+{
+	SmartDashboard::PutNumber("Turret Speed", Turret->Get());
+	SmartDashboard::PutNumber("Turret Encoder", TurretEncoder->Get());
 }

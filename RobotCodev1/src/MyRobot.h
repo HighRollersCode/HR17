@@ -17,17 +17,20 @@
 #include "Turret.h"
 #include "TargetingSystemClient.h"
 #include "ShooterWheel.h"
+#include "Hopper.h"
+#include "ShotManager.h"
 #include "HRscript.h"
 #include "Auton.h"
 #include "XboxController.h"
 
-class MyRobot : public SampleRobot
+class MyRobotClass : public SampleRobot
 {
 public:
 
 	float commandLeft;
 	float commandRight;
 	float commandIntake;
+	float intele;
 
 	Joystick *leftStick;
 	Joystick *rightStick;
@@ -37,7 +40,10 @@ public:
 	Drivetrainclass *Drivetrain;
 	IntakeClass *Intake;
 	TurretClass *Turret;
+	ShooterWheelClass *ShooterWheel;
 	TargetingSystemClient *TargClient;
+	//ShotManager *ShotMng;
+	HopperClass *Hopper;
 	Auton *AutonomousControl;
 
 	Relay *LightRelay;
@@ -55,12 +61,13 @@ public:
 	bool DisConnectionPrevTog;
 	bool DisConnectionCurTog;
 
-	MyRobot();
-	virtual ~MyRobot();
+	MyRobotClass();
+	virtual ~MyRobotClass();
 
-	static MyRobot * Get() { return TheRobot; }
+	static MyRobotClass * Get() { return TheRobot; }
 
 	void Disabled(void);
+	void Reset_State();
 	void Autonomous(void);
 	void UpdateInputs();
 	void Init_Scripts_System();
@@ -75,7 +82,7 @@ public:
 protected:
 
 	HrScriptSystemClass * m_ScriptSystem;
-	static MyRobot * TheRobot;
+	static MyRobotClass * TheRobot;
 };
 
 #endif /* SRC_MYROBOT_H_ */

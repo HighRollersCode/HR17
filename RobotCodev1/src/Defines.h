@@ -20,14 +20,17 @@
 #define Vic_Drive_Left_1 2
 #define Vic_Drive_Left_2 3
 
-#define Tal_Intake_Intake 4
-#define Tal_Intake_Uptake 5
+#define Tal_Intake 2
 
-#define Tal_Turret 6
+#define Tal_Turret 5
 
-#define Tal_Shooter_Wheel 7
+#define Tal_Shooter_Wheel 9
 
-#define Vic_Hopper 8
+#define Tal_Hopper 6
+#define Tal_Hopper_Intake 4
+#define Tal_Conveyor_Belt 1
+
+#define Tal_Climber 3
 
 
 #define Sol_Shifter_In 0 //On Solenoid block tubes plug into port 1
@@ -48,9 +51,12 @@
 #define Encoder_Arm_Turret_1 4
 #define Encoder_Arm_Turret_2 5
 
+#define Encoder_Shooter_Wheel_1 8
+#define Encoder_Shooter_Wheel_2 9
 
-#define Encoder_Intake_Lift_1 8
-#define Encoder_Intake_Lift_2 9
+
+#define Encoder_Intake_Lift_1 6
+#define Encoder_Intake_Lift_2 7
 
 
 #define Preset_Intake_Floor -500

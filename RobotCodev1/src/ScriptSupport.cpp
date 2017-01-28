@@ -25,8 +25,8 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetDriveTrainConstantsCommand(); }
 	virtual void Execute()
 	{
-	//	MyRobot::Get()->AutonomousControl->turningp = (float)m_Parameters[0];
-		MyRobot::Get()->Drivetrain->mult = (float)m_Parameters[0];
+	//	MyRobotClass::Get()->AutonomousControl->turningp = (float)m_Parameters[0];
+		MyRobotClass::Get()->Drivetrain->mult = (float)m_Parameters[0];
 
 		//TiltMin = m_Parameters[1];
 	}
@@ -46,7 +46,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new WaitCommand1(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->AutonWait(m_Parameters[0]);
+		MyRobotClass::Get()->AutonomousControl->AutonWait(m_Parameters[0]);
 	}
 };
 class WaitForBrakeCommand : public HrScriptCommandClass
@@ -57,7 +57,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new WaitForBrakeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->AutonWait2(m_Parameters[0],(int)m_Parameters[1]);
+		MyRobotClass::Get()->AutonomousControl->AutonWait2(m_Parameters[0],(int)m_Parameters[1]);
 	}
 };
 class WaitForTargetCommand : public HrScriptCommandClass
@@ -68,7 +68,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new WaitForTargetCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->AutonWaitForTarget(m_Parameters[0]);
+		MyRobotClass::Get()->AutonomousControl->AutonWaitForTarget(m_Parameters[0]);
 	}
 };
 
@@ -80,7 +80,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new WaitForIntakeModeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->AutonWaitForIntake();
+		MyRobotClass::Get()->AutonomousControl->AutonWaitForIntake();
 	}
 };
 
@@ -93,7 +93,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DropperCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->DriveTrain->SetDropper(m_Parameters[0]);
+		MyRobotClass::Get()->AutonomousControl->DriveTrain->SetDropper(m_Parameters[0]);
 	}
 };
 */
@@ -111,7 +111,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DisableBrakeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->AutonWait2(m_Parameters[0],(int)m_Parameters[1]);
+		MyRobotClass::Get()->AutonomousControl->AutonWait2(m_Parameters[0],(int)m_Parameters[1]);
 	}
 };
 class DriveTimeCommand : public HrScriptCommandClass
@@ -122,7 +122,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveTimeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->Auto_DriveTimer(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		MyRobotClass::Get()->AutonomousControl->Auto_DriveTimer(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
 	}
 };
 class DriveCommand : public HrScriptCommandClass
@@ -133,7 +133,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Drivetrain->Drive_Auton(m_Parameters[0], m_Parameters[1]);
+		MyRobotClass::Get()->Drivetrain->Drive_Auton(m_Parameters[0], m_Parameters[1]);
 	}
 };
 class DriveHeadingTicksCommand : public HrScriptCommandClass
@@ -144,7 +144,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveHeadingTicksCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->Auto_GYROSTRAIGHT(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		MyRobotClass::Get()->AutonomousControl->Auto_GYROSTRAIGHT(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
 	}
 };
 class DriveTicksCommand : public HrScriptCommandClass
@@ -155,7 +155,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveTicksCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->Auto_DriveEncoder(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		MyRobotClass::Get()->AutonomousControl->Auto_DriveEncoder(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
 	}
 };
 class GyroTurnCommand : public HrScriptCommandClass
@@ -166,7 +166,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new GyroTurnCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->Auto_GYROTURN(m_Parameters[0]);
+		MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN(m_Parameters[0]);
 	}
 };
 class GyroTurnTimeCommand : public HrScriptCommandClass
@@ -178,7 +178,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new GyroTurnTimeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->AutonomousControl->Auto_GYROTURN_TIMED(m_Parameters[0],m_Parameters[1]);
+		MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN_TIMED(m_Parameters[0],m_Parameters[1]);
 	}
 };
 
@@ -196,14 +196,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new ArmEnablePIDCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Arm->ArmPIDController->Reset();
+		MyRobotClass::Get()->Arm->ArmPIDController->Reset();
 		if(m_Parameters[0] == 1)
 		{
-			MyRobot::Get()->Arm->ArmPIDController->Enable();
+			MyRobotClass::Get()->Arm->ArmPIDController->Enable();
 		}
 		else if (m_Parameters[0] == 0)
 		{
-			MyRobot::Get()->Arm->ArmPIDController->Disable();
+			MyRobotClass::Get()->Arm->ArmPIDController->Disable();
 		}
 	}
 };
@@ -216,7 +216,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetArmStartPositionCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Arm->SetArmStartPosition((int)m_Parameters[0]);
+		MyRobotClass::Get()->Arm->SetArmStartPosition((int)m_Parameters[0]);
 	}
 };*/
 
@@ -228,14 +228,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new TurretEnablePIDCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Turret->TurretPIDController->Reset();
+		MyRobotClass::Get()->Turret->TurretPIDController->Reset();
 		if(m_Parameters[0] == 1)
 		{
-			MyRobot::Get()->Turret->TurretPIDController->Enable();
+			MyRobotClass::Get()->Turret->TurretPIDController->Enable();
 		}
 		else if (m_Parameters[0] == 0)
 		{
-			MyRobot::Get()->Turret->TurretPIDController->Disable();
+			MyRobotClass::Get()->Turret->TurretPIDController->Disable();
 		}
 	}
 };
@@ -248,7 +248,7 @@ public:
 	virtual void Execute()
 	{
 		//enable tracking if parameter 0 is true
-		MyRobot::Get()->Arm->StartTracking((int)m_Parameters[0]);
+		MyRobotClass::Get()->Arm->StartTracking((int)m_Parameters[0]);
 	}
 };
 class SetArmCommand : public HrScriptCommandClass
@@ -262,11 +262,11 @@ public:
 	{
 		if((int)m_Parameters[0] != -1)
 		{
-			MyRobot::Get()->Arm->SetTurret((int)m_Parameters[0]);
+			MyRobotClass::Get()->Arm->SetTurret((int)m_Parameters[0]);
 		}
 		if((int)m_Parameters[1] != -1)
 		{
-		MyRobot::Get()->Arm->SetArm((int)m_Parameters[1]);
+		MyRobotClass::Get()->Arm->SetArm((int)m_Parameters[1]);
 		}
 	}
 };
@@ -278,7 +278,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new FullShotCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Arm->FullShot();
+		MyRobotClass::Get()->Arm->FullShot();
 	}
 };
 
@@ -289,7 +289,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new FullShotQuickCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Arm->FullShotQuick();
+		MyRobotClass::Get()->Arm->FullShotQuick();
 	}
 };*/
 class ShooterWheelsCommand : public HrScriptCommandClass
@@ -302,11 +302,11 @@ public:
 	{
 		if((int)m_Parameters[0] == 1)
 		{
-			//MyRobot::Get()->ShooterWheel->ShooterOutake();
+			//MyRobotClass::Get()->ShooterWheel->ShooterOutake();
 		}
 		else
 		{
-			//MyRobot::Get()->ShooterWheel->WheelOff();
+			//MyRobotClass::Get()->ShooterWheel->WheelOff();
 		}
 	}
 };
@@ -326,7 +326,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetIntakeStartPositionCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Intake->SetIntakeStartPosition((int)m_Parameters[0]);
+		MyRobotClass::Get()->Intake->SetIntakeStartPosition((int)m_Parameters[0]);
 	}
 };
 
@@ -338,7 +338,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetIntakeLiftCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Intake->SetLift((int)m_Parameters[0]);
+		MyRobotClass::Get()->Intake->SetLift((int)m_Parameters[0]);
 	}
 };*/
 class SetIntakeCommand : public HrScriptCommandClass
@@ -352,15 +352,15 @@ public:
 	{
 		if(m_Parameters[0] == 1)
 		{
-			MyRobot::Get()->AutonomousControl->Auto_Intake_On();
+			MyRobotClass::Get()->AutonomousControl->Auto_Intake_On();
 		}
 		else if (m_Parameters[0] == 0)
 		{
-			MyRobot::Get()->AutonomousControl->Auto_Intake_Off();
+			MyRobotClass::Get()->AutonomousControl->Auto_Intake_Off();
 		}
 		else if (m_Parameters[0] == -1)
 		{
-			MyRobot::Get()->Intake->IntakeOut();
+			MyRobotClass::Get()->Intake->IntakeOut();
 		}
 	}
 };
@@ -373,7 +373,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new EnterIntakeModeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->CollManager->EnterState(CollisionManager::Intake);
+		MyRobotClass::Get()->CollManager->EnterState(CollisionManager::Intake);
 	}
 };
 class EnterDefensiveModeCommand : public HrScriptCommandClass
@@ -385,7 +385,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new EnterDefensiveModeCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->CollManager->EnterState(CollisionManager::Defensive);
+		MyRobotClass::Get()->CollManager->EnterState(CollisionManager::Defensive);
 	}
 };
 class IntakeEnablePIDCommand : public HrScriptCommandClass
@@ -396,14 +396,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new IntakeEnablePIDCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Intake->LiftPIDController->Reset();
+		MyRobotClass::Get()->Intake->LiftPIDController->Reset();
 		if(m_Parameters[0] == 1)
 		{
-			MyRobot::Get()->Intake->LiftPIDController->Enable();
+			MyRobotClass::Get()->Intake->LiftPIDController->Enable();
 		}
 		else if (m_Parameters[0] == 0)
 		{
-			MyRobot::Get()->Intake->LiftPIDController->Disable();
+			MyRobotClass::Get()->Intake->LiftPIDController->Disable();
 		}
 	}
 };*/
@@ -429,14 +429,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetAutoCommand(); }
 	virtual void Execute()
 	{
-		MyRobot::Get()->Auto_Index = (int)m_Parameters[0];
-		//MyRobot::Get()->Right_Auto_Index = (int)m_Parameters[1];
-		//MyRobot::Get()->Enable_Tracking = (int)m_Parameters[2];
+		MyRobotClass::Get()->Auto_Index = (int)m_Parameters[0];
+		//MyRobotClass::Get()->Right_Auto_Index = (int)m_Parameters[1];
+		//MyRobotClass::Get()->Enable_Tracking = (int)m_Parameters[2];
 		printf("setupautos");
 	}
 };
 
-void MyRobot::Init_Scripts_System()
+void MyRobotClass::Init_Scripts_System()
 {
 	m_ScriptSystem = new HrScriptSystemClass();
 	printf("Script Initializing \r\n");
@@ -494,7 +494,7 @@ void MyRobot::Init_Scripts_System()
 	Load_Scripts();
 
 }
-void MyRobot::Load_Scripts()
+void MyRobotClass::Load_Scripts()
 {
 	// Load and run the robot settings script:
 	m_ScriptSystem->Load_And_Run_Script("RobotSettings.hrs");

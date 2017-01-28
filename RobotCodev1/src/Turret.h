@@ -12,17 +12,17 @@
 #include "Defines.h"
 #include "CANSpeedController.h"
 #include "TalonSRX.h"
-#include "ShooterWheel.h"
+#include "CANTalon.h"
 
+#include "PIDController.h"
+#include "Encoder.h"
 
 class TurretClass {
 public:
 
-	TalonSRX *Turret;
+	CANTalon *Turret;
 
 	Encoder *TurretEncoder;
-
-	ShooterWheelClass *ShooterWheel;
 
 	bool Resetting;
 	bool CurrentEnableTracking;
@@ -30,6 +30,7 @@ public:
 
 	bool isTracking;
 	bool isLockedOn;
+	bool isReady;
 
 	float LastMoveByDegreesX;
 	float LockonDegreesX;
@@ -57,6 +58,8 @@ public:
 	void AutonomousTrackingUpdate(float tx, float crossX, float target_area);
 
 	void HandleTarget(float centerX, float calX,float target_a);
+
+	void Send_Data();
 
 	float Clamp_Target(float tar, float lowerlim, float upperlim);
 	TurretClass();

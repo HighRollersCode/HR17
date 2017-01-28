@@ -30,6 +30,15 @@ public:
 	bool Update();
 	bool Send(const char * data_out, int size);
 
+	enum CameraMode
+	{
+		CAM_FRONT = 0,
+		CAM_BACK
+	};
+
+	void Set_Camera_Mode(CameraMode mode);
+
+
 	void Set_Turret_Angle(float a) { m_TurretAngle = a; }
 	float Get_XOffset() { return m_XOffset; }
 	float Get_YOffset() { return m_YOffset; }
@@ -47,6 +56,7 @@ protected:
 	void Handle_Target(char *data);
 	void Handle_Calibration(char *data);
 	void Handle_CalibrationRefresh(char *data);
+	void Send_Camera_Mode_Msg(CameraMode mode);
 
 	float m_TurretAngle;
 	float m_XOffset;
@@ -57,6 +67,7 @@ protected:
 	bool gotdata;
 	float xCal;
 	float yCal;
+	CameraMode m_CamMode;
 	Timer *m_CommTimer;
 };
 

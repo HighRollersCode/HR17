@@ -7,10 +7,13 @@
 
 #include <ShotManager.h>
 
-/*ShotManager::ShotManager(TurretClass *Turret,HopperClass *Hopper,ShooterWheelClass *ShooterWheel)
+ShotManager::ShotManager(TurretClass *RobotTurret,HopperClass *RobotHopper,ShooterWheelClass *RobotShooterWheel)
 {
+
 	ShooterState_Cur = false;
 	ShooterState_Prev = false;
+	ShouldTrack = false;
+	isReady = false;
 
 	state = 0;
 	counter = 0;
@@ -19,18 +22,24 @@
 	PresetTimer = new Timer();
 	PresetTimer->Reset();
 	PresetTimer->Start();
+
+	Turret = RobotTurret;
+	Hopper = RobotHopper;
+	ShooterWheel = RobotShooterWheel;
+
+	currentMode = RobotMode::Free;
 }
 
 ShotManager::~ShotManager() {
 	// TODO Auto-generated destructor stub
 }
-/*void ShotManager::EnterState(RobotMode mode)
+void ShotManager::EnterState(RobotMode mode)
 {
 	currentMode = mode;
 	state = 0;
 	transitioning = true;
 }
-void ShotManager::Update(bool ShootingState)
+void ShotManager::Update(float turret,bool ShootingState,float tx,float ty)
 {
 	ShooterState_Prev = ShooterState_Cur;
 	ShooterState_Cur = ShootingState;
@@ -38,36 +47,34 @@ void ShotManager::Update(bool ShootingState)
 	if(!ShooterState_Cur && ShooterState_Prev)
 	{
 		EnterState(RobotMode::Shooting);
+		ShouldTrack = true;
+	}
+	if(currentMode == RobotMode::Shooting)
+	{
+		ShouldTrack = true;
+	}
+	else
+	{
+		ShouldTrack = false;
 	}
 
-	if(transitioning == true)
+	Turret->Update(turret,ShouldTrack,tx,0,ty);
+	ShooterWheel->UpdateShooter(0,0,0,ShouldTrack,ty);
+
+	if(currentMode == RobotMode::Shooting)
 	{
-		if(currentMode == RobotMode::Shooting)
-		{
-			switch(state)
-			{
-				case 0 :
-					{
-						Turret->isTracking = true;
-						break;
-					}
-				case 1 :
-					{
-						if(Turret->isLockedOn)
-						{
-							ShooterWheel->AutonomousTrackingUpdate(float tx,float crossX,float target_area);
-						}
-						break;
-					}
-				case 2 :
-					{
-						if(ShooterWheel->isDesiredRPM)
-						{
-							Hopper->HopperUp();
-						}
-						break;
-					}
-			}
-		}
+		isReady = (Turret->isReady && ShooterWheel->isReady);
 	}
-}*/
+	else
+	{
+		isReady = false;
+	}
+	if(isReady)
+	{
+		Hopper->HopperUp();
+	}
+	else
+	{
+		Hopper->HopperOff();
+	}
+}

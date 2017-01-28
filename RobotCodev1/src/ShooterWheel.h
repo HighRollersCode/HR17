@@ -8,6 +8,9 @@
 #include "WPILib.h"
 #include "GearTooth.h"
 #include "Defines.h"
+#include "TalonSRX.h"
+#include "CANTalon.h"
+#include "Encoder.h"
 
 #ifndef SRC_ShooterWheel_H_
 #define SRC_ShooterWheel_H_
@@ -29,27 +32,27 @@ class ShooterWheelClass
 	int prevoverride;
 	int State;
 	float currentPresetSpeed;
-
-	GearTooth *GearSensor;
-	double DTIME;
-	double DCOUNT;
-
+	CANTalon *Shooter;
 public:
-	Victor *Shooter;
-
-	Solenoid *HoodUp;
-	Solenoid *HoodDown;
 
 	static double Shooter_WheelK;
+
+
+
 	int INDICATOR;
-	double RPMCOUNT;
 	double RPM;
-	double PREVRPMCOUNT;
 	double ERROR;
 	float OverrideCommand;
 	int ShooterToggle;
 
+	GearTooth *GearSensor;
+	Encoder *ShooterEnc;
+
 	bool isDesiredRPM;
+	bool isReady;
+	bool isTracking;
+	bool CurrentEnableTracking;
+	bool PrevEnableTracking;
 
 	ShooterWheelClass();
 	virtual ~ShooterWheelClass();
@@ -57,16 +60,19 @@ public:
 	void SetSpeed(float command);
 	void Send_Data();
 	void WheelOff();
-	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,double RobotTime,bool HoodEnable);
+	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
+	void EstimateRPM(float ty);
 	float EstimatePower(float desiredRPM);
 
 	float PUpdate(float dist);
+	Solenoid *HoodUp;
+	Solenoid *HoodDown;
 	float ClampTarget(float tar, float lowerlim, float upperlim);
 
-	void HandleTarget(float centerX,float calX,float target_area);
-	void AutonomousTrackingUpdate(float tx, float crossX, float target_area);
+	void HandleTarget(float centerY,float calY);//,float target_area);
+	void AutonomousTrackingUpdate(float ty, float crossY);//, float target_area);
 	void SetState(int newstate);
 	void SendData();
 };

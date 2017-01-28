@@ -9,7 +9,9 @@
 
 HopperClass::HopperClass()
 {
-	Hopper = new Victor(Vic_Hopper);
+	Hopper = new CANTalon(Tal_Hopper);
+	HopperIntake = new CANTalon(Tal_Hopper_Intake);
+	Conveyor = new CANTalon(Tal_Conveyor_Belt);
 }
 
 HopperClass::~HopperClass() {
@@ -33,12 +35,18 @@ void HopperClass::UpdateHopper(float uptake,float downtake)
 void HopperClass::HopperUp()
 {
 	Hopper->Set(1);
+	HopperIntake->Set(-1);
+	Conveyor->Set(1);
 }
 void HopperClass::HopperDown()
 {
 	Hopper->Set(-1);
+	HopperIntake->Set(1);
+	Conveyor->Set(-1);
 }
 void HopperClass::HopperOff()
 {
 	Hopper->Set(0);
+	HopperIntake->Set(0);
+	Conveyor->Set(0);
 }

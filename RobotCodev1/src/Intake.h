@@ -6,13 +6,13 @@
  */
 
 #include "WPILib.h"
+#include "Defines.h"
+#include "CANSpeedController.h"
+#include "TalonSRX.h"
+#include "CANTalon.h"
 
 #ifndef SRC_INTAKE_H_
 #define SRC_INTAKE_H_
-
-
-#include "Defines.h"
-#include "CANSpeedController.h"
 
 
 class IntakeClass {
@@ -20,8 +20,7 @@ class IntakeClass {
 
 public:
 
-	Victor *Intake;
-	TalonSRX *Uptake;
+	CANTalon *Intake;
 
 	//int IsIntakeOn;
 	//int IsOuttakeOn;

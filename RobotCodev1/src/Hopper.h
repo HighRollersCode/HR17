@@ -7,6 +7,8 @@
 
 #include "WPILib.h"
 #include "Defines.h"
+#include "TalonSRX.h"
+#include "CANTalon.h"
 
 #ifndef SRC_HOPPER_H_
 #define SRC_HOPPER_H_
@@ -14,7 +16,9 @@
 class HopperClass {
 public:
 
-	Victor *Hopper;
+	CANTalon *Hopper;
+	CANTalon *HopperIntake;
+	CANTalon *Conveyor;
 
 
 	HopperClass();
