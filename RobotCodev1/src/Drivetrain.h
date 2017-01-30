@@ -46,6 +46,7 @@ public:
 	void IMUCalibration();
 	float ComputeAngleDelta(float t);
 	float GetHeading(void);
+	float Compute_Speed();
 
 	void StandardTank(float left, float right);
 	void StandardArcade(float forward, float turn);

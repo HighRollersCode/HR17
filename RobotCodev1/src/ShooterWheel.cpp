@@ -13,17 +13,26 @@ static float rpEr;
 static float rpDes;
 static float cmdCorrection;
 
+//Estimate Distance from Target Pixels
+static float YDTable_Y[] = { 0.9792f, 0.4680f, 0.2020f};
+static float YDTable_Distance[] = { 0.9583f, 2.7083f, 4.0f};
+
+//Estimate RPM from Target Distance
+static float DRPM_DistanceTable75[] = { 0.9583f, 2.7083f, 4.0f};
+static float DRPM_RPMTable75[] = { 3050.0f, 3340.0f, 3680.0f};
+
+//Estimate Power from Optimum RPM
 static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
 static float MotorCmd[] = { 0, 0.109f, .207f , .304f  , .394f  , .492f  , .614f  , .688f  , .799f  , .905f  , 1.00f};
-static float DistanceTable[] = { 0, 2500.0f/*middle distance*/, 5600.0f/*farthest distance*/};
-static float DistanceRPMTable[] = { 0, 2500.0f, 5600.0f};
 
 static int RPM_TABLE_COUNT = sizeof(RPMTable) / sizeof(RPMTable[0]);
-static int DISTANCE_TABLE_COUNT = sizeof(DistanceTable) / sizeof(DistanceTable[0]);
+static int DRPM_TABLE_COUNT = sizeof(DRPM_DistanceTable75) / sizeof(DRPM_DistanceTable75[0]);
+static int YDTABLE_COUNT = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 //static int DISTANCE_RPM_TABLE_COUNT = sizeof(DistanceRPMTable) / sizeof(DistanceRPMTable[0]);
 //static double currenttime = 0.0;
 //static double previoustime = 0.0;
-double ShooterWheelClass::Shooter_WheelK = .000375f;//.0015f this number was to big of a correction
+double ShooterWheelClass::Shooter_WheelK = .00075f; //.000375f; this number was to big of a correction
+double ShooterWheelClass::Shooter_WheelK_Down = .000375f;
 
 ShooterWheelClass::ShooterWheelClass()
 {
@@ -40,11 +49,15 @@ ShooterWheelClass::ShooterWheelClass()
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
 	ShooterEnc->Reset();
 
+	RPMList =  new std::vector<float>();
+	RPMList->empty();
+
 	ShooterToggle = 1;
 	State = ShooterState_off;
 
 	currentPresetSpeed = 0.0f;
 	OverrideCommand = 0.0f;
+	hood_angle = ((65.0f * 3.14f)/180.0f);
 	prevoverride = 0;
 	prevlow = 0;
 
@@ -67,29 +80,57 @@ void ShooterWheelClass::SetSpeed(float command)
 {
 	Shooter->Set(command);
 }
-void ShooterWheelClass::EstimateRPM(float ty)
+float ShooterWheelClass::Get_Goal_Distance(float y)
 {
-	/*float desiredRPM;
-	if(ty < DistanceTable[0])
+	return EstimateDistance(y);
+}
+float ShooterWheelClass::EstimateDistance(float ty)
+{
+	float goal_distance;
+	if(ty < YDTable_Y[0])
 	{
-		desiredRPM = DistanceRPMTable[0];
+		goal_distance = YDTable_Distance[0];
 	}
 
-	if(ty > DistanceTable[DISTANCE_TABLE_COUNT-1])
+	if(ty > YDTable_Y[YDTABLE_COUNT-1])
 	{
-		desiredRPM = DistanceRPMTable[DISTANCE_TABLE_COUNT-1];
+		goal_distance = YDTable_Distance[YDTABLE_COUNT-1];
 	}
 
-	for(int i = 0; i < DISTANCE_TABLE_COUNT; i++)
+	for(int i = 0; i < YDTABLE_COUNT; i++)
 	{
-		if(ty < DistanceTable[i])
+		if(ty < YDTable_Y[i])
 		{
-			float norm = (ty - DistanceTable[i-1])/(DistanceTable[i] - DistanceTable[i-1]);
-			float command = (DistanceRPMTable[i-1] + norm*(DistanceRPMTable[i]-DistanceRPMTable[i-1]));
+			float norm = (ty - YDTable_Y[i-1])/(YDTable_Y[i] - YDTable_Y[i-1]);
+			float command = (YDTable_Distance[i-1] + norm*(YDTable_Distance[i]-YDTable_Distance[i-1]));
+			goal_distance = command;
+		}
+	}
+	return goal_distance;
+}
+float ShooterWheelClass::EstimateRPM(float ty)
+{
+	float desiredRPM;
+	if(ty < DRPM_DistanceTable75[0])
+	{
+		desiredRPM = DRPM_RPMTable75[0];
+	}
+
+	if(ty > DRPM_DistanceTable75[DRPM_TABLE_COUNT-1])
+	{
+		desiredRPM = DRPM_RPMTable75[DRPM_TABLE_COUNT-1];
+	}
+
+	for(int i = 0; i < DRPM_TABLE_COUNT; i++)
+	{
+		if(ty < DRPM_DistanceTable75[i])
+		{
+			float norm = (ty - DRPM_DistanceTable75[i-1])/(DRPM_DistanceTable75[i] - DRPM_DistanceTable75[i-1]);
+			float command = (DRPM_RPMTable75[i-1] + norm*(DRPM_RPMTable75[i]-DRPM_RPMTable75[i-1]));
 			desiredRPM = command;
 		}
 	}
-	PUpdate(desiredRPM);*/
+	return desiredRPM;
 }
 float ShooterWheelClass::EstimatePower(float desiredRPM)
 {
@@ -113,7 +154,15 @@ float ShooterWheelClass::PUpdate(float desrpm)
 	double basecom = EstimatePower(desrpm);
 	double error = desrpm - RPM;
 	ERROR = error;
-	double correction = (error * Shooter_WheelK);
+	double correction;
+	if(error < 0.0f)
+	{
+		correction = (error * Shooter_WheelK_Down);
+	}
+	if(error > 0.0f)
+	{
+		correction = (error * Shooter_WheelK);
+	}
 
 	double command = correction + basecom;
 	if(command < -.5f)
@@ -123,7 +172,7 @@ float ShooterWheelClass::PUpdate(float desrpm)
 	cmdCorrection = correction;
 	rpDes = desrpm;
 	rpEr= error;
-	if(fabs(RPM-desrpm) < 100)
+	if(fabs(RPM-desrpm) < 1000.0f)
 	{
 		isReady= true;
 	}
@@ -197,7 +246,29 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 	PrevEnableTracking = CurrentEnableTracking;
 	CurrentEnableTracking = TrackingEnable;
 
+	float y = ty;
+	float distance = EstimateDistance(y);
+	float rpm = EstimateRPM(distance);
+	float power = EstimatePower(rpm);
+
+	printf("Target Y",y);
+	printf("Estimated Distance",distance);
+	printf("Estimated RPM",rpm);
+	printf("Estimated Power",power);
+
 	RPM = ((1.0f/(ShooterEnc->GetPeriod()))*60.0f)/1024.0f;//Shooter->GetEncVel();((1.0f/(GearSensor->GetPeriod()))*60.0f)/6.0f;
+	//Limit the RPM ouput and average it
+	RPMList->push_back(RPM);
+	if(RPMList->size() > 25)
+	{
+		RPMList->erase(RPMList->begin());
+	}
+	float sum = 0;
+	for(uint i = 0; i < RPMList->size(); i++)
+	{
+		sum += (RPMList->at(i));
+	}
+	RPM = sum/RPMList->size();
 
 	if((EnableLow == 1)&&(prevlow == 0))
 	{
@@ -207,6 +278,14 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 	if((EnableOverride == 1)&&(prevoverride == 0))
 	{
 		SetState(ShooterState_overrideRPM);
+	}
+	if((CurrentEnableTracking == 1)&&(PrevEnableTracking == 0))
+	{
+		SetState(ShooterState_tracking);
+	}
+	else if((CurrentEnableTracking == 0)&&(PrevEnableTracking == 1))
+	{
+		SetState(ShooterState_off);
 	}
 	if(ShooterToggle == 1)
 	{
@@ -225,6 +304,10 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 		{
 			SetSpeed(OverrideCommand);
 		}
+		else if(State == ShooterState_tracking)
+		{
+			SetSpeed(PUpdate(EstimateRPM(ty)));
+		}
 		else
 		{
 			SetSpeed(PUpdate(currentPresetSpeed));
@@ -233,7 +316,7 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 
 	prevlow = EnableLow;
 	prevoverride = EnableOverride;
-	//EstimateRPM(ty);
+	PrevEnableTracking = CurrentEnableTracking;
 	//HandleTarget(ty,crossY);
 }
 void ShooterWheelClass::SetState(int newstate)

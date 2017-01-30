@@ -13,6 +13,8 @@
 #include "Turret.h"
 #include "Intake.h"
 #include "ShooterWheel.h"
+#include "Hopper.h"
+#include "ShotManager.h"
 #include "TargetingSystemClient.h"
 
 class Auton
@@ -21,9 +23,11 @@ class Auton
 		Drivetrainclass *DriveTrain;
 		TurretClass *Turret;
 		IntakeClass *Intake;
-		ShooterWheelClass *ShooterWheel;
+		//ShooterWheelClass *ShooterWheel;
 		DriverStation *ds;
 		TargetingSystemClient *Targeting;
+		//HopperClass *Hopper;
+		ShotManager *ShotMng;
 		Timer *AutonTimer;
 		Timer *SendTimer;
 		//float turningp;
@@ -56,8 +60,10 @@ class Auton
 				TurretClass *Tu,
 				DriverStation *Ds,
 				IntakeClass *I,
-				ShooterWheelClass *S,
-				TargetingSystemClient *T
+				//ShooterWheelClass *S,
+				TargetingSystemClient *T,
+				//HopperClass *H,
+				ShotManager *SM
 		);
 		~Auton();
 		void Auto_Start();

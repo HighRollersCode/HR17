@@ -32,6 +32,10 @@
 
 #define Tal_Climber 3
 
+#define Tal_Gear_Intake 7
+
+#define PDP_Climber 1
+
 
 #define Sol_Shifter_In 0 //On Solenoid block tubes plug into port 1
 #define Sol_Shifter_Out 1 //On Solenoid block tubes plug into port 6
@@ -39,8 +43,8 @@
 #define Sol_Hood_Up 2 //On Solenoid block tubes plug into port 2
 #define Sol_Hood_Down 3 //On Solenoid block tubes plug into port 5
 
-#define Sol_Shot_Extend 4 //On Solenoid block tubes plug into port 3
-#define Sol_Shot_Retract 5 //On Solenoid block tubes plug into port 4
+#define Sol_Gear_Down 4 //On Solenoid block tubes plug into port 3
+#define Sol_Gear_Up 5 //On Solenoid block tubes plug into port 4
 
 
 #define Encoder_Drive_Left_1 0
@@ -53,7 +57,6 @@
 
 #define Encoder_Shooter_Wheel_1 8
 #define Encoder_Shooter_Wheel_2 9
-
 
 #define Encoder_Intake_Lift_1 6
 #define Encoder_Intake_Lift_2 7

@@ -23,7 +23,8 @@ enum ShooterState
 	ShooterState_off = 0,
 	ShooterState_Low,
 	ShooterState_override,
-	ShooterState_overrideRPM
+	ShooterState_overrideRPM,
+	ShooterState_tracking
 };
 class ShooterWheelClass
 {
@@ -33,9 +34,13 @@ class ShooterWheelClass
 	int State;
 	float currentPresetSpeed;
 	CANTalon *Shooter;
+
+	std::vector<float> *RPMList;
+
 public:
 
 	static double Shooter_WheelK;
+	static double Shooter_WheelK_Down;
 
 
 
@@ -43,6 +48,7 @@ public:
 	double RPM;
 	double ERROR;
 	float OverrideCommand;
+	float hood_angle;
 	int ShooterToggle;
 
 	GearTooth *GearSensor;
@@ -63,7 +69,9 @@ public:
 	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
-	void EstimateRPM(float ty);
+	float Get_Goal_Distance(float y);
+	float EstimateDistance(float ty);
+	float EstimateRPM(float ty);
 	float EstimatePower(float desiredRPM);
 
 	float PUpdate(float dist);
@@ -74,7 +82,6 @@ public:
 	void HandleTarget(float centerY,float calY);//,float target_area);
 	void AutonomousTrackingUpdate(float ty, float crossY);//, float target_area);
 	void SetState(int newstate);
-	void SendData();
 };
 
 #endif /* SRC_ShooterWheel_H_ */

@@ -117,6 +117,20 @@ void Drivetrainclass::Drive_Auton(float Left,float Right)
 {
 	StandardTank(Left,Right);
 }
+float Drivetrainclass::Compute_Speed()
+{
+	float ticks_per_revolution = 1024;
+	float feet_per_revolution = 1.57f;
+
+	float left_rpm = ((1.0f/(LeftEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
+	float right_rpm = ((1.0f/(RightEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
+	float average_rpm = ((left_rpm + right_rpm)/2);
+
+	float average_fpm = feet_per_revolution/average_rpm;
+	float average_fps = average_fpm/60.0f;
+
+	return average_fps;
+}
 void Drivetrainclass::Send_Data()
 {
 	SmartDashboard::PutNumber("Gyro", gyro->GetAngle());

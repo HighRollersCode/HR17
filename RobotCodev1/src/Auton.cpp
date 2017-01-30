@@ -19,8 +19,10 @@ Drivetrainclass *D,
 TurretClass *Ts,
 DriverStation *Ds,
 IntakeClass *I,
-ShooterWheelClass *S,
-TargetingSystemClient *T
+//ShooterWheelClass *S,
+TargetingSystemClient *T,
+//HopperClass *H,
+ShotManager *SM
 )
 {
 	DriveTrain = D;
@@ -28,8 +30,10 @@ TargetingSystemClient *T
 	HRLogger::Log("autodrive created\r\n");
 	ds = Ds;
 	Intake = I;
-	ShooterWheel = S;
+	//ShooterWheel = S;
 	Targeting = T;
+	//Hopper = H;
+	ShotMng = SM;
 	//turningp = -.1f;
 	AutonTimer = new Timer();
 	SendTimer =new Timer();
@@ -46,7 +50,7 @@ void Auton::Auto_Start()
 	DriveTrain->ResetEncoders_Timers();
 	//Intake->ResetEncoderLift();
 
-	//Arm->Auto_Start();
+	Turret->Auto_Start();
 }
 void Auton::Auto_End()
 {
@@ -228,10 +232,11 @@ bool Auton::Auto_System_Update()
 	if(Running())
 	{
 		Targeting->Update();
-//		Arm->AutonomousTrackingUpdate(Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),Targeting->Get_Cal_X(),Targeting->Get_Cal_Y());
-		//Turret->Update(0,0,0,/*Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),*/Targeting->Get_Cal_X(),Targeting->Get_Cal_Y(),Targeting->Get_TargetArea());
-		//MyRobot::Get()->LightUpdate();
-		//Turret->FullShotUpdate();
+		ShotMng->Update(0,false,false,false,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(),0,0);
+		/*Arm->AutonomousTrackingUpdate(Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),Targeting->Get_Cal_X(),Targeting->Get_Cal_Y());
+		Turret->Update(0,0,0,Targeting->Get_Target_Distance(),Targeting->Get_Target_Angle(),Targeting->Get_Cal_X(),Targeting->Get_Cal_Y(),Targeting->Get_TargetArea());
+		MyRobot::Get()->LightUpdate();
+		Turret->FullShotUpdate();*/
 
 		SendData();
 
@@ -250,7 +255,10 @@ void Auton::SendData()
 		SendTimer->Start();
 
 		DriveTrain->Send_Data();
-		//Turret->SendData();
+		ShotMng->Send_Data();
+		//Turret->Send_Data();
+		//ShooterWheel->Send_Data();
+		//Hopper->Send_Data();
 		//Intake->SendData();
 		SmartDashboard::PutNumber("AUTOTIMER",AutonTimer->Get());
 	}

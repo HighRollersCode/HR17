@@ -8,11 +8,11 @@
 #include "Turret.h"
 #include "Defines.h"
 
-const float MIN_TURRET_CMD = 0.20f;
+double TurretClass::MIN_TURRET_CMD = 0.20f;
 
-const float TURRET_P = .005f;
-const float TURRET_I = 0.00001f; //-.0000035f;
-const float TURRET_D = 0.01;
+double TurretClass::TURRET_P = .005f;
+double TurretClass::TURRET_I = 0.00001f; //-.0000035f;
+double TurretClass::TURRET_D = 0.01;
 
 const float TURRET_TOLERANCE = 1;
 
@@ -75,10 +75,27 @@ TurretClass::~TurretClass() {
 }
 void TurretClass::Auto_Start()
 {
+	CurrentEnableTracking = false;
+	PrevEnableTracking = false;
+
+	LastMoveByDegreesX = 360.0f;
+	LockonDegreesX = LOCKON_DEGREES_X;
+
+	ResetEncoderTurret();
+
 	TurretPIDController->Disable();
 	TurretPIDController->Reset();
 
 	SetTurret(GetTurretEncoder());
+
+	isTracking = false;
+	isLockedOn = false;
+
+	ArmLockonTimer->Reset();
+	ArmLockonTimer->Start();
+
+	LastShotTimer->Reset();
+	LastShotTimer->Start();
 }
 void TurretClass::UpdateTurret(float turret)
 {
@@ -107,9 +124,23 @@ void TurretClass::UpdateTurret(float turret)
 }
 void TurretClass::Tele_Start()
 {
+	CurrentEnableTracking = false;
+	PrevEnableTracking = false;
+
+	LastMoveByDegreesX = 360.0f;
+
 	TurretPIDController->Disable();
 	TurretPIDController->Reset();
+
 	SetTurret(GetTurretEncoder());
+
+	isTracking = false;
+
+	ArmLockonTimer->Reset();
+	ArmLockonTimer->Start();
+
+	LastShotTimer->Reset();
+	LastShotTimer->Start();
 }
 void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,float target_area)
 {
@@ -134,6 +165,7 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 	else
 	{
 		isReady = true;
+		TurretPIDController->Disable();
 	}
 		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
@@ -153,7 +185,7 @@ void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_a
 	}
 	if(ArmTimer->Get() > .01f)
 	{
-		HandleTarget(tx,crossX,0.001f);
+		HandleTarget(tx,crossX,target_area);
 		ArmTimer->Reset();
 		ArmTimer->Start();
 	}
@@ -223,9 +255,19 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 		}
 	}
 }
+void TurretClass::ResetEncoderTurret()
+{
+	TurretEncoder->Reset();
+	TurretPIDController->Reset();
+}
 float TurretClass::Turret_Encoder_To_Degrees(int enc)
 {
 	return enc * TURRET_DEGREES_PER_TICK;
+}
+float TurretClass::Compute_Robot_Angle()
+{
+	float dir = -Turret_Encoder_To_Degrees(TurretEncoder->Get()) - LockonDegreesX;
+	return dir;
 }
 float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
 {

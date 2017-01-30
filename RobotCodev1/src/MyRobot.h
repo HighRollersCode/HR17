@@ -19,10 +19,17 @@
 #include "ShooterWheel.h"
 #include "Hopper.h"
 #include "ShotManager.h"
+#include "GearManipulator.h"
+#include "Climber.h"
 #include "HRscript.h"
 #include "Auton.h"
 #include "XboxController.h"
 
+struct Vector2
+{
+	float x;
+	float y;
+};
 class MyRobotClass : public SampleRobot
 {
 public:
@@ -42,7 +49,9 @@ public:
 	TurretClass *Turret;
 	ShooterWheelClass *ShooterWheel;
 	TargetingSystemClient *TargClient;
-	//ShotManager *ShotMng;
+	ShotManager *ShotMng;
+	GearManipulator *GearMpltr;
+	ClimberClass *Climber;
 	HopperClass *Hopper;
 	Auton *AutonomousControl;
 
@@ -67,6 +76,7 @@ public:
 	static MyRobotClass * Get() { return TheRobot; }
 
 	void Disabled(void);
+	void Enabled(void);
 	void Reset_State();
 	void Autonomous(void);
 	void UpdateInputs();
@@ -77,6 +87,8 @@ public:
 
 	void Shutdown_Jetson(void);
 	void Jetson_Connection();
+
+	 Vector2 Compute_Robot_Velocity();
 
 	int Auto_Index;
 protected:

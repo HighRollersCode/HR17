@@ -31,6 +31,32 @@ public:
 		//TiltMin = m_Parameters[1];
 	}
 };
+class SetShooterWheelConstantsCommand : public HrScriptCommandClass
+{
+public:
+	virtual const char * Get_Command_Name() { return "ShooterWheelSettings"; }
+	virtual int Get_Parameter_Count() { return 2; }
+	virtual HrScriptCommandClass * Create_Command() { return new SetShooterWheelConstantsCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->ShooterWheel->Shooter_WheelK = m_Parameters[0];
+		MyRobotClass::Get()->ShooterWheel->Shooter_WheelK_Down = m_Parameters[1];
+	}
+};
+class SetTurretConstantsCommand : public HrScriptCommandClass
+{
+public:
+	virtual const char * Get_Command_Name() { return "TurretSettings"; }
+	virtual int Get_Parameter_Count() { return 4; }
+	virtual HrScriptCommandClass * Create_Command() { return new SetTurretConstantsCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->Turret->TURRET_P = m_Parameters[0];
+		MyRobotClass::Get()->Turret->TURRET_I = m_Parameters[1];
+		MyRobotClass::Get()->Turret->TURRET_D = m_Parameters[2];
+		MyRobotClass::Get()->Turret->MIN_TURRET_CMD = m_Parameters[3];
+	}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,18 +95,6 @@ public:
 	virtual void Execute()
 	{
 		MyRobotClass::Get()->AutonomousControl->AutonWaitForTarget(m_Parameters[0]);
-	}
-};
-
-class WaitForIntakeModeCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "WaitForIntakeMode"; }
-	virtual int Get_Parameter_Count() { return 0; }
-	virtual HrScriptCommandClass * Create_Command() { return new WaitForIntakeModeCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->AutonomousControl->AutonWaitForIntake();
 	}
 };
 
@@ -188,39 +202,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*class ArmEnablePIDCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "ArmEnablePID"; }
-	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new ArmEnablePIDCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->Arm->ArmPIDController->Reset();
-		if(m_Parameters[0] == 1)
-		{
-			MyRobotClass::Get()->Arm->ArmPIDController->Enable();
-		}
-		else if (m_Parameters[0] == 0)
-		{
-			MyRobotClass::Get()->Arm->ArmPIDController->Disable();
-		}
-	}
-};
-
-class SetArmStartPositionCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "ArmStartPosition"; }
-	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new SetArmStartPositionCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->Arm->SetArmStartPosition((int)m_Parameters[0]);
-	}
-};*/
-
-/*class TurretEnablePIDCommand : public HrScriptCommandClass
+class TurretEnablePIDCommand : public HrScriptCommandClass
 {
 public:
 	virtual const char * Get_Command_Name() { return "TurretEnablePID"; }
@@ -247,30 +229,21 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new TrackingCommand(); }
 	virtual void Execute()
 	{
-		//enable tracking if parameter 0 is true
-		MyRobotClass::Get()->Arm->StartTracking((int)m_Parameters[0]);
+		MyRobotClass::Get()->ShotMng->StartTracking((int)m_Parameters[0]);
 	}
 };
-class SetArmCommand : public HrScriptCommandClass
+class SetTurretCommand : public HrScriptCommandClass
 {
-
 public:
-	virtual const char * Get_Command_Name() { return "Arm"; }
+	virtual const char * Get_Command_Name() { return "Turret"; }
 	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new SetArmCommand(); }
+	virtual HrScriptCommandClass * Create_Command() { return new SetTurretCommand(); }
 	virtual void Execute()
 	{
-		if((int)m_Parameters[0] != -1)
-		{
-			MyRobotClass::Get()->Arm->SetTurret((int)m_Parameters[0]);
-		}
-		if((int)m_Parameters[1] != -1)
-		{
-		MyRobotClass::Get()->Arm->SetArm((int)m_Parameters[1]);
-		}
+		MyRobotClass::Get()->Turret->SetTurret((int)m_Parameters[0]);
 	}
 };
-class FullShotCommand : public HrScriptCommandClass
+/*class FullShotCommand : public HrScriptCommandClass
 {
 public:
 	virtual const char * Get_Command_Name() { return "FullShot"; }
@@ -280,37 +253,7 @@ public:
 	{
 		MyRobotClass::Get()->Arm->FullShot();
 	}
-};
-
-class FullShotQuickCommand : public HrScriptCommandClass
-public:
-	virtual const char * Get_Command_Name() { return "FullShotQuick"; }
-	virtual int Get_Parameter_Count() { return 0; }
-	virtual HrScriptCommandClass * Create_Command() { return new FullShotQuickCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->Arm->FullShotQuick();
-	}
 };*/
-class ShooterWheelsCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "Shooter"; }
-	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new ShooterWheelsCommand(); }
-	virtual void Execute()
-	{
-		if((int)m_Parameters[0] == 1)
-		{
-			//MyRobotClass::Get()->ShooterWheel->ShooterOutake();
-		}
-		else
-		{
-			//MyRobotClass::Get()->ShooterWheel->WheelOff();
-		}
-	}
-};
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,19 +261,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*class SetIntakeStartPositionCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "IntakeStartPosition"; }
-	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new SetIntakeStartPositionCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->Intake->SetIntakeStartPosition((int)m_Parameters[0]);
-	}
-};
-
-class SetIntakeLiftCommand : public HrScriptCommandClass
+/*class SetIntakeLiftCommand : public HrScriptCommandClass
 {
 public:
 	virtual const char * Get_Command_Name() { return "IntakeLift"; }
@@ -364,49 +295,6 @@ public:
 		}
 	}
 };
-/*class EnterIntakeModeCommand : public HrScriptCommandClass
-{
-
-public:
-	virtual const char * Get_Command_Name() { return "EnterIntakeMode"; }
-	virtual int Get_Parameter_Count() { return 0; }
-	virtual HrScriptCommandClass * Create_Command() { return new EnterIntakeModeCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->CollManager->EnterState(CollisionManager::Intake);
-	}
-};
-class EnterDefensiveModeCommand : public HrScriptCommandClass
-{
-
-public:
-	virtual const char * Get_Command_Name() { return "EnterDefensiveMode"; }
-	virtual int Get_Parameter_Count() { return 0; }
-	virtual HrScriptCommandClass * Create_Command() { return new EnterDefensiveModeCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->CollManager->EnterState(CollisionManager::Defensive);
-	}
-};
-class IntakeEnablePIDCommand : public HrScriptCommandClass
-{
-public:
-	virtual const char * Get_Command_Name() { return "IntakeEnablePID"; }
-	virtual int Get_Parameter_Count() { return 1; }
-	virtual HrScriptCommandClass * Create_Command() { return new IntakeEnablePIDCommand(); }
-	virtual void Execute()
-	{
-		MyRobotClass::Get()->Intake->LiftPIDController->Reset();
-		if(m_Parameters[0] == 1)
-		{
-			MyRobotClass::Get()->Intake->LiftPIDController->Enable();
-		}
-		else if (m_Parameters[0] == 0)
-		{
-			MyRobotClass::Get()->Intake->LiftPIDController->Disable();
-		}
-	}
-};*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,13 +333,15 @@ void MyRobotClass::Init_Scripts_System()
 
 	//m_ScriptSystem->Add_Command(new SetEBrakeConstantsCommand());
 	m_ScriptSystem->Add_Command(new SetDriveTrainConstantsCommand());
+	m_ScriptSystem->Add_Command(new SetShooterWheelConstantsCommand());
+	m_ScriptSystem->Add_Command(new SetTurretConstantsCommand());
+
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	m_ScriptSystem->Add_Command(new WaitCommand1());
 	m_ScriptSystem->Add_Command(new WaitForBrakeCommand());
 	m_ScriptSystem->Add_Command(new WaitForTargetCommand());
-	m_ScriptSystem->Add_Command(new WaitForIntakeModeCommand());
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -465,24 +355,15 @@ void MyRobotClass::Init_Scripts_System()
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
-	/*m_ScriptSystem->Add_Command(new SetArmCommand());
-	m_ScriptSystem->Add_Command(new SetArmStartPositionCommand());
-	m_ScriptSystem->Add_Command(new FullShotCommand());
-	m_ScriptSystem->Add_Command(new FullShotQuickCommand());*/
-	m_ScriptSystem->Add_Command(new ShooterWheelsCommand());
-	/*m_ScriptSystem->Add_Command(new TrackingCommand());
-	m_ScriptSystem->Add_Command(new ArmEnablePIDCommand());
-	m_ScriptSystem->Add_Command(new TurretEnablePIDCommand());*/
+	m_ScriptSystem->Add_Command(new SetTurretCommand());
+	//m_ScriptSystem->Add_Command(new FullShotCommand());
+	m_ScriptSystem->Add_Command(new TrackingCommand());
+	m_ScriptSystem->Add_Command(new TurretEnablePIDCommand());
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	/*m_ScriptSystem->Add_Command(new SetIntakeStartPositionCommand());
-	m_ScriptSystem->Add_Command(new SetIntakeLiftCommand());*/
+	//m_ScriptSystem->Add_Command(new SetIntakeLiftCommand());*/
 	m_ScriptSystem->Add_Command(new SetIntakeCommand());
-	//m_ScriptSystem->Add_Command(new EnterIntakeModeCommand());
-	//m_ScriptSystem->Add_Command(new EnterDefensiveModeCommand());
-	/*m_ScriptSystem->Add_Command(new IntakeEnablePIDCommand());
-
-	m_ScriptSystem->Add_Command(new DropperCommand());*/
+	//m_ScriptSystem->Add_Command(new DropperCommand());
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -502,43 +383,12 @@ void MyRobotClass::Load_Scripts()
 	// Load all of the auto-mode scripts
 	m_ScriptSystem->Set_Auto_Script(1,"GEAR_SHOOTER_RED.hrs");
 	m_ScriptSystem->Set_Auto_Script(2,"GEAR_SHOOTER_BLUE.hrs");
+	m_ScriptSystem->Set_Auto_Script(3,"HOPPER_CLOSE_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(31,"HOPPER_MIDDLE_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(4,"HOPPER_CLOSE_BLUE.hrs");
+	m_ScriptSystem->Set_Auto_Script(41,"HOPPER_MIDDLE_BLUE.hrs");
 	m_ScriptSystem->Set_Auto_Script(999,"EMPTY.hrs");
-
-	/*m_ScriptSystem->Set_Auto_Script(2,"SerpentineStrafe.hrs");
-	m_ScriptSystem->Set_Auto_Script(3,"Autoconhook.hrs");
-	m_ScriptSystem->Set_Auto_Script(4,"StealCans.hrs");
-	m_ScriptSystem->Set_Auto_Script(2,"AUTO_TWOBALL.hrs");
-	m_ScriptSystem->Set_Auto_Script(3,"AUTO_TWOBALLPUSH.hrs");
-	m_ScriptSystem->Set_Auto_Script(4,"AUTO_THREEBALL.hrs");
-	m_ScriptSystem->Set_Auto_Script(12,"AUTO_THREE_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(13,"AUTO_THREE_LEFT.hrs");
-
-	m_ScriptSystem->Set_Auto_Script(14,"AUTO_TWO_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(15,"AUTO_TWO_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(17,"AUTO_TWO_LEFT_FLOPPY.hrs");
-
-	m_ScriptSystem->Set_Auto_Script(21,"AUTO_GOALIE_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(22,"AUTO_GOALIE_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(31,"AUTO_ONEBALL_NOWAIT.hrs");
-	m_ScriptSystem->Set_Auto_Script(32,"AUTO_ONEBALL_WAIT.hrs");
-
-	m_ScriptSystem->Set_Auto_Script(44,"AUTO_ONE_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(45,"AUTO_ONE_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(49,"AUTO_TWOBALL.hrs");
-
-	m_ScriptSystem->Set_Auto_Script(50,"AUTO_GOALIE_RIGHT_ONE_WAIT.hrs");
-	m_ScriptSystem->Set_Auto_Script(51,"AUTO_GOALIE_RIGHT_ONE_NOWAIT.hrs");
-
-	m_ScriptSystem->Set_Auto_Script(52,"AUTO_GOALIE_LEFT_ONE_WAIT.hrs");
-	m_ScriptSystem->Set_Auto_Script(53,"AUTO_GOALIE_LEFT_ONE_NOWAIT.hrs");
-	m_ScriptSystem->Set_Auto_Script(59,"AUTO_FORWARD.hrs");
-	*/
 
 	//Settings
 	m_ScriptSystem->Set_Auto_Script(0,"RobotSettings.hrs");
-
 }
-
-
-
-

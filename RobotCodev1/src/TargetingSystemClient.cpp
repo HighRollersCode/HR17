@@ -173,7 +173,8 @@ void TargetingSystemClient::Handle_Command(char * data)
 void TargetingSystemClient::Handle_Target(char*data)
 {
 	float tmpx,tmpy,tmparea;
-	sscanf(data, " %f %f %f",&tmpx,&tmpy,&tmparea);
+	float initial = 0;
+	sscanf(data, "%f %f %f %f",&initial,&tmpx,&tmpy,&tmparea);
 
 	m_XOffset = tmpx;
 	m_YOffset = tmpy;

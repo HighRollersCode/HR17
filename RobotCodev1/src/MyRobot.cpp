@@ -48,12 +48,14 @@ MyRobotClass::MyRobotClass()
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
 	Hopper = new HopperClass();
-	//ShotMng = new ShotManager(Turret,Hopper,ShooterWheel);
+	ShotMng = new ShotManager(Turret,Hopper,ShooterWheel);
+	GearMpltr = new GearManipulator();
+	Climber = new ClimberClass();
 	printf("Basic Initialization\r\n");
 	TargClient = new TargetingSystemClient();
 	TargClient->Connect(JETSON_IP,JETSON_PORT);
 	printf("TargClient Initialized\r\n");
-	//AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,ShooterWheelClass,TargClient);
+	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,TargClient,ShotMng);//ShooterWheel,Hopper);
 
 	LightRelay = new Relay(0,Relay::kBothDirections);
 
@@ -153,6 +155,7 @@ void MyRobotClass::Send_Data()
 		SmartDashTimer->Reset();
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
 		SmartDashboard::PutNumber("DesiredRPM", (((turretStick->GetZ() + 1)*.5f)* 5000.0f));
+		SmartDashboard::PutNumber("Climber Current",Climber->PDP->GetCurrent(PDP_Climber));
 
 		Drivetrain->Send_Data();
 		ShooterWheel->Send_Data();
@@ -162,9 +165,10 @@ void MyRobotClass::Send_Data()
 }
 void MyRobotClass::OperatorControl(void)
 {
+	m_ScriptSystem->Run_Auto_Script(0);
 	LightRelay->Set(Relay::kForward);
-	Reset_State();
-	while (IsOperatorControl())
+	//Reset_State();
+	while (IsOperatorControl() && IsEnabled())
 	{
 		int prevtele = intele;
 		intele  = 1;
@@ -184,7 +188,7 @@ void MyRobotClass::OperatorControl(void)
 		if (IsDisabled())
 		{
 			Jetson_Connection();
-			Reset_State();
+			//Reset_State();
 		}
 
 		Send_Data();
@@ -192,18 +196,22 @@ void MyRobotClass::OperatorControl(void)
 		TargClient->Update();
 		Drivetrain->StandardTank(commandLeft, commandRight);
 		Intake->UpdateIntake(rightStick->GetTrigger(), rightStick->GetRawButton(2));
-		Hopper->UpdateHopper(turretStick->GetTrigger(), turretStick->GetRawButton(11));
+		//Hopper->UpdateHopper(turretStick->GetTrigger(), turretStick->GetRawButton(11));
 		float RPM = (((turretStick->GetZ() + 1.0f)*.5f)* 5000.0f);
 		if(RPM < 0)
 		{
 			RPM = 0;
 		}
-		ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM,turretStick->GetRawButton(2),
-			TargClient->Get_YOffset());
+		//ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM,turretStick->GetRawButton(2),
+			//TargClient->Get_YOffset());
 		Drivetrain->Shifter_Update(leftStick->GetTrigger());
-		Turret->Update(turretStick->GetX(),turretStick->GetRawButton(2),TargClient->Get_XOffset(),TargClient->Get_Cal_X(),
-			TargClient->Get_TargetArea());
-		//ShotMng->Update(turretStick->GetX(),turretStick->GetRawButton(2),TargClient->Get_XOffset(),TargClient->Get_YOffset());
+		//Turret->Update(turretStick->GetX(),turretStick->GetRawButton(2),TargClient->Get_XOffset(),TargClient->Get_Cal_X(),
+			//TargClient->Get_TargetArea());
+		ShotMng->Update(turretStick->GetX(),turretStick->GetRawButton(2),turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM,
+				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),turretStick->GetTrigger(),
+				turretStick->GetRawButton(11));
+		GearMpltr->UpdateGear(leftStick->GetRawButton(2),leftStick->GetRawButton(3));
+		Climber->UpdateClimber(leftStick->GetRawButton(6),leftStick->GetRawButton(7));
 		if(rightStick->GetRawButton(10))
 		{
 			TargClient->Set_Camera_Mode(TargetingSystemClient::CAM_FRONT);
@@ -216,7 +224,10 @@ void MyRobotClass::OperatorControl(void)
 		{
 			Shutdown_Jetson();
 		}
-
+		if(turretStick->GetRawButton(6))
+		{
+			m_ScriptSystem->Run_Auto_Script(0);
+		}
 //		#else
 //			float RPM = ((XBoxController->GetRawAxis(3)())* 5000.0f);
 //			if(RPM < 0)
@@ -230,5 +241,11 @@ void MyRobotClass::OperatorControl(void)
 		Wait(0.002);
 	}
 }
-
+Vector2 MyRobotClass::Compute_Robot_Velocity()
+{
+	Vector2 velocity;
+	velocity.x = Drivetrain->Compute_Speed();
+	velocity.y = Turret->Compute_Robot_Angle();
+	return velocity;
+}
 START_ROBOT_CLASS(MyRobotClass);

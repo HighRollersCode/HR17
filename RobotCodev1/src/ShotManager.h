@@ -10,6 +10,7 @@
 #include "Hopper.h"
 #include "ShooterWheel.h"
 #include "Defines.h"
+#include "math.h"
 
 #ifndef SRC_SHOTMANAGER_H_
 #define SRC_SHOTMANAGER_H_
@@ -42,7 +43,10 @@ public:
 	virtual ~ShotManager();
 
 	void EnterState(RobotMode mode);
-	void Update(float turret,bool ShootingState,float tx,float ty);
+	void StartTracking(float enable);
+	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideRPM,float tx,float calx,float ty,
+			float outtake,float uptake,Vector2 RobotVelocity);
+	void Send_Data();
 
 };
 

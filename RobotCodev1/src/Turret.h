@@ -20,6 +20,11 @@
 class TurretClass {
 public:
 
+	static double MIN_TURRET_CMD;
+	static double TURRET_P;
+	static double TURRET_I;
+	static double TURRET_D;
+
 	CANTalon *Turret;
 
 	Encoder *TurretEncoder;
@@ -61,6 +66,7 @@ public:
 
 	void Send_Data();
 
+	void ResetEncoderTurret();
 	float Clamp_Target(float tar, float lowerlim, float upperlim);
 	TurretClass();
 	virtual ~TurretClass();
@@ -74,6 +80,7 @@ public:
 	// The 'ArmTurretVictorClass' and 'ArmLiftVictorClass' call these functions.
 
 	float Turret_Encoder_To_Degrees(int enc);
+	float Compute_Robot_Angle();
 	float Validate_Turret_Command(float cmd, bool ispidcmd = false);
 
 };
