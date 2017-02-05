@@ -7,7 +7,7 @@
 
 #include "WPILib.h"
 #include "TalonSRX.h"
-#include "CanTalonSRX.h"
+#include "CANTalon.h"
 #include "Defines.h"
 #include "PowerDistributionPanel.h"
 
@@ -16,7 +16,8 @@
 
 class ClimberClass {
 public:
-	TalonSRX *Climber;
+	CANTalon *Climber;
+	CANTalon *Climber_2;
 	PowerDistributionPanel *PDP;
 
 	bool UseFullPower;

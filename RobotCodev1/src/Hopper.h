@@ -16,10 +16,13 @@
 class HopperClass {
 public:
 
-	CANTalon *Hopper;
-	CANTalon *HopperIntake;
+	CANTalon *Uptake;
 	CANTalon *Conveyor;
 
+	float speed;
+
+	Timer *HopperTimer;
+	Timer *HopperOffTimer;
 
 	HopperClass();
 	virtual ~HopperClass();
@@ -28,6 +31,7 @@ public:
 	void HopperUp();
 	void HopperDown();
 	void HopperOff();
+	void Send_Data();
 };
 
 #endif /* SRC_HOPPER_H_ */

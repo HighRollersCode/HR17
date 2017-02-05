@@ -9,7 +9,8 @@
 
 ClimberClass::ClimberClass() {
 
-	Climber = new TalonSRX(Tal_Climber);
+	Climber = new CANTalon(Tal_Climber);
+	Climber_2 = new CANTalon(Tal_Climber_2);
 
 	PDP = new PowerDistributionPanel(0);
 
@@ -34,19 +35,23 @@ void ClimberClass::UpdateClimber(bool ClimbUp,bool ClimbDown)
 	{
 		if(UseFullPower)
 		{
-			Climber->Set(1);
+			Climber->Set(-1);
+			Climber_2->Set(-1);
 		}
 		else
 		{
-			Climber->Set(0.25f);
+			Climber->Set(-0.25f);
+			Climber_2->Set(-0.25f);
 		}
 	}
 	else if(ClimbDown)
 	{
-		Climber->Set(-1);
+		Climber->Set(1);
+		Climber_2->Set(1);
 	}
 	else
 	{
 		Climber->Set(0);
+		Climber_2->Set(0);
 	}
 }

@@ -6,7 +6,7 @@
  */
 #include "WPILib.h"
 #include "TalonSRX.h"
-#include "CanTalonSRX.h"
+#include "CanTalon.h"
 #include "Defines.h"
 
 #ifndef SRC_GEARMANIPULATOR_H_
@@ -14,7 +14,7 @@
 
 class GearManipulator {
 public:
-	TalonSRX *GearIntake;
+	CANTalon *GearIntake;
 
 	Solenoid *IntakeDown;
 	Solenoid *IntakeUp;
@@ -22,7 +22,7 @@ public:
 	GearManipulator();
 	virtual ~GearManipulator();
 
-	void UpdateGear(float intake, float outtake);
+	void UpdateGear(bool intake, bool outtake);
 	void GearIn();
 	void GearOut();
 };

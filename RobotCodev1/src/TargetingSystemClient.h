@@ -46,7 +46,7 @@ public:
 	float Get_Cal_Y() { return yCal; }
 	float Get_Connected() { return m_Connected; }
 	float Get_TargetArea() {return m_TargetArea; }
-	void StartCalibrate();
+	void DoCalibrate();
 	void SmartDashboardUpdate();
 	void Disconnect();
 

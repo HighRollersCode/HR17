@@ -7,12 +7,7 @@
 
 #include "Turret.h"
 #include "Defines.h"
-
-double TurretClass::MIN_TURRET_CMD = 0.20f;
-
-double TurretClass::TURRET_P = .005f;
-double TurretClass::TURRET_I = 0.00001f; //-.0000035f;
-double TurretClass::TURRET_D = 0.01;
+#include "WPILib.h"
 
 const float TURRET_TOLERANCE = 1;
 
@@ -25,8 +20,12 @@ const float LOCKON_FAR_AREA = 0.0175f;
 
 TurretClass::TurretClass()
 {
-	Turret = new CANTalon(Tal_Turret);
+	Turret = new Victor(Vic_Turret);
 
+	TURRET_P = .005f;
+	TURRET_I = 0.00001f; //-.0000035f;
+	TURRET_D = 0.01;
+	MIN_TURRET_CMD = 0.20f;
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
 
 	Resetting = false;
@@ -63,7 +62,6 @@ TurretClass::TurretClass()
 	TurretEncoder->Reset();
 
 	TurretPIDController = new PIDController(TURRET_P,TURRET_I,TURRET_D,TurretEncoder,Turret,.01f);
-
 	TurretPIDController->SetContinuous(false);
 	TurretPIDController->Enable();
 	TurretPIDController->SetOutputRange(-1.0f,1.0f);
@@ -131,6 +129,7 @@ void TurretClass::Tele_Start()
 
 	TurretPIDController->Disable();
 	TurretPIDController->Reset();
+	TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
 
 	SetTurret(GetTurretEncoder());
 
@@ -141,6 +140,8 @@ void TurretClass::Tele_Start()
 
 	LastShotTimer->Reset();
 	LastShotTimer->Start();
+
+
 }
 void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,float target_area)
 {
@@ -175,14 +176,6 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 }
 void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
 {
-	if(fabs(TurretPIDController->GetError()) < 200)
-	{
-		TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
-	}
-	else
-	{
-		TurretPIDController->SetPID(TURRET_P,0,TURRET_D);
-	}
 	if(ArmTimer->Get() > .01f)
 	{
 		HandleTarget(tx,crossX,target_area);

@@ -22,12 +22,12 @@ void IntakeClass::UpdateIntake(float intake, float outtake)
 
 	if(intake)
 	{
-		Intake->Set(1);
+		Intake->Set(-1);
 		//Uptake->Set(1);
 	}
 	else if(outtake)
 	{
-		Intake->Set(-1);
+		Intake->Set(1);
 		//Uptake->Set(-1);
 	}
 	else

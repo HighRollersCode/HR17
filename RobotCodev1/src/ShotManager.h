@@ -11,9 +11,16 @@
 #include "ShooterWheel.h"
 #include "Defines.h"
 #include "math.h"
+#include "vector"
 
 #ifndef SRC_SHOTMANAGER_H_
 #define SRC_SHOTMANAGER_H_
+
+/*struct Vector2
+{
+	float x;
+	float y;
+};*/
 
 class ShotManager {
 public:
@@ -45,7 +52,7 @@ public:
 	void EnterState(RobotMode mode);
 	void StartTracking(float enable);
 	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideRPM,float tx,float calx,float ty,
-			float outtake,float uptake,Vector2 RobotVelocity);
+			float outtake,float uptake);//,Vector2 RobotVelocity);
 	void Send_Data();
 
 };

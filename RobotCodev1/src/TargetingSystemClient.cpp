@@ -81,7 +81,7 @@ void TargetingSystemClient::Shutdown_Jetson()
 {
 	Send("q\r\n", 3);
 }
-void TargetingSystemClient::StartCalibrate()
+void TargetingSystemClient::DoCalibrate()
 {
 	Send("4\r\n",3);
 }

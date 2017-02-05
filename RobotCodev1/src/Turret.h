@@ -5,9 +5,6 @@
  *      Author: 987
  */
 
-#ifndef SRC_TURRET_H_
-#define SRC_TURRET_H_
-
 #include "WPILib.h"
 #include "Defines.h"
 #include "CANSpeedController.h"
@@ -17,15 +14,19 @@
 #include "PIDController.h"
 #include "Encoder.h"
 
+#ifndef SRC_TURRET_H_
+#define SRC_TURRET_H_
+
+
 class TurretClass {
 public:
 
-	static double MIN_TURRET_CMD;
-	static double TURRET_P;
-	static double TURRET_I;
-	static double TURRET_D;
+	double MIN_TURRET_CMD;
+	double TURRET_P;
+	double TURRET_I;
+	double TURRET_D;
 
-	CANTalon *Turret;
+	Victor *Turret;
 
 	Encoder *TurretEncoder;
 

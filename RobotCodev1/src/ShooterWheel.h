@@ -32,17 +32,24 @@ class ShooterWheelClass
 	int prevlow;
 	int prevoverride;
 	int State;
+
 	float currentPresetSpeed;
+
+	//bool sensorpluggedin;
+
 	CANTalon *Shooter;
+	CANTalon *Shooter_2;
 
 	std::vector<float> *RPMList;
 
 public:
 
-	static double Shooter_WheelK;
-	static double Shooter_WheelK_Down;
+	double Shooter_WheelK;
+	double Shooter_WheelK_Down;
 
-
+	float trpm;
+	float tdistance;
+	float targy;
 
 	int INDICATOR;
 	double RPM;
@@ -71,8 +78,9 @@ public:
 	void ShooterOverrideRPM(float rpm);
 	float Get_Goal_Distance(float y);
 	float EstimateDistance(float ty);
-	float EstimateRPM(float ty);
+	float EstimateRPM(float distance);
 	float EstimatePower(float desiredRPM);
+	float Interpolate(float inputs[],float outputs[],int listsize,float input);
 
 	float PUpdate(float dist);
 	Solenoid *HoodUp;

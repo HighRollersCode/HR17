@@ -9,9 +9,20 @@
 
 HopperClass::HopperClass()
 {
-	Hopper = new CANTalon(Tal_Hopper);
-	HopperIntake = new CANTalon(Tal_Hopper_Intake);
+	Uptake = new CANTalon(Tal_Hopper);
+
 	Conveyor = new CANTalon(Tal_Conveyor_Belt);
+	//Conveyor->SetControlMode(CANSpeedController::kFollower);
+	//Conveyor->Set(Tal_Hopper);
+	//Conveyor->SetInverted(true);
+
+	speed = .5f;
+
+	HopperTimer = new Timer();
+	HopperTimer->Reset();
+
+	HopperOffTimer = new Timer();
+	HopperOffTimer->Reset();
 }
 
 HopperClass::~HopperClass() {
@@ -34,19 +45,20 @@ void HopperClass::UpdateHopper(float uptake,float downtake)
 }
 void HopperClass::HopperUp()
 {
-	Hopper->Set(1);
-	HopperIntake->Set(-1);
-	Conveyor->Set(1);
+	Uptake->Set(1);
+	Conveyor->Set(.6f);
 }
 void HopperClass::HopperDown()
 {
-	Hopper->Set(-1);
-	HopperIntake->Set(1);
-	Conveyor->Set(-1);
+	Uptake->Set(-1);
+	Conveyor->Set(-.6f);
 }
 void HopperClass::HopperOff()
 {
-	Hopper->Set(0);
-	HopperIntake->Set(0);
+	Uptake->Set(0);
 	Conveyor->Set(0);
+}
+void HopperClass::Send_Data()
+{
+	SmartDashboard::PutNumber("Hopper Speed",speed);
 }

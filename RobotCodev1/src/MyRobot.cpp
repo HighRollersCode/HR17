@@ -57,7 +57,7 @@ MyRobotClass::MyRobotClass()
 	printf("TargClient Initialized\r\n");
 	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,TargClient,ShotMng);//ShooterWheel,Hopper);
 
-	LightRelay = new Relay(0,Relay::kBothDirections);
+	LightRelay = new Relay(0);
 
 	ReconnectTimer = new Timer();
 	ReconnectTimer->Reset();
@@ -82,7 +82,7 @@ MyRobotClass::MyRobotClass()
 	m_ScriptSystem = 0;
 	Init_Scripts_System();
 
-	int connectionattempts = 0;
+	/*int connectionattempts = 0;
 	printf("Will block to connect... \r\n");
 	while ((connectionattempts < 5) && (TargClient->Get_Connected() == false))
 	{
@@ -92,7 +92,7 @@ MyRobotClass::MyRobotClass()
 			ReconnectTimer->Reset();
 			connectionattempts++;
 		}
-	}
+	}*/
 }
 
 MyRobotClass::~MyRobotClass()
@@ -114,6 +114,8 @@ void MyRobotClass::Shutdown_Jetson(void)
 
 void MyRobotClass::Disabled(void)
 {
+	LightRelay->Set(Relay::kOff);
+
 	printf("Disabled\r\n");
 	while(IsDisabled())
 	{
@@ -141,8 +143,8 @@ void MyRobotClass::Autonomous(void)
 void MyRobotClass::UpdateInputs()
 {
 	#if !USING_GAMEPAD
-		commandLeft = -leftStick->GetY();
-		commandRight = rightStick->GetY();
+		commandLeft = -LEFT_MOTOR_CMD;//-leftStick->GetY();
+		commandRight = RIGHT_MOTOR_CMD;//rightStick->GetY();
 	#else
 		commandLeft = XBoxController->GetRawAxis(1);
 		commandRight = XBoxController->GetRawAxis(4);
@@ -154,22 +156,29 @@ void MyRobotClass::Send_Data()
 	{
 		SmartDashTimer->Reset();
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
-		SmartDashboard::PutNumber("DesiredRPM", (((turretStick->GetZ() + 1)*.5f)* 5000.0f));
+		SmartDashboard::PutNumber("DesiredRPM", OVERRIDE_RPM_CMD);
 		SmartDashboard::PutNumber("Climber Current",Climber->PDP->GetCurrent(PDP_Climber));
+		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
 
 		Drivetrain->Send_Data();
-		ShooterWheel->Send_Data();
-		Turret->Send_Data();
+		//ShooterWheel->Send_Data();
+		//Turret->Send_Data();
+		ShotMng->Send_Data();
 		TargClient->SmartDashboardUpdate();
 	}
 }
 void MyRobotClass::OperatorControl(void)
 {
+	Load_Scripts();
 	m_ScriptSystem->Run_Auto_Script(0);
-	LightRelay->Set(Relay::kForward);
-	//Reset_State();
+	LightRelay->Set(Relay::kOn);
+
+
+	Reset_State();
+
 	while (IsOperatorControl() && IsEnabled())
 	{
+
 		int prevtele = intele;
 		intele  = 1;
 		if(prevtele == 0 && intele == 1)
@@ -182,61 +191,63 @@ void MyRobotClass::OperatorControl(void)
 		{
 			if(DriverStation::GetInstance().IsFMSAttached())
 			{
-				Shutdown_Jetson();
+				//Shutdown_Jetson();
 			}
 		}
-		if (IsDisabled())
-		{
-			Jetson_Connection();
-			//Reset_State();
-		}
+
 
 		Send_Data();
+
 		UpdateInputs();
+
 		TargClient->Update();
+
 		Drivetrain->StandardTank(commandLeft, commandRight);
-		Intake->UpdateIntake(rightStick->GetTrigger(), rightStick->GetRawButton(2));
-		//Hopper->UpdateHopper(turretStick->GetTrigger(), turretStick->GetRawButton(11));
-		float RPM = (((turretStick->GetZ() + 1.0f)*.5f)* 5000.0f);
+		Drivetrain->Shifter_Update(SHIFTER_UPDATE);
+
+		Intake->UpdateIntake(INTAKE_IN,INTAKE_OUT);
+
+		float RPM = OVERRIDE_RPM_CMD;
 		if(RPM < 0)
 		{
 			RPM = 0;
 		}
-		//ShooterWheel->UpdateShooter(turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM,turretStick->GetRawButton(2),
-			//TargClient->Get_YOffset());
-		Drivetrain->Shifter_Update(leftStick->GetTrigger());
-		//Turret->Update(turretStick->GetX(),turretStick->GetRawButton(2),TargClient->Get_XOffset(),TargClient->Get_Cal_X(),
-			//TargClient->Get_TargetArea());
-		ShotMng->Update(turretStick->GetX(),turretStick->GetRawButton(2),turretStick->GetRawButton(4),turretStick->GetRawButton(10),RPM,
-				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),turretStick->GetTrigger(),
-				turretStick->GetRawButton(11));
-		GearMpltr->UpdateGear(leftStick->GetRawButton(2),leftStick->GetRawButton(3));
-		Climber->UpdateClimber(leftStick->GetRawButton(6),leftStick->GetRawButton(7));
-		if(rightStick->GetRawButton(10))
+
+		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_LOW,SHOOTER_ENABLE_OVERRIDE,RPM,
+				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),HOPPER_OUTAKE,
+				HOPPER_UPTAKE);//,Compute_Robot_Velocity());
+		//ShooterWheel->SetSpeed(turretStick->GetZ());
+
+		GearMpltr->UpdateGear(GEAR_INTAKE,GEAR_OUTAKE);
+
+		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_DOWN);
+		if(CLIMBER_UP)
+		{
+			Climber->UpdateClimber(true,false);
+		}
+		if(CLIMBER_DOWN)
+		{
+			Climber->UpdateClimber(false,true);
+		}
+		if(SET_CAM_FRONT)
 		{
 			TargClient->Set_Camera_Mode(TargetingSystemClient::CAM_FRONT);
 		}
-		if(rightStick->GetRawButton(11))
+		if(SET_CAM_BACK)
 		{
 			TargClient->Set_Camera_Mode(TargetingSystemClient::CAM_BACK);
 		}
-		if (turretStick->GetRawButton(8) && turretStick->GetRawButton(9))
+
+		if (SHUTDOWN_JETSON)
 		{
 			Shutdown_Jetson();
 		}
-		if(turretStick->GetRawButton(6))
+
+		if(CALIBRATEJETSON)
 		{
-			m_ScriptSystem->Run_Auto_Script(0);
+			TargClient->DoCalibrate();
 		}
-//		#else
-//			float RPM = ((XBoxController->GetRawAxis(3)())* 5000.0f);
-//			if(RPM < 0)
-//			{
-//				RPM = 0;
-//			}
-//			ShooterWheel->UpdateShooter(XBoxController->GetRawButton(1),XBoxController->GetRawButton(5),RPM, GameTimer->Get());
-//			Drivetrain->Shifter_Update(XBoxController->GetRawButton(6));
-//		#endif
+
 
 		Wait(0.002);
 	}

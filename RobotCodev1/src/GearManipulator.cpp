@@ -8,7 +8,7 @@
 #include <GearManipulator.h>
 
 GearManipulator::GearManipulator() {
-	GearIntake = new TalonSRX(Tal_Gear_Intake);
+	GearIntake = new CANTalon(Tal_Gear_Intake);
 
 	IntakeUp = new Solenoid(Sol_Gear_Up);
 	IntakeDown = new Solenoid(Sol_Gear_Down);
@@ -17,30 +17,22 @@ GearManipulator::GearManipulator() {
 GearManipulator::~GearManipulator() {
 	// TODO Auto-generated destructor stub
 }
-void GearManipulator::UpdateGear(float intake,float outtake)
-{
-	if(intake)
-	{
+void GearManipulator::UpdateGear(bool intake, bool outtake) {
+	if (intake) {
 		IntakeUp->Set(false);
 		IntakeDown->Set(true);
 		GearIn();
-	}
-	else if(outtake)
-	{
+	} else if (outtake) {
 		GearOut();
-	}
-	else
-	{
+	} else {
 		IntakeUp->Set(true);
 		IntakeDown->Set(false);
 		GearIntake->Set(0);
 	}
 }
-void GearManipulator::GearIn()
-{
+void GearManipulator::GearIn() {
 	GearIntake->Set(1);
 }
-void GearManipulator::GearOut()
-{
+void GearManipulator::GearOut() {
 	GearIntake->Set(-1);
 }

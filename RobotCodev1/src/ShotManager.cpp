@@ -51,14 +51,18 @@ void ShotManager::StartTracking(float Enable)
 	}
 }
 void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverideRPM,float tx,float calx,float ty,
-		float outtake,float uptake,Vector2 RobotVelocity)
+		float outtake,float uptake)//,Vector2 RobotVelocity)
 {
 	ShooterState_Prev = ShooterState_Cur;
 	ShooterState_Cur = ShootingState;
 
-	if(!ShooterState_Cur && ShooterState_Prev)
+	if(ShooterState_Cur)
 	{
 		EnterState(RobotMode::Shooting);
+	}
+	else
+	{
+		EnterState(RobotMode::Free);
 	}
 	if(currentMode == RobotMode::Shooting)
 	{
@@ -84,12 +88,12 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		}
 		if(isReady)
 		{
-			Hopper->HopperUp();
+		//	Hopper->HopperUp();
 			printf("Shooting!! \r\n");
 		}
 		else
 		{
-			Hopper->HopperOff();
+		//	Hopper->HopperOff();
 		}
 	}
 
@@ -100,21 +104,21 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 	float shooter_height = 2.0f;
 	float YDelta = goal_height - shooter_height;
 
-	float distance_to_goal = ShooterWheel->Get_Goal_Distance(ty);
+	//float distance_to_goal = ShooterWheel->Get_Goal_Distance(ty);
 
-	float desstartspeed=sqrt(((-.5*g*(distance_to_goal/cos(ShooterWheel->hood_angle))^2)/(YDelta - tan(ShooterWheel->hood_angle)*distance_to_goal)));
+	//float desstartspeed=sqrt(((-.5*g*(distance_to_goal/cos(ShooterWheel->hood_angle))^2)/(YDelta - tan(ShooterWheel->hood_angle)*distance_to_goal)));
 
-	float Ballx = desstartspeed*cos(ShooterWheel->hood_angle));
-	float Bally = 0;
-	float Ballz = -0.5*(g)*t^2+desstartspeed*sin(ShooterWheel->hood_angle)*t+shooter_height);
+	//float Ballx = desstartspeed*cos(ShooterWheel->hood_angle));
+	//float Bally = 0;
+	//float Ballz = -0.5*(g)*t^2+desstartspeed*sin(ShooterWheel->hood_angle)*t+shooter_height);
 
-	float Robot_X_speed = sin((RobotVelocity.y * 3.14f)/180.0f);
-	float Robot_Y_speed = cos((RobotVelocity.y * 3.14f)/180.0f);
+	//float Robot_X_speed = sin((RobotVlocity.y * 3.14f)/180.0f);
+	//float Robot_Y_speed = cos((RobotVelocity.y * 3.14f)/180.0f);
 
 }
 void ShotManager::Send_Data()
 {
 	Turret->Send_Data();
 	ShooterWheel->Send_Data();
-	//Hopper->Send_Data();
+	Hopper->Send_Data();
 }
