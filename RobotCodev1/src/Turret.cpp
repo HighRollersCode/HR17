@@ -20,6 +20,10 @@ const float LOCKON_FAR_AREA = 0.0175f;
 
 TurretClass::TurretClass()
 {
+	LockonDegreesX = LOCKON_DEGREES_X;
+
+	Turret = new Victor(Vic_Turret);
+
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
 
 	ArmTimer = new Timer();

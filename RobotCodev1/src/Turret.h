@@ -39,7 +39,7 @@ public:
 	bool isReady = false;
 
 	float LastMoveByDegreesX = 360.0f;
-	float LockonDegreesX = LOCKON_DEGREES_X;
+	float LockonDegreesX;
 
 	int TurretEncoder_Cur = 0;
 	int TurretEncoder_Targ = 0;
