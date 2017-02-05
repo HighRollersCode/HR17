@@ -36,8 +36,6 @@ static int YDTABLE_COUNT = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 
 ShooterWheelClass::ShooterWheelClass()
 {
-	Shooter_WheelK = .00075f;
-	Shooter_WheelK_Down = .000375f;
 
 	Shooter = new CANTalon(Tal_Shooter_Wheel);
 	Shooter_2 = new CANTalon(Tal_Shooter_Wheel_2);
@@ -54,29 +52,9 @@ ShooterWheelClass::ShooterWheelClass()
 	RPMList =  new std::vector<float>();
 	RPMList->empty();
 
-	ShooterToggle = 1;
 	State = ShooterState_off;
 
-	currentPresetSpeed = 0.0f;
-	OverrideCommand = 0.0f;
 	hood_angle = ((65.0f * 3.14f)/180.0f);
-	prevoverride = 0;
-	prevlow = 0;
-
-	RPM = 0.0;
-	ERROR = 0.0;
-
-	trpm = 0;
-	tdistance = 0;
-	targy = 0;
-
-	INDICATOR = 0;
-
-	isDesiredRPM = false;
-	isReady = false;
-	isTracking = false;
-	CurrentEnableTracking = false;
-	PrevEnableTracking = false;
 
 	RPMList->push_back(0.0f);
 

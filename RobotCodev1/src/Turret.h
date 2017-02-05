@@ -21,31 +21,31 @@
 class TurretClass {
 public:
 
-	double MIN_TURRET_CMD;
-	double TURRET_P;
-	double TURRET_I;
-	double TURRET_D;
+	double MIN_TURRET_CMD = 0.20f;
+	double TURRET_P = .005f;
+	double TURRET_I = 0.00001f;
+	double TURRET_D = 0.01;
 
 	Victor *Turret;
 
 	Encoder *TurretEncoder;
 
-	bool Resetting;
-	bool CurrentEnableTracking;
-	bool PrevEnableTracking;
+	bool Resetting = false;
+	bool CurrentEnableTracking = false;
+	bool PrevEnableTracking = false;
 
-	bool isTracking;
-	bool isLockedOn;
-	bool isReady;
+	bool isTracking = false;
+	bool isLockedOn = false;
+	bool isReady = false;
 
-	float LastMoveByDegreesX;
-	float LockonDegreesX;
+	float LastMoveByDegreesX = 360.0f;
+	float LockonDegreesX = LOCKON_DEGREES_X;
 
-	int TurretEncoder_Cur;
-	int TurretEncoder_Targ;
+	int TurretEncoder_Cur = 0;
+	int TurretEncoder_Targ = 0;
 
-	float TurretCommand_Prev;
-	float TurretCommand_Cur;
+	float TurretCommand_Prev = 0;
+	float TurretCommand_Cur = 0;
 
 	Timer *ArmTimer;
 
@@ -71,7 +71,7 @@ public:
 	float Clamp_Target(float tar, float lowerlim, float upperlim);
 	TurretClass();
 	virtual ~TurretClass();
-	bool isauto;
+	bool isauto = false;
 
 	// These two functions will return a modified command if the
 	// given command would push the arm into an illegal configuration.

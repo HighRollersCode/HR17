@@ -14,7 +14,6 @@ ClimberClass::ClimberClass() {
 
 	PDP = new PowerDistributionPanel(0);
 
-	UseFullPower = true;
 }
 
 ClimberClass::~ClimberClass() {

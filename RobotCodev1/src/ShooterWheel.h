@@ -29,11 +29,11 @@ enum ShooterState
 class ShooterWheelClass
 {
 
-	int prevlow;
-	int prevoverride;
-	int State;
+	int prevlow = 0;
+	int prevoverride = 0;
+	int State = 0;
 
-	float currentPresetSpeed;
+	float currentPresetSpeed = 0;
 
 	//bool sensorpluggedin;
 
@@ -44,28 +44,28 @@ class ShooterWheelClass
 
 public:
 
-	double Shooter_WheelK;
-	double Shooter_WheelK_Down;
+	double Shooter_WheelK = .00075f;
+	double Shooter_WheelK_Down = .000375f;
 
-	float trpm;
-	float tdistance;
-	float targy;
+	float trpm = 0;
+	float tdistance = 0;
+	float targy = 0;
 
-	int INDICATOR;
-	double RPM;
-	double ERROR;
-	float OverrideCommand;
-	float hood_angle;
-	int ShooterToggle;
+	int INDICATOR = 0;
+	double RPM = 0;
+	double ERROR = 0;
+	float OverrideCommand = 0;
+	float hood_angle = 0;
+	int ShooterToggle = 1;
 
 	GearTooth *GearSensor;
 	Encoder *ShooterEnc;
 
-	bool isDesiredRPM;
-	bool isReady;
-	bool isTracking;
-	bool CurrentEnableTracking;
-	bool PrevEnableTracking;
+	bool isDesiredRPM = false;
+	bool isReady = false;
+	bool isTracking = false;
+	bool CurrentEnableTracking = false;
+	bool PrevEnableTracking = false;
 
 	ShooterWheelClass();
 	virtual ~ShooterWheelClass();

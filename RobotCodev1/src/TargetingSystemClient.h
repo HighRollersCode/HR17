@@ -58,16 +58,16 @@ protected:
 	void Handle_CalibrationRefresh(char *data);
 	void Send_Camera_Mode_Msg(CameraMode mode);
 
-	float m_TurretAngle;
-	float m_XOffset;
-	float m_YOffset;
-	float m_TargetArea;
-	bool m_Connected;
-	int m_SocketHandle;
-	bool gotdata;
-	float xCal;
-	float yCal;
-	CameraMode m_CamMode;
+	float m_TurretAngle = 0;
+	float m_XOffset = 0;
+	float m_YOffset = 0;
+	float m_TargetArea = 0;
+	bool m_Connected = false;
+	int m_SocketHandle = -1;
+	bool gotdata = false;
+	float xCal = 0;
+	float yCal = 0;
+	CameraMode m_CamMode = CAM_FRONT;
 	Timer *m_CommTimer;
 };
 

@@ -20,7 +20,7 @@ public:
 	CANTalon *Climber_2;
 	PowerDistributionPanel *PDP;
 
-	bool UseFullPower;
+	bool UseFullPower = true;
 
 	ClimberClass();
 	virtual ~ClimberClass();

@@ -17,18 +17,7 @@
 #include "string.h"
 #include "errno.h"
 
-TargetingSystemClient::TargetingSystemClient() :
-
-	m_TurretAngle(0.0f),
-	m_XOffset(0.0f),
-	m_YOffset(0.0f),
-	m_TargetArea(0.0f),
-	m_Connected(false),
-	m_SocketHandle(-1),
-	gotdata(false),
-	xCal(0.0f),
-	yCal(0.0f),
-	m_CamMode(CAM_FRONT)
+TargetingSystemClient::TargetingSystemClient()
 {
 	m_CommTimer = new Timer();
 }

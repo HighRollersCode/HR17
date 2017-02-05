@@ -11,16 +11,17 @@
 #include "WPILib.h"
 #include <unistd.h>
 #include <stdio.h>
+#include <Uptake.h>
 
 #include "Drivetrain.h"
 #include "Intake.h"
 #include "Turret.h"
 #include "TargetingSystemClient.h"
 #include "ShooterWheel.h"
-#include "Hopper.h"
 #include "ShotManager.h"
 #include "GearManipulator.h"
 #include "Climber.h"
+#include "BallManager.h"
 #include "HRscript.h"
 #include "Auton.h"
 #include "XboxController.h"
@@ -34,10 +35,10 @@ class MyRobotClass : public SampleRobot
 {
 public:
 
-	float commandLeft;
-	float commandRight;
-	float commandIntake;
-	float intele;
+	float commandLeft = 0;
+	float commandRight = 0;
+	float commandIntake = 0;
+	float intele = 0;
 
 	Joystick *leftStick;
 	Joystick *rightStick;
@@ -52,7 +53,9 @@ public:
 	ShotManager *ShotMng;
 	GearManipulator *GearMpltr;
 	ClimberClass *Climber;
-	HopperClass *Hopper;
+	UptakeClass *Uptake;
+	ConveyorClass *Conveyor;
+	BallManager *BallMng;
 	Auton *AutonomousControl;
 
 	Relay *LightRelay;
@@ -61,14 +64,14 @@ public:
 	Timer *GameTimer;
 	Timer *SendTimer;
 	Timer *SmartDashTimer;
-	int connectionattempts;
+	int connectionattempts = 0;
 
-	bool JetsonConnected;
+	bool JetsonConnected = false;
 
-	bool ConnectionPrevTog;
-	bool ConnectionCurTog;
-	bool DisConnectionPrevTog;
-	bool DisConnectionCurTog;
+	bool ConnectionPrevTog = false;
+	bool ConnectionCurTog = false;
+	bool DisConnectionPrevTog = false;
+	bool DisConnectionCurTog = false;
 
 	MyRobotClass();
 	virtual ~MyRobotClass();
@@ -90,7 +93,7 @@ public:
 
 	 Vector2 Compute_Robot_Velocity();
 
-	int Auto_Index;
+	int Auto_Index = 0;
 protected:
 
 	HrScriptSystemClass * m_ScriptSystem;

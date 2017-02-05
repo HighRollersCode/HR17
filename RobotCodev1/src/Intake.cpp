@@ -10,6 +10,7 @@
 IntakeClass::IntakeClass()
 {
 	Intake = new CANTalon(Tal_Intake);
+	Conveyor = new CANTalon(Tal_Conveyor_Belt);
 }
 
 IntakeClass::~IntakeClass()
@@ -19,35 +20,28 @@ IntakeClass::~IntakeClass()
 
 void IntakeClass::UpdateIntake(float intake, float outtake)
 {
-
 	if(intake)
 	{
-		Intake->Set(-1);
-		//Uptake->Set(1);
+		IntakeIn();
 	}
 	else if(outtake)
 	{
-		Intake->Set(1);
-		//Uptake->Set(-1);
+		IntakeOut();
 	}
 	else
 	{
-		Intake->Set(0);
-		//Uptake->Set(0);
+		IntakeOff();
 	}
 }
 void IntakeClass::IntakeIn()
 {
-	Intake->Set(1);
-	//Uptake->Set(1);
+	Intake->Set(-1);
 }
 void IntakeClass::IntakeOut()
 {
-	Intake->Set(-1);
-	//Uptake->Set(-1);
+	Intake->Set(1);
 }
 void IntakeClass::IntakeOff()
 {
 	Intake->Set(0);
-	//Uptake->Set(0);
 }

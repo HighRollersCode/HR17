@@ -28,12 +28,12 @@ public:
 	Solenoid * Highgear;
 	Solenoid * Lowgear;
 
-	bool CurrentShifterToggleTrig;
-	bool PrevShifterToggleTrig;
-	bool ToggleState;
-	bool ToggleStateNeutral;
+	bool CurrentShifterToggleTrig = false;
+	bool PrevShifterToggleTrig = false;
+	bool ToggleState = 1;
+	bool ToggleStateNeutral = -1;
 
-	float mult;
+	float mult = -.15f;
 
 	Drivetrainclass();
 	virtual ~Drivetrainclass();

@@ -27,13 +27,6 @@ Drivetrainclass::Drivetrainclass()
 	Highgear = new Solenoid(Sol_Shifter_In);
 	Lowgear = new Solenoid(Sol_Shifter_Out);
 
-	mult = -.15f;
-
-	CurrentShifterToggleTrig = false;
-	PrevShifterToggleTrig = false;
-	ToggleState = 1;
-	ToggleStateNeutral = -1;
-
 	LeftEncoder->Reset();
 	RightEncoder->Reset();
 

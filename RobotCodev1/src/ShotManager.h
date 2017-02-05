@@ -5,9 +5,9 @@
  *      Author: 987
  */
 
+#include <Uptake.h>
 #include "WPILib.h"
 #include "Turret.h"
-#include "Hopper.h"
 #include "ShooterWheel.h"
 #include "Defines.h"
 #include "math.h"
@@ -31,28 +31,26 @@ public:
 		Shooting
 	};
 	TurretClass *Turret;
-	HopperClass *Hopper;
 	ShooterWheelClass *ShooterWheel;
 
-	bool ShooterState_Cur;
-	bool ShooterState_Prev;
-	bool ShouldTrack;
-	bool isReady;
+	bool ShooterState_Cur = false;
+	bool ShooterState_Prev = false;
+	bool ShouldTrack = false;
+	bool isReady = false;
 
 	Timer *PresetTimer;
 
-	int state;
-	int counter;
-	bool transitioning;
+	int state = 0;
+	int counter = 0;
+	bool transitioning = false;
 
-	RobotMode currentMode;
-	ShotManager(TurretClass *RobotTurret,HopperClass *RobotHopper,ShooterWheelClass *RobotShooterWheel);
+	RobotMode currentMode = RobotMode::Free;
+	ShotManager(TurretClass *RobotTurret,ShooterWheelClass *RobotShooterWheel);
 	virtual ~ShotManager();
 
 	void EnterState(RobotMode mode);
 	void StartTracking(float enable);
-	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideRPM,float tx,float calx,float ty,
-			float outtake,float uptake);//,Vector2 RobotVelocity);
+	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideRPM,float tx,float calx,float ty);//,Vector2 RobotVelocity);
 	void Send_Data();
 
 };

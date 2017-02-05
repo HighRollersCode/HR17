@@ -8,13 +8,14 @@
 #ifndef AUTON_H_
 #define AUTON_H_
 
+#include <Uptake.h>
 #include "WPILib.h"
 #include "Drivetrain.h"
 #include "Turret.h"
 #include "Intake.h"
 #include "ShooterWheel.h"
-#include "Hopper.h"
 #include "ShotManager.h"
+#include "BallManager.h"
 #include "TargetingSystemClient.h"
 
 class Auton
@@ -22,16 +23,19 @@ class Auton
 	public:
 		Drivetrainclass *DriveTrain;
 		TurretClass *Turret;
-		IntakeClass *Intake;
-		//ShooterWheelClass *ShooterWheel;
 		DriverStation *ds;
 		TargetingSystemClient *Targeting;
-		//HopperClass *Hopper;
 		ShotManager *ShotMng;
+		BallManager *BallMng;
 		Timer *AutonTimer;
 		Timer *SendTimer;
 		//float turningp;
-		bool Abort;
+
+		bool Abort = false;
+		bool intake = false;
+		bool outake = false;
+		bool uptake = false;
+		bool downtake = false;
 
 		bool Running();
 		void AutonWait(float Seconds);
@@ -59,11 +63,9 @@ class Auton
 				Drivetrainclass *D,
 				TurretClass *Tu,
 				DriverStation *Ds,
-				IntakeClass *I,
-				//ShooterWheelClass *S,
 				TargetingSystemClient *T,
-				//HopperClass *H,
-				ShotManager *SM
+				ShotManager *SM,
+				BallManager *BM
 		);
 		~Auton();
 		void Auto_Start();

@@ -7,27 +7,15 @@
 
 #include <ShotManager.h>
 
-ShotManager::ShotManager(TurretClass *RobotTurret,HopperClass *RobotHopper,ShooterWheelClass *RobotShooterWheel)
+ShotManager::ShotManager(TurretClass *RobotTurret,ShooterWheelClass *RobotShooterWheel)
 {
-
-	ShooterState_Cur = false;
-	ShooterState_Prev = false;
-	ShouldTrack = false;
-	isReady = false;
-
-	state = 0;
-	counter = 0;
-	transitioning = false;
 
 	PresetTimer = new Timer();
 	PresetTimer->Reset();
 	PresetTimer->Start();
 
 	Turret = RobotTurret;
-	Hopper = RobotHopper;
 	ShooterWheel = RobotShooterWheel;
-
-	currentMode = RobotMode::Free;
 }
 
 ShotManager::~ShotManager() {
@@ -50,8 +38,7 @@ void ShotManager::StartTracking(float Enable)
 		currentMode = RobotMode::Free;
 	}
 }
-void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverideRPM,float tx,float calx,float ty,
-		float outtake,float uptake)//,Vector2 RobotVelocity)
+void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverideRPM,float tx,float calx,float ty)//,Vector2 RobotVelocity)
 {
 	ShooterState_Prev = ShooterState_Cur;
 	ShooterState_Cur = ShootingState;
@@ -75,7 +62,6 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 
 	Turret->Update(turret,ShouldTrack,tx,calx,ty);
 	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverideRPM,ShouldTrack,ty);
-	Hopper->UpdateHopper(uptake,outtake);
 	if(ShouldTrack)
 	{
 		if(currentMode == RobotMode::Shooting)
@@ -85,15 +71,6 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		else
 		{
 			isReady = false;
-		}
-		if(isReady)
-		{
-		//	Hopper->HopperUp();
-			printf("Shooting!! \r\n");
-		}
-		else
-		{
-		//	Hopper->HopperOff();
 		}
 	}
 
@@ -120,5 +97,4 @@ void ShotManager::Send_Data()
 {
 	Turret->Send_Data();
 	ShooterWheel->Send_Data();
-	Hopper->Send_Data();
 }

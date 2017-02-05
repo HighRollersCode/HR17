@@ -20,31 +20,7 @@ const float LOCKON_FAR_AREA = 0.0175f;
 
 TurretClass::TurretClass()
 {
-	Turret = new Victor(Vic_Turret);
-
-	TURRET_P = .005f;
-	TURRET_I = 0.00001f; //-.0000035f;
-	TURRET_D = 0.01;
-	MIN_TURRET_CMD = 0.20f;
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
-
-	Resetting = false;
-
-	isTracking = false;
-	isLockedOn = false;
-	isReady = false;
-
-	CurrentEnableTracking = false;
-	PrevEnableTracking = false;
-
-	LastMoveByDegreesX = 360.0f;
-	LockonDegreesX = LOCKON_DEGREES_X;
-
-	TurretEncoder_Cur = 0;
-	TurretEncoder_Targ = 0;
-
-	TurretCommand_Cur = 0.0f;
-	TurretCommand_Prev = 0.0f;
 
 	ArmTimer = new Timer();
 	ArmTimer->Reset();
@@ -58,7 +34,6 @@ TurretClass::TurretClass()
 	LastShotTimer->Reset();
 	LastShotTimer->Start();
 
-	isauto = false;
 	TurretEncoder->Reset();
 
 	TurretPIDController = new PIDController(TURRET_P,TURRET_I,TURRET_D,TurretEncoder,Turret,.01f);

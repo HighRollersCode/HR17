@@ -31,13 +31,6 @@ MyRobotClass::MyRobotClass()
 
 	SmartDashboard::init();
 
-	commandLeft = 0;
-	commandRight = 0;
-	commandIntake = 0;
-	connectionattempts = 0;
-	intele = 0;
-
-
 	leftStick = new Joystick(0);
 	rightStick = new Joystick(1);
 	turretStick = new Joystick(2);
@@ -47,15 +40,19 @@ MyRobotClass::MyRobotClass()
 	Intake = new IntakeClass();
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
-	Hopper = new HopperClass();
-	ShotMng = new ShotManager(Turret,Hopper,ShooterWheel);
+	Uptake = new UptakeClass();
+	Conveyor = new ConveyorClass();
+
+	BallMng = new BallManager(Intake,Uptake,Conveyor);
+	ShotMng = new ShotManager(Turret,ShooterWheel);
+
 	GearMpltr = new GearManipulator();
 	Climber = new ClimberClass();
 	printf("Basic Initialization\r\n");
 	TargClient = new TargetingSystemClient();
 	TargClient->Connect(JETSON_IP,JETSON_PORT);
 	printf("TargClient Initialized\r\n");
-	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),Intake,TargClient,ShotMng);//ShooterWheel,Hopper);
+	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),TargClient,ShotMng,BallMng);//ShooterWheel,Hopper);
 
 	LightRelay = new Relay(0);
 
@@ -73,15 +70,10 @@ MyRobotClass::MyRobotClass()
 	SmartDashTimer->Reset();
 	SmartDashTimer->Start();
 
-	JetsonConnected = false;
-
-	DisConnectionPrevTog = false;
-	DisConnectionCurTog = false;
-
-	Auto_Index = 0;
 	m_ScriptSystem = 0;
 	Init_Scripts_System();
 
+	//ENABLE FOR COMPETITION
 	/*int connectionattempts = 0;
 	printf("Will block to connect... \r\n");
 	while ((connectionattempts < 5) && (TargClient->Get_Connected() == false))
@@ -161,8 +153,6 @@ void MyRobotClass::Send_Data()
 		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
 
 		Drivetrain->Send_Data();
-		//ShooterWheel->Send_Data();
-		//Turret->Send_Data();
 		ShotMng->Send_Data();
 		TargClient->SmartDashboardUpdate();
 	}
@@ -191,7 +181,7 @@ void MyRobotClass::OperatorControl(void)
 		{
 			if(DriverStation::GetInstance().IsFMSAttached())
 			{
-				//Shutdown_Jetson();
+				Shutdown_Jetson();
 			}
 		}
 
@@ -214,8 +204,9 @@ void MyRobotClass::OperatorControl(void)
 		}
 
 		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_LOW,SHOOTER_ENABLE_OVERRIDE,RPM,
-				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),HOPPER_OUTAKE,
-				HOPPER_UPTAKE);//,Compute_Robot_Velocity());
+				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset());//,Compute_Robot_Velocity());
+
+		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE);
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
 
 		GearMpltr->UpdateGear(GEAR_INTAKE,GEAR_OUTAKE);
