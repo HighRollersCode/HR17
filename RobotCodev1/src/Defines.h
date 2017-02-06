@@ -72,7 +72,7 @@
 //#define Tal_Turret 2 //5
 
 #define Tal_Shooter_Wheel 1 //9
-#define Tal_Shooter_Wheel_2 2
+#define Tal_Shooter_Wheel_2 11
 
 #define Tal_Hopper 5 //6
 //#define Tal_Hopper_Intake 4

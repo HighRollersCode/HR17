@@ -40,11 +40,25 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter = new CANTalon(Tal_Shooter_Wheel);
 	Shooter_2 = new CANTalon(Tal_Shooter_Wheel_2);
 
+#if TALON_SPEED_CONTROL
+	Shooter->SetControlMode(CANTalon::kSpeed);
+	Shooter_2->SetControlMode(CANTalon::kFollower);
+	Shooter_2->Set(Tal_Shooter_Wheel);
+	Shooter->SetClosedLoopOutputDirection(true);
+
+	Shooter->SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	SetShooterConstants(Shooter_WheelK,0,0,.00019);
+	Shooter->SetAllowableClosedLoopErr(10);
+	Shooter->ConfigNominalOutputVoltage(+0.f,-0.f);
+	Shooter->ConfigPeakOutputVoltage(+12.f,-12.f);
+	Shooter->SelectProfileSlot(0);
+	Shooter->SetSensorDirection(true);
+	Shooter->SetVoltageRampRate(100);
+	Shooter_2->SetVoltageRampRate(100);
+#endif
+
 	HoodUp = new Solenoid(Sol_Hood_Up);
 	HoodDown = new Solenoid(Sol_Hood_Down);
-
-	GearSensor = new GearTooth(6);
-	GearSensor->Reset();
 
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
 	ShooterEnc->Reset();
@@ -66,6 +80,22 @@ void ShooterWheelClass::SetSpeed(float command)
 {
 	Shooter->Set(-command);
 	Shooter_2->Set(-command);
+}
+void ShooterWheelClass::SetShooterConstants(float p,float i,float d,float f)
+{
+	Shooter_WheelK = p;
+	Shooter_WheelK_Down = p;
+#if TALON_SPEED_CONTROL
+	p *= 1024.f;
+	i *= 1024.f;
+	d *= 1024.f;
+	f *= 1024.f;
+
+	Shooter->SetP(p);
+	Shooter->SetI(i);
+	Shooter->SetD(d);
+	Shooter->SetF(f);
+#endif
 }
 float ShooterWheelClass::Get_Goal_Distance(float y)
 {
@@ -102,6 +132,21 @@ float ShooterWheelClass::Interpolate(float inputs[], float outputs[],int listsiz
 }
 float ShooterWheelClass::PUpdate(float desrpm)
 {
+#if TALON_SPEED_CONTROL
+	return PUpdate_Talon(desrpm);
+#else
+	return PUpdate_Roborio(desrpm);
+#endif
+}
+float ShooterWheelClass::PUpdate_Talon(float desrpm)
+{
+	Shooter_2->SetControlMode(CANTalon::kFollower);
+	Shooter_2->Set(Tal_Shooter_Wheel);
+	Shooter->Set(desrpm);
+	return 0;
+}
+float ShooterWheelClass::PUpdate_Roborio(float desrpm)
+{
 	isReady = false;
 	double basecom = EstimatePower(desrpm);
 	double error = desrpm - RPM;
@@ -128,6 +173,7 @@ float ShooterWheelClass::PUpdate(float desrpm)
 	{
 		isReady= true;
 	}
+	SetSpeed(command);
 	return command;
 }
 float ShooterWheelClass::ClampTarget(float tar, float lowerlim, float upperlim)
@@ -166,6 +212,7 @@ void ShooterWheelClass::WheelOff()
 }
 void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty)//,double RobotTime,float crossY)
 {
+
 	PrevEnableTracking = CurrentEnableTracking;
 	CurrentEnableTracking = TrackingEnable;
 
@@ -179,6 +226,9 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 	//printf("Estimated RPM",rpm);
 	//printf("Estimated Power",power);
 
+#if TALON_SPEED_CONTROL
+	RPM = Shooter->GetSpeed();
+#else
 	RPM = ((1.0f/(ShooterEnc->GetPeriod()))*60.0f)/1024.0f;//Shooter->GetEncVel();((1.0f/(GearSensor->GetPeriod()))*60.0f)/6.0f;
 
 	//Limit the RPM ouput and average it
@@ -193,7 +243,7 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 		sum += (RPMList->at(i));
 	}
 	RPM = sum/RPMList->size();
-
+#endif
 	if((EnableLow == 1)&&(prevlow == 0))
 	{
 		SetState(ShooterState_Low);
@@ -222,25 +272,26 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 
 		if(State == ShooterState_overrideRPM)
 		{
-			SetSpeed(PUpdate(OverrideRPM));
+			PUpdate(OverrideRPM);
 		}
 		else if(State == ShooterState_override)
 		{
+#if !TALON_SPEED_CONTROL
 			SetSpeed(OverrideCommand);
+#endif
 		}
 		else if(State == ShooterState_tracking)
 		{
 			float distance = EstimateDistance(ty);
 			float rpm = EstimateRPM(distance);
-			float command = PUpdate(rpm);
-			SetSpeed(command);
+			PUpdate(rpm);
 			tdistance = distance;
 			trpm = rpm;
 			targy = ty;
 		}
 		else
 		{
-			SetSpeed(PUpdate(currentPresetSpeed));
+			PUpdate(currentPresetSpeed);
 		}
 	}
 
@@ -256,7 +307,7 @@ void ShooterWheelClass::SetState(int newstate)
 void ShooterWheelClass::Send_Data()
 {
 	SmartDashboard::PutNumber("ShooterRPM",RPM);
-	SmartDashboard::PutNumber("ShooterSpeed", Shooter->Get());
+	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
 	SmartDashboard::PutNumber("ShooterEnc", ShooterEnc->Get());
 	SmartDashboard::PutNumber("Target RPM", trpm);

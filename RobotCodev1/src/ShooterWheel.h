@@ -10,11 +10,13 @@
 #include "Defines.h"
 #include "TalonSRX.h"
 #include "CANTalon.h"
+#include "CanTalonSRX.h"
+
 #include "Encoder.h"
 
 #ifndef SRC_ShooterWheel_H_
 #define SRC_ShooterWheel_H_
-
+#define TALON_SPEED_CONTROL 1
 
 
 
@@ -37,12 +39,13 @@ class ShooterWheelClass
 
 	//bool sensorpluggedin;
 
-	CANTalon *Shooter;
-	CANTalon *Shooter_2;
 
 	std::vector<float> *RPMList;
 
 public:
+
+	CANTalon *Shooter;
+	CANTalon *Shooter_2;
 
 	double Shooter_WheelK = .00075f;
 	double Shooter_WheelK_Down = .000375f;
@@ -58,7 +61,6 @@ public:
 	float hood_angle = 0;
 	int ShooterToggle = 1;
 
-	GearTooth *GearSensor;
 	Encoder *ShooterEnc;
 
 	bool isDesiredRPM = false;
@@ -76,13 +78,16 @@ public:
 	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
+	void SetShooterConstants(float p,float i,float d,float f);
 	float Get_Goal_Distance(float y);
 	float EstimateDistance(float ty);
 	float EstimateRPM(float distance);
 	float EstimatePower(float desiredRPM);
 	float Interpolate(float inputs[],float outputs[],int listsize,float input);
 
-	float PUpdate(float dist);
+	float PUpdate(float desrpm);
+	float PUpdate_Talon(float desrpm);
+	float PUpdate_Roborio(float desrpm);
 	Solenoid *HoodUp;
 	Solenoid *HoodDown;
 	float ClampTarget(float tar, float lowerlim, float upperlim);

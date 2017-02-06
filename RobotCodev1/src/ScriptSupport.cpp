@@ -35,12 +35,11 @@ class SetShooterWheelConstantsCommand : public HrScriptCommandClass
 {
 public:
 	virtual const char * Get_Command_Name() { return "ShooterWheelSettings"; }
-	virtual int Get_Parameter_Count() { return 2; }
+	virtual int Get_Parameter_Count() { return 4; }
 	virtual HrScriptCommandClass * Create_Command() { return new SetShooterWheelConstantsCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->ShooterWheel->Shooter_WheelK = m_Parameters[0];
-		MyRobotClass::Get()->ShooterWheel->Shooter_WheelK_Down = m_Parameters[1];
+		MyRobotClass::Get()->ShooterWheel->SetShooterConstants(m_Parameters[0],m_Parameters[1],m_Parameters[2],m_Parameters[3]);
 	}
 };
 class SetTurretConstantsCommand : public HrScriptCommandClass
