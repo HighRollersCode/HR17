@@ -6,8 +6,6 @@
  */
 
 #include "Turret.h"
-#include "Defines.h"
-#include "WPILib.h"
 
 const float TURRET_TOLERANCE = 1;
 
@@ -22,9 +20,23 @@ TurretClass::TurretClass()
 {
 	LockonDegreesX = LOCKON_DEGREES_X;
 
-	Turret = new Victor(Vic_Turret);
+#if TURRET_TALON_CONTROL
+	Turret = new CANTalon(Tal_Turret);
+	Turret->SetClosedLoopOutputDirection(true);
 
+	Turret->SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	SetTurretConstants(TURRET_P,TURRET_I,TURRET_D);
+	Turret->SetAllowableClosedLoopErr(10);
+	Turret->ConfigNominalOutputVoltage(+0.f,-0.f);
+	Turret->ConfigPeakOutputVoltage(+12.f,-12.f);
+	Turret->SelectProfileSlot(0);
+	Turret->SetSensorDirection(true);
+	Turret->SetVoltageRampRate(100);
+
+#else
+	Turret = new CANTalon(Tal_Turret);
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
+#endif
 
 	ArmTimer = new Timer();
 	ArmTimer->Reset();
@@ -38,13 +50,15 @@ TurretClass::TurretClass()
 	LastShotTimer->Reset();
 	LastShotTimer->Start();
 
-	TurretEncoder->Reset();
+#if !TURRET_TALON_CONTROL
 
+	TurretEncoder->Reset();
 	TurretPIDController = new PIDController(TURRET_P,TURRET_I,TURRET_D,TurretEncoder,Turret,.01f);
 	TurretPIDController->SetContinuous(false);
 	TurretPIDController->Enable();
 	TurretPIDController->SetOutputRange(-1.0f,1.0f);
 	TurretPIDController->SetInputRange(TURRET_MIN_ENCODER,TURRET_MAX_ENCODER);
+#endif
 }
 
 TurretClass::~TurretClass() {
@@ -59,10 +73,12 @@ void TurretClass::Auto_Start()
 	LockonDegreesX = LOCKON_DEGREES_X;
 
 	ResetEncoderTurret();
-
+#if TURRET_TALON_CONTROL
+	Turret->SetControlMode(CANTalon::kPercentVbus);
+#else
 	TurretPIDController->Disable();
 	TurretPIDController->Reset();
-
+#endif
 	SetTurret(GetTurretEncoder());
 
 	isTracking = false;
@@ -84,19 +100,27 @@ void TurretClass::UpdateTurret(float turret)
 
 	if(fabs(TurretCommand_Cur) > .2f)
 	{
+#if TURRET_TALON_CONTROL
+		Turret->SetControlMode(CANTalon::kPercentVbus);
+#else
 		if(TurretPIDController->IsEnabled())
 		{
 			TurretPIDController->Disable();
 		}
 		turretOut = TurretCommand_Cur;
 		Turret->Set(turretOut);
+#endif
 	}
 	else
 	{
+#if TURRET_TALON_CONTROL
+
+#else
 		if(!TurretPIDController->IsEnabled())
 		{
 			Turret->Set(0);
 		}
+#endif
 	}
 }
 void TurretClass::Tele_Start()
@@ -105,13 +129,15 @@ void TurretClass::Tele_Start()
 	PrevEnableTracking = false;
 
 	LastMoveByDegreesX = 360.0f;
-
+#if TURRET_TALON_CONTROL
+	Turret->SetControlMode(CANTalon::kPercentVbus);
+#else
 	TurretPIDController->Disable();
 	TurretPIDController->Reset();
 	TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
 
 	SetTurret(GetTurretEncoder());
-
+#endif
 	isTracking = false;
 
 	ArmLockonTimer->Reset();
@@ -119,7 +145,6 @@ void TurretClass::Tele_Start()
 
 	LastShotTimer->Reset();
 	LastShotTimer->Start();
-
 
 }
 void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,float target_area)
@@ -130,6 +155,9 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 
 	if(CurrentEnableTracking)
 	{
+#if TURRET_TALON_CONTROL
+	Turret->SetControlMode(CANTalon::kVoltage);
+#else
 		TurretPIDController->Enable();
 		isLockedOn = (fabs(LastMoveByDegreesX) < LockonDegreesX);
 		if(!isLockedOn)
@@ -141,11 +169,17 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 
 		}
 		isReady = isLockedOn;
+#endif
 	}
 	else
 	{
 		isReady = true;
+
+		#if TURRET_TALON_CONTROL
+	Turret->SetControlMode(CANTalon::kPercentVbus);
+#else
 		TurretPIDController->Disable();
+#endif
 	}
 		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
@@ -180,11 +214,19 @@ float TurretClass::Clamp_Target(float tar,float lowerlim,float upperlim)
 void TurretClass::SetTurret(int targ)
 {
 	TurretEncoder_Targ = targ;
+#if TURRET_TALON_CONTROL
+	Turret->Set(TurretEncoder_Targ);
+#else
 	TurretPIDController->SetSetpoint(TurretEncoder_Targ);
+#endif
 }
 int TurretClass::GetTurretEncoder()
 {
+#if TURRET_TALON_CONTROL
+	return Turret->GetEncPosition();
+#else
 	return TurretEncoder->Get();
+#endif
 }
 void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 {
@@ -229,8 +271,24 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 }
 void TurretClass::ResetEncoderTurret()
 {
+#if TURRET_TALON_CONTROL
+	Turret->SetPosition(0);
+#else
 	TurretEncoder->Reset();
 	TurretPIDController->Reset();
+#endif
+}
+void TurretClass::SetTurretConstants(float p,float i,float d)
+{
+#if TURRET_TALON_CONTROL
+	p *= 1024;
+	i *= 1024;
+	d *= 1024;
+
+	Turret->SetPID(p,i,d);
+#else
+	TurretPIDController->SetPID(p,i,d);
+#endif
 }
 float TurretClass::Turret_Encoder_To_Degrees(int enc)
 {
@@ -238,7 +296,11 @@ float TurretClass::Turret_Encoder_To_Degrees(int enc)
 }
 float TurretClass::Compute_Robot_Angle()
 {
+#if TURRET_TALON_CONTROL
+	float dir = -Turret_Encoder_To_Degrees(Turret->GetPosition()) - LockonDegreesX;
+#else
 	float dir = -Turret_Encoder_To_Degrees(TurretEncoder->Get()) - LockonDegreesX;
+#endif
 	return dir;
 }
 float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
@@ -260,5 +322,9 @@ float TurretClass::Validate_Turret_Command(float cmd,bool ispidcmd)
 void TurretClass::Send_Data()
 {
 	SmartDashboard::PutNumber("Turret Speed", Turret->Get());
+#if TURRET_TALON_CONTROL
+	SmartDashboard::PutNumber("Talon Turret Encoder", Turret->GetEncPosition());
+#else
 	SmartDashboard::PutNumber("Turret Encoder", TurretEncoder->Get());
+#endif
 }

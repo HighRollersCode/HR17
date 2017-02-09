@@ -16,7 +16,7 @@
 
 #ifndef SRC_TURRET_H_
 #define SRC_TURRET_H_
-
+#define TURRET_TALON_CONTROL 0
 
 class TurretClass {
 public:
@@ -26,10 +26,12 @@ public:
 	double TURRET_I = 0.00001f;
 	double TURRET_D = 0.01;
 
-	Victor *Turret;
-
+#if TURRET_TALON_CONTROL
+	CANTalon *Turret;
+#else
+	CANTalon *Turret;
 	Encoder *TurretEncoder;
-
+#endif
 	bool Resetting = false;
 	bool CurrentEnableTracking = false;
 	bool PrevEnableTracking = false;
@@ -51,8 +53,9 @@ public:
 
 	Timer *ArmLockonTimer;
 	Timer *LastShotTimer;
+#if !TURRET_TALON_CONTROL
 	PIDController *TurretPIDController;
-
+#endif
 	void Auto_Start();
 	void Tele_Start();
 
@@ -68,6 +71,7 @@ public:
 	void Send_Data();
 
 	void ResetEncoderTurret();
+	void SetTurretConstants(float p,float i,float d);
 	float Clamp_Target(float tar, float lowerlim, float upperlim);
 	TurretClass();
 	virtual ~TurretClass();

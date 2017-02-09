@@ -21,7 +21,6 @@ class IntakeClass {
 public:
 
 	CANTalon *Intake;
-	CANTalon *Conveyor;
 
 	IntakeClass();
 	virtual ~IntakeClass();

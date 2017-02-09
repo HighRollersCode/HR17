@@ -19,11 +19,11 @@ void ConveyorClass::Update(bool intake,bool outake)
 {
 	if(intake)
 	{
-		Conveyor->Set(.6f);
+		Conveyor->Set(-.6f);
 	}
 	else if(outake)
 	{
-		Conveyor->Set(-.6f);
+		Conveyor->Set(.6f);
 	}
 	else
 	{

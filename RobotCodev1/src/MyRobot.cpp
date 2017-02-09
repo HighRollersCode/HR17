@@ -212,14 +212,14 @@ void MyRobotClass::OperatorControl(void)
 		GearMpltr->UpdateGear(GEAR_INTAKE,GEAR_OUTAKE);
 
 		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_DOWN);
-		if(CLIMBER_UP)
+		/*if(CLIMBER_UP)
 		{
 			Climber->UpdateClimber(true,false);
 		}
 		if(CLIMBER_DOWN)
 		{
 			Climber->UpdateClimber(false,true);
-		}
+		}*/
 		if(SET_CAM_FRONT)
 		{
 			TargClient->Set_Camera_Mode(TargetingSystemClient::CAM_FRONT);
@@ -238,7 +238,6 @@ void MyRobotClass::OperatorControl(void)
 		{
 			TargClient->DoCalibrate();
 		}
-
 
 		Wait(0.002);
 	}

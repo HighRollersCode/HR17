@@ -69,10 +69,10 @@
 //Device ID for Talon Motors
 #define Tal_Intake 3 //2
 
-//#define Tal_Turret 2 //5
+#define Tal_Turret 7 //2
 
-#define Tal_Shooter_Wheel 1 //9
-#define Tal_Shooter_Wheel_2 11
+#define Tal_Shooter_Wheel 2 //2
+#define Tal_Shooter_Wheel_2 21 //11
 
 #define Tal_Hopper 5 //6
 //#define Tal_Hopper_Intake 4
@@ -81,20 +81,22 @@
 #define Tal_Climber 6 //3
 #define Tal_Climber_2 4
 
-#define Tal_Gear_Intake 7
+#define Tal_Gear_Intake 11 //7
 
 //PDP Port for Climber Motor
 #define PDP_Climber 1
 
 //Solenoid Ports
-#define Sol_Shifter_In 0
-#define Sol_Shifter_Out 1
+#define Sol_Shifter_In 2
+#define Sol_Shifter_Out 3
 
+/*
 #define Sol_Hood_Up 2
 #define Sol_Hood_Down 3
+*/
 
-#define Sol_Gear_Down 4
-#define Sol_Gear_Up 5
+#define Sol_Gear_Down 0
+#define Sol_Gear_Up 1
 
 //DIO ports for Encoders
 #define Encoder_Drive_Left_1 0

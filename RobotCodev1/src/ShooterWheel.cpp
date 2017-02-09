@@ -57,8 +57,8 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter_2->SetVoltageRampRate(100);
 #endif
 
-	HoodUp = new Solenoid(Sol_Hood_Up);
-	HoodDown = new Solenoid(Sol_Hood_Down);
+	//HoodUp = new Solenoid(Sol_Hood_Up);
+	//HoodDown = new Solenoid(Sol_Hood_Down);
 
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
 	ShooterEnc->Reset();

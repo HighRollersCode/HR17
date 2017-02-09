@@ -10,7 +10,6 @@
 IntakeClass::IntakeClass()
 {
 	Intake = new CANTalon(Tal_Intake);
-	Conveyor = new CANTalon(Tal_Conveyor_Belt);
 }
 
 IntakeClass::~IntakeClass()

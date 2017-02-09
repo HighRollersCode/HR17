@@ -209,6 +209,16 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new TurretEnablePIDCommand(); }
 	virtual void Execute()
 	{
+#if TURRET_TALON_CONTROL
+		if(m_Parameters[0] == 1)
+		{
+			MyRobotClass::Get()->Turret->Turret->SetControlMode(CANTalon::kPosition);
+		}
+		else if(m_Parameters[1] == 0)
+		{
+			MyRobotClass::Get()->Turret->Turret->SetControlMode(CANTalon::kPercentVbus);
+		}
+#else
 		MyRobotClass::Get()->Turret->TurretPIDController->Reset();
 		if(m_Parameters[0] == 1)
 		{
@@ -218,6 +228,7 @@ public:
 		{
 			MyRobotClass::Get()->Turret->TurretPIDController->Disable();
 		}
+#endif
 	}
 };
 class TrackingCommand : public HrScriptCommandClass
