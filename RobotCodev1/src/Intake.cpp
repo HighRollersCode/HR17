@@ -10,6 +10,7 @@
 IntakeClass::IntakeClass()
 {
 	Intake = new CANTalon(Tal_Intake);
+	PDP = new PowerDistributionPanel(1);
 }
 
 IntakeClass::~IntakeClass()
@@ -22,6 +23,14 @@ void IntakeClass::UpdateIntake(float intake, float outtake)
 	if(intake)
 	{
 		IntakeIn();
+		if(PDP->GetCurrent(PDP_Intake) > 12.0f)
+		{
+			motor_stall = true;
+		}
+		else
+		{
+			motor_stall = false;
+		}
 	}
 	else if(outtake)
 	{
@@ -43,4 +52,8 @@ void IntakeClass::IntakeOut()
 void IntakeClass::IntakeOff()
 {
 	Intake->Set(0);
+}
+void IntakeClass::Send_Data()
+{
+	SmartDashboard::PutNumber("Intake Speed", Intake->Get());
 }

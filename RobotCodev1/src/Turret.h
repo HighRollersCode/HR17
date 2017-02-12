@@ -60,7 +60,7 @@ public:
 	void Tele_Start();
 
 	void Update(float Turret, bool TrackingEnable, float cx, float calx, float target_area);
-	void UpdateTurret(float turret);
+	void HandleUser(float turret);
 	int GetTurretEncoder();
 	void SetTurret(int targ);
 	void StartTracking(int enable);

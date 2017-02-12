@@ -151,10 +151,12 @@ void MyRobotClass::Send_Data()
 		SmartDashboard::PutNumber("DesiredRPM", OVERRIDE_RPM_CMD);
 		SmartDashboard::PutNumber("Climber Current",Climber->PDP->GetCurrent(PDP_Climber));
 		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
+		SmartDashboard::PutNumber("Game Timer", GameTimer->Get());
 
 		Drivetrain->Send_Data();
 		ShotMng->Send_Data();
 		TargClient->SmartDashboardUpdate();
+		BallMng->SendData();
 	}
 }
 void MyRobotClass::OperatorControl(void)
@@ -209,7 +211,7 @@ void MyRobotClass::OperatorControl(void)
 		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE);
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
 
-		GearMpltr->UpdateGear(GEAR_INTAKE,GEAR_OUTAKE);
+		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP,Turret);
 
 		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_DOWN);
 		/*if(CLIMBER_UP)

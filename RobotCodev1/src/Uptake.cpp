@@ -38,11 +38,11 @@ void UptakeClass::UpdateUptake(bool uptake,bool downtake)
 }
 void UptakeClass::UptakeUp()
 {
-	Uptake->Set(-1);
+	Uptake->Set(-.8f);
 }
 void UptakeClass::UptakeDown()
 {
-	Uptake->Set(1);
+	Uptake->Set(.8f);
 }
 void UptakeClass::UptakeOff()
 {
@@ -50,5 +50,5 @@ void UptakeClass::UptakeOff()
 }
 void UptakeClass::Send_Data()
 {
-	SmartDashboard::PutNumber("Uptake Speed",speed);
+	SmartDashboard::PutNumber("Uptake Speed",Uptake->Get());
 }

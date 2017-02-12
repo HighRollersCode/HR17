@@ -20,8 +20,10 @@
 #define LEFT_MOTOR_CMD leftStick->GetY()
 #define SHIFTER_UPDATE leftStick->GetTrigger()
 
-#define GEAR_INTAKE leftStick->GetRawButton(2)
-#define GEAR_OUTAKE leftStick->GetRawButton(3)
+#define GEAR_DOWN_INTAKE leftStick->GetRawButton(3)
+#define GEAR_DOWN_OUTAKE leftStick->GetRawButton(2)
+#define GEAR_UP leftStick->GetRawButton(4)
+#define GEAR_INTAKE leftStick->GetRawButton(5)
 
 #define CLIMBER_UP leftStick->GetRawButton(6)
 #define CLIMBER_DOWN (leftStick->GetRawButton(6) && leftStick->GetRawButton(7))
@@ -30,17 +32,17 @@
 
 #define RIGHT_MOTOR_CMD rightStick->GetY()
 
-#define INTAKE_IN rightStick->GetTrigger()
+#define INTAKE_IN (rightStick->GetTrigger() || rightStick->GetRawButton(10))
 #define INTAKE_OUT rightStick->GetRawButton(2)
 
-#define SET_CAM_BACK rightStick->GetRawButton(10)
-#define SET_CAM_FRONT rightStick->GetRawButton(11)
+#define SET_CAM_BACK rightStick->GetRawButton(8)
+#define SET_CAM_FRONT rightStick->GetRawButton(9)
 
 //TurretStick controls
 
 #define TURRET_MOTOR_CMD turretStick->GetX()
 
-#define OVERRIDE_RPM_CMD (((turretStick->GetZ() + 1.0f)*.5f)* 6500.0f)
+#define OVERRIDE_RPM_CMD ((((turretStick->GetZ() + 1.0f)*.5f)* 3000.0f)+2500.0f)
 
 #define HOPPER_UPTAKE turretStick->GetTrigger()
 
@@ -58,11 +60,11 @@
 
 //Ports for the Victor Drivetrain
 
-#define Vic_Drive_Right_1 0
-#define Vic_Drive_Right_2 1
-
 #define Vic_Drive_Left_1 2
 #define Vic_Drive_Left_2 3
+
+#define Vic_Drive_Right_1 0
+#define Vic_Drive_Right_2 1
 
 #define Vic_Turret 4
 
@@ -86,17 +88,14 @@
 //PDP Port for Climber Motor
 #define PDP_Climber 1
 
+#define PDP_Intake 9
+
 //Solenoid Ports
+#define Sol_Gear_Up 0
+#define Sol_Gear_Down 1
+
 #define Sol_Shifter_In 2
 #define Sol_Shifter_Out 3
-
-/*
-#define Sol_Hood_Up 2
-#define Sol_Hood_Down 3
-*/
-
-#define Sol_Gear_Down 0
-#define Sol_Gear_Up 1
 
 //DIO ports for Encoders
 #define Encoder_Drive_Left_1 0
@@ -132,9 +131,9 @@
 //
 
 // The turret is zero'd when it is centered pointing forward.
-#define TURRET_DEGREES_PER_TICK .1f
-#define TURRET_MIN_ENCODER	-2000  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
-#define TURRET_MAX_ENCODER	2000
+#define TURRET_DEGREES_PER_TICK (90.f/1420.f)
+#define TURRET_MIN_ENCODER	-3000  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
+#define TURRET_MAX_ENCODER	1650
 
 #define TURRET_CORRECTION_P 0.001f   // motor power per tick to correct invalid turret configurations
 

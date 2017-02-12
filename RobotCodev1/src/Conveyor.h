@@ -20,6 +20,7 @@ public:
 	virtual ~ConveyorClass();
 
 	void Update(bool intake, bool outake);
+	void Send_Data();
 };
 
 #endif /* SRC_CONVEYOR_H_ */

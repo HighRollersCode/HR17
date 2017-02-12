@@ -39,7 +39,8 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetShooterWheelConstantsCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->ShooterWheel->SetShooterConstants(m_Parameters[0],m_Parameters[1],m_Parameters[2],m_Parameters[3]);
+		MyRobotClass::Get()->ShooterWheel->SetShooterConstants(m_Parameters[0],m_Parameters[1],m_Parameters[2],
+				m_Parameters[3]);//,m_Parameters[4]);
 	}
 };
 class SetTurretConstantsCommand : public HrScriptCommandClass
@@ -50,9 +51,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetTurretConstantsCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->Turret->TURRET_P = m_Parameters[0];
-		MyRobotClass::Get()->Turret->TURRET_I = m_Parameters[1];
-		MyRobotClass::Get()->Turret->TURRET_D = m_Parameters[2];
+		MyRobotClass::Get()->Turret->SetTurretConstants(m_Parameters[0],m_Parameters[1], m_Parameters[2]);
 		MyRobotClass::Get()->Turret->MIN_TURRET_CMD = m_Parameters[3];
 	}
 };
@@ -282,6 +281,18 @@ public:
 		MyRobotClass::Get()->Intake->SetLift((int)m_Parameters[0]);
 	}
 };*/
+class GearManipulatorCommand : public HrScriptCommandClass
+{
+
+public:
+	virtual const char * Get_Command_Name() { return "GearManipulator"; }
+	virtual int Get_Parameter_Count() { return 2; }
+	virtual HrScriptCommandClass * Create_Command() { return new GearManipulatorCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->GearMpltr->UpdateGear(0,m_Parameters[0],0,m_Parameters[1],0);
+	}
+};
 class SetIntakeCommand : public HrScriptCommandClass
 {
 
@@ -391,8 +402,12 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Load_And_Run_Script("RobotSettings.hrs");
 
 	// Load all of the auto-mode scripts
-	m_ScriptSystem->Set_Auto_Script(1,"GEAR_SHOOTER_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(2,"GEAR_SHOOTER_BLUE.hrs");
+	m_ScriptSystem->Set_Auto_Script(1,"GEAR_MIDDLE_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(11,"GEAR_RIGHT_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(12,"GEAR_LEFT_RED.hrs");
+	m_ScriptSystem->Set_Auto_Script(2,"GEAR_MIDDLE_BLUE.hrs");
+	m_ScriptSystem->Set_Auto_Script(21,"GEAR_RIGHT_BLUE.hrs");
+	m_ScriptSystem->Set_Auto_Script(22,"GEAR_LEFT_BLUE.hrs");
 	m_ScriptSystem->Set_Auto_Script(3,"HOPPER_CLOSE_RED.hrs");
 	m_ScriptSystem->Set_Auto_Script(31,"HOPPER_MIDDLE_RED.hrs");
 	m_ScriptSystem->Set_Auto_Script(4,"HOPPER_CLOSE_BLUE.hrs");

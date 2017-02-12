@@ -19,7 +19,7 @@ BallManager::~BallManager() {
 }
 void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake)
 {
-	bool intake_mtr = ((intake)||(uptake));
+	bool intake_mtr = (intake);//||(uptake));
 	bool outake_mtr = (outake);
 
 	bool conveyor_in_mtr = ((intake)||(uptake));
@@ -35,4 +35,6 @@ void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake)
 void BallManager::SendData()
 {
 	Uptake->Send_Data();
+	Intake->Send_Data();
+	Conveyor->Send_Data();
 }

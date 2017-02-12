@@ -8,12 +8,14 @@
 #include "TalonSRX.h"
 #include "CanTalon.h"
 #include "Defines.h"
+#include "Turret.h"
 
 #ifndef SRC_GEARMANIPULATOR_H_
 #define SRC_GEARMANIPULATOR_H_
 
 class GearManipulator {
 public:
+
 	CANTalon *GearIntake;
 
 	Solenoid *IntakeDown;
@@ -22,7 +24,7 @@ public:
 	GearManipulator();
 	virtual ~GearManipulator();
 
-	void UpdateGear(bool intake, bool outtake);
+	void UpdateGear(bool down_intake, bool down_outtake,bool intake,bool up,TurretClass* Turret);
 	void GearIn();
 	void GearOut();
 };

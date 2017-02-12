@@ -18,8 +18,8 @@ static float YDTable_Y[] = { -.39f, -.16, .24};//-.2667f,  0.2020f, 0.4680f, 0.9
 static float YDTable_Distance[] = {  12.5f, 10.0f, 7.0f};//11.0f, 4.0f, 2.7083f, 0.9583f };
 
 //Estimate RPM from Target Distance
-static float DRPM_DistanceTable75[] = { 7.0f , 10.0f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
-static float DRPM_RPMTable75[] = { 3072.0f, 3650.0f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};
+static float DRPM_DistanceTable75[] = { 7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
+static float DRPM_RPMTable75[] = { 3072.0f, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -47,7 +47,7 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->SetClosedLoopOutputDirection(true);
 
 	Shooter->SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	SetShooterConstants(Shooter_WheelK,0,0,.00019);
+	SetShooterConstants(Shooter_WheelK,0,0,.00019);//,Shooter_WheelK_Down);
 	Shooter->SetAllowableClosedLoopErr(10);
 	Shooter->ConfigNominalOutputVoltage(+0.f,-0.f);
 	Shooter->ConfigPeakOutputVoltage(+12.f,-12.f);
@@ -81,10 +81,10 @@ void ShooterWheelClass::SetSpeed(float command)
 	Shooter->Set(-command);
 	Shooter_2->Set(-command);
 }
-void ShooterWheelClass::SetShooterConstants(float p,float i,float d,float f)
+void ShooterWheelClass::SetShooterConstants(float p,float i,float d,float f)//,float k_down)
 {
 	Shooter_WheelK = p;
-	Shooter_WheelK_Down = p;
+	Shooter_WheelK_Down = p;//k_down;
 #if TALON_SPEED_CONTROL
 	p *= 1024.f;
 	i *= 1024.f;

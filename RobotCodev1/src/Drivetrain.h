@@ -25,13 +25,13 @@ public:
 	Encoder *LeftEncoder;
 	Encoder *RightEncoder;
 
-	Solenoid * Highgear;
-	Solenoid * Lowgear;
+	Solenoid *Highgear;
+	Solenoid *Lowgear;
 
-	bool CurrentShifterToggleTrig = false;
-	bool PrevShifterToggleTrig = false;
-	bool ToggleState = 1;
-	bool ToggleStateNeutral = -1;
+	bool CurrentShifterToggleTrig;// = false;
+	bool PrevShifterToggleTrig;// = false;
+	bool ToggleState;// = 1;
+	bool ToggleStateNeutral;// = -1;
 
 	float mult = -.15f;
 

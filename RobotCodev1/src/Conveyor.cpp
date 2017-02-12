@@ -19,14 +19,18 @@ void ConveyorClass::Update(bool intake,bool outake)
 {
 	if(intake)
 	{
-		Conveyor->Set(-.6f);
+		Conveyor->Set(1);
 	}
 	else if(outake)
 	{
-		Conveyor->Set(.6f);
+		Conveyor->Set(-1);
 	}
 	else
 	{
 		Conveyor->Set(0);
 	}
+}
+void ConveyorClass::Send_Data()
+{
+	SmartDashboard::PutNumber("Conveyor Speed", Conveyor->Get());
 }

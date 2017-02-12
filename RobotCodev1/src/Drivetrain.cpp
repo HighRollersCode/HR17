@@ -27,6 +27,11 @@ Drivetrainclass::Drivetrainclass()
 	Highgear = new Solenoid(Sol_Shifter_In);
 	Lowgear = new Solenoid(Sol_Shifter_Out);
 
+	CurrentShifterToggleTrig = false;
+	PrevShifterToggleTrig = false;
+	ToggleState = 1;
+	ToggleStateNeutral = -1;
+
 	LeftEncoder->Reset();
 	RightEncoder->Reset();
 
@@ -87,23 +92,24 @@ float Drivetrainclass::ComputeAngleDelta(float t)
 }
 void Drivetrainclass::Shifter_Update(bool ShifterEnable)
 {
+	/*
 	PrevShifterToggleTrig = CurrentShifterToggleTrig;
 	CurrentShifterToggleTrig = ShifterEnable;
 
-	if(PrevShifterToggleTrig == false && CurrentShifterToggleTrig == true)
+	if((PrevShifterToggleTrig == false) && (CurrentShifterToggleTrig == true))
 	{
 		ToggleState = -ToggleState;
 		ToggleStateNeutral = -1;
-	}
-	if(ToggleState == 1)
-	{
-		Lowgear->Set(false);
-		Highgear->Set(true);
-	}
-	else if(ToggleState == -1)
+	}*/
+	if(ShifterEnable)//ToggleState == 1)
 	{
 		Lowgear->Set(true);
 		Highgear->Set(false);
+	}
+	else// if(ToggleState == -1)
+	{
+		Lowgear->Set(false);
+		Highgear->Set(true);
 	}
 }
 void Drivetrainclass::Drive_Auton(float Left,float Right)

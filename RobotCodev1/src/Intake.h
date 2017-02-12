@@ -10,6 +10,7 @@
 #include "CANSpeedController.h"
 #include "TalonSRX.h"
 #include "CANTalon.h"
+#include "PowerDistributionPanel.h"
 
 #ifndef SRC_INTAKE_H_
 #define SRC_INTAKE_H_
@@ -21,6 +22,9 @@ class IntakeClass {
 public:
 
 	CANTalon *Intake;
+	PowerDistributionPanel *PDP;
+
+	bool motor_stall = false;
 
 	IntakeClass();
 	virtual ~IntakeClass();
@@ -29,6 +33,7 @@ public:
 	void IntakeIn();
 	void IntakeOut();
 	void IntakeOff();
+	void Send_Data();
 };
 
 #endif /* SRC_INTAKE_H_ */

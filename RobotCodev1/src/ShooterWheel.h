@@ -78,7 +78,7 @@ public:
 	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
-	void SetShooterConstants(float p,float i,float d,float f);
+	void SetShooterConstants(float p,float i,float d,float f);//,float k_down);
 	float Get_Goal_Distance(float y);
 	float EstimateDistance(float ty);
 	float EstimateRPM(float distance);
