@@ -20,13 +20,16 @@
 #define LEFT_MOTOR_CMD leftStick->GetY()
 #define SHIFTER_UPDATE leftStick->GetTrigger()
 
-#define GEAR_DOWN_INTAKE leftStick->GetRawButton(3)
 #define GEAR_DOWN_OUTAKE leftStick->GetRawButton(2)
-#define GEAR_UP leftStick->GetRawButton(4)
-#define GEAR_INTAKE leftStick->GetRawButton(5)
+#define GEAR_INTAKE leftStick->GetRawButton(3)
+
+#define GEAR_UP leftStick->GetRawButton(5)
+#define GEAR_DOWN_INTAKE leftStick->GetRawButton(4)
 
 #define CLIMBER_UP leftStick->GetRawButton(6)
 #define CLIMBER_DOWN (leftStick->GetRawButton(6) && leftStick->GetRawButton(7))
+
+#define GEAR_RESET leftStick->GetRawButton(10)
 
 //RightStick controls
 
@@ -60,42 +63,44 @@
 
 //Ports for the Victor Drivetrain
 
-#define Vic_Drive_Left_1 2
-#define Vic_Drive_Left_2 3
+#define Vic_Drive_Left_1 0
+#define Vic_Drive_Left_2 1
 
-#define Vic_Drive_Right_1 0
-#define Vic_Drive_Right_2 1
+#define Vic_Drive_Right_1 2
+#define Vic_Drive_Right_2 3
 
 #define Vic_Turret 4
 
 //Device ID for Talon Motors
-#define Tal_Intake 3 //2
+#define Tal_Intake 3
 
-#define Tal_Turret 7 //2
+#define Tal_Turret 7
 
-#define Tal_Shooter_Wheel 2 //2
-#define Tal_Shooter_Wheel_2 21 //11
+#define Tal_Shooter_Wheel 21
+#define Tal_Shooter_Wheel_2 2
 
-#define Tal_Hopper 5 //6
-//#define Tal_Hopper_Intake 4
-#define Tal_Conveyor_Belt 9 //1
+#define Tal_Hopper 9
 
-#define Tal_Climber 6 //3
+#define Tal_Climber 6
 #define Tal_Climber_2 4
 
-#define Tal_Gear_Intake 11 //7
+#define Tal_Gear_Intake 11
+#define Tal_Gear_Lift 5
 
-//PDP Port for Climber Motor
+//PDP Port
 #define PDP_Climber 1
 
 #define PDP_Intake 9
 
-//Solenoid Ports
-#define Sol_Gear_Up 0
-#define Sol_Gear_Down 1
+//Gyro
+#define CAN_PIGEON 10
 
-#define Sol_Shifter_In 2
-#define Sol_Shifter_Out 3
+//Solenoid Ports
+//#define Sol_Gear_Up 0
+//#define Sol_Gear_Down 1
+
+#define Sol_Shifter_In 3
+#define Sol_Shifter_Out 2
 
 //DIO ports for Encoders
 #define Encoder_Drive_Left_1 0
@@ -106,11 +111,12 @@
 #define Encoder_Arm_Turret_1 4
 #define Encoder_Arm_Turret_2 5
 
-#define Encoder_Shooter_Wheel_1 8
-#define Encoder_Shooter_Wheel_2 9
+//Plugged straight into the talon
+//#define Encoder_Shooter_Wheel_1 8
+//#define Encoder_Shooter_Wheel_2 9
 
-#define Encoder_Intake_Lift_1 6
-#define Encoder_Intake_Lift_2 7
+//#define Encoder_Intake_Lift_1 6
+//#define Encoder_Intake_Lift_2 7
 
 //Probably not needed
 #define Preset_Intake_Floor -500

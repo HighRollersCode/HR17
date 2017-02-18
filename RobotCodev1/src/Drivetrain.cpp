@@ -8,18 +8,32 @@
 #include "Drivetrain.h"
 #include "stdlib.h"
 
-Drivetrainclass::Drivetrainclass()
+Drivetrainclass::Drivetrainclass(CANTalon *GyroTalon)
 {
+#if USEPIGEON
+	GyroTalon->SetStatusFrameRateMs(CANTalon::StatusFrameRateAnalogTempVbat,10);
+	GyroTalon->SetStatusFrameRateMs(CANTalon::StatusFrameRateFeedback,10);
+	GyroTalon->SetStatusFrameRateMs(CANTalon::StatusFrameRateGeneral,10);
+	pigeon = NULL;
+	pigeon = new PigeonImu(GyroTalon);
+	pigeon->SetFusedHeading(0.0);
+#else
 	gyro = NULL;
 	gyro = new AnalogGyro(0);
 	gyro->SetSensitivity(0.007f);
 	gyro->Calibrate();
 	gyro->Reset();
+#endif
 
 	LeftDrive = new Victor (Vic_Drive_Left_1);
 	LeftDrive2 = new Victor (Vic_Drive_Left_2);
 	RightDrive = new Victor (Vic_Drive_Right_1);
 	RightDrive2 = new Victor (Vic_Drive_Right_2);
+
+	LeftDrive->Set(0.0f);
+	LeftDrive2->Set(0.0f);
+	RightDrive->Set(0.0f);
+	RightDrive2->Set(0.0f);
 
 	LeftEncoder = new Encoder(Encoder_Drive_Left_1,Encoder_Drive_Left_2,false,Encoder::EncodingType::k4X);
 	RightEncoder = new Encoder(Encoder_Drive_Right_1,Encoder_Drive_Right_2,false,Encoder::EncodingType::k4X);
@@ -71,18 +85,30 @@ int Drivetrainclass::GetRightEncoder()
 }
 void Drivetrainclass::Zero_Yaw()
 {
+#if USEPIGEON
+	pigeon->SetFusedHeading(0);
+#else
 	if(gyro != NULL)
 	{
 		gyro->Reset();
 	}
+#endif
 }
-float Drivetrainclass::GetHeading(void)
+double Drivetrainclass::GetHeading()
 {
+	double yawpitchroll[3]{0,0,0};
+#if USEPIGEON
+	if(pigeon->GetState() == PigeonImu::Ready)
+	{
+		pigeon->GetYawPitchRoll(yawpitchroll);
+	}
+#else
 	if(gyro != NULL)
 	{
-		return gyro->GetAngle();
+		yawpitchroll[0] = gyro->GetAngle();
 	}
-	return 0.0f;
+#endif
+	return yawpitchroll[0];
 }
 float Drivetrainclass::ComputeAngleDelta(float t)
 {
@@ -132,7 +158,12 @@ float Drivetrainclass::Compute_Speed()
 }
 void Drivetrainclass::Send_Data()
 {
-	SmartDashboard::PutNumber("Gyro", gyro->GetAngle());
+#if USEPIGEON
+	SmartDashboard::PutBoolean("Pigeon Status",(pigeon->GetState() == PigeonImu::Ready));
+	SmartDashboard::PutNumber("Pigeon Yaw", GetHeading());
+#else
+	SmartDashboard::PutNumber("Gyro", GetHeading());
+#endif
 	SmartDashboard::PutNumber("Left Encoder", LeftEncoder->Get());
 	SmartDashboard::PutNumber("Right Encoder", RightEncoder->Get());
 }

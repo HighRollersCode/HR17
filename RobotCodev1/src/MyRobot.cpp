@@ -35,8 +35,9 @@ MyRobotClass::MyRobotClass()
 	rightStick = new Joystick(1);
 	turretStick = new Joystick(2);
 	XBoxController = new XboxController(3);
+	Climber = new ClimberClass();
 
-	Drivetrain = new Drivetrainclass();
+	Drivetrain = new Drivetrainclass(Climber->Climber);
 	Intake = new IntakeClass();
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
@@ -47,14 +48,15 @@ MyRobotClass::MyRobotClass()
 	ShotMng = new ShotManager(Turret,ShooterWheel);
 
 	GearMpltr = new GearManipulator();
-	Climber = new ClimberClass();
+
 	printf("Basic Initialization\r\n");
 	TargClient = new TargetingSystemClient();
 	TargClient->Connect(JETSON_IP,JETSON_PORT);
 	printf("TargClient Initialized\r\n");
 	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),TargClient,ShotMng,BallMng);//ShooterWheel,Hopper);
 
-	LightRelay = new Relay(0);
+	LightRelay = new Spark(4);
+
 
 	ReconnectTimer = new Timer();
 	ReconnectTimer->Reset();
@@ -106,7 +108,8 @@ void MyRobotClass::Shutdown_Jetson(void)
 
 void MyRobotClass::Disabled(void)
 {
-	LightRelay->Set(Relay::kOff);
+	//LightRelay->Set(Relay::kOff);
+	LightRelay->Set(0);
 
 	printf("Disabled\r\n");
 	while(IsDisabled())
@@ -137,6 +140,10 @@ void MyRobotClass::UpdateInputs()
 	#if !USING_GAMEPAD
 		commandLeft = -LEFT_MOTOR_CMD;//-leftStick->GetY();
 		commandRight = RIGHT_MOTOR_CMD;//rightStick->GetY();
+
+		if (fabs(commandLeft) < 0.2f) commandLeft = 0.0f;
+		if (fabs(commandRight) < 0.2f) commandRight = 0.0f;
+
 	#else
 		commandLeft = XBoxController->GetRawAxis(1);
 		commandRight = XBoxController->GetRawAxis(4);
@@ -157,13 +164,15 @@ void MyRobotClass::Send_Data()
 		ShotMng->Send_Data();
 		TargClient->SmartDashboardUpdate();
 		BallMng->SendData();
+		GearMpltr->Send_Data();
 	}
 }
 void MyRobotClass::OperatorControl(void)
 {
 	Load_Scripts();
 	m_ScriptSystem->Run_Auto_Script(0);
-	LightRelay->Set(Relay::kOn);
+	LightRelay->Set(1);
+	//LightRelay->Set(Relay::kOn);
 
 
 	Reset_State();
@@ -211,7 +220,11 @@ void MyRobotClass::OperatorControl(void)
 		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE);
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
 
-		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP,Turret);
+		if (GEAR_RESET)
+		{
+			GearMpltr->ResetGearEncoder();
+		}
+		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP);
 
 		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_DOWN);
 		/*if(CLIMBER_UP)

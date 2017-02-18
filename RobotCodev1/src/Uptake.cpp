@@ -38,11 +38,11 @@ void UptakeClass::UpdateUptake(bool uptake,bool downtake)
 }
 void UptakeClass::UptakeUp()
 {
-	Uptake->Set(-.8f);
+	Uptake->Set(.8f);
 }
 void UptakeClass::UptakeDown()
 {
-	Uptake->Set(.8f);
+	Uptake->Set(-.8f);
 }
 void UptakeClass::UptakeOff()
 {

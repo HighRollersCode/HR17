@@ -8,14 +8,23 @@
 #include "WPILib.h"
 #include "Defines.h"
 #include "AnalogGyro.h"
+#include "PigeonImu.h"
 
 #ifndef SRC_DRIVETRAIN_H_
 #define SRC_DRIVETRAIN_H_
+#define USEPIGEON 1
 
 class Drivetrainclass {
 
 private:
+#if USEPIGEON
+	PigeonImu *pigeon;
+#else
 	AnalogGyro *gyro;
+#endif
+
+
+
 public:
 	Victor *LeftDrive;
 	Victor *RightDrive;
@@ -35,7 +44,7 @@ public:
 
 	float mult = -.15f;
 
-	Drivetrainclass();
+	Drivetrainclass(CANTalon *GyroTalon);
 	virtual ~Drivetrainclass();
 
 	int GetLeftEncoder();
@@ -45,7 +54,7 @@ public:
 	void Zero_Yaw();
 	void IMUCalibration();
 	float ComputeAngleDelta(float t);
-	float GetHeading(void);
+	double GetHeading();
 	float Compute_Speed();
 
 	void StandardTank(float left, float right);

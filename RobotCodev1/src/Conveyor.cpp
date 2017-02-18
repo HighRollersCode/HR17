@@ -9,7 +9,7 @@
 
 ConveyorClass::ConveyorClass() {
 
-	Conveyor = new CANTalon(Tal_Conveyor_Belt);
+//	Conveyor = new CANTalon(Tal_Conveyor_Belt);
 }
 
 ConveyorClass::~ConveyorClass() {
@@ -17,6 +17,7 @@ ConveyorClass::~ConveyorClass() {
 }
 void ConveyorClass::Update(bool intake,bool outake)
 {
+	/*
 	if(intake)
 	{
 		Conveyor->Set(1);
@@ -28,9 +29,9 @@ void ConveyorClass::Update(bool intake,bool outake)
 	else
 	{
 		Conveyor->Set(0);
-	}
+	}*/
 }
 void ConveyorClass::Send_Data()
 {
-	SmartDashboard::PutNumber("Conveyor Speed", Conveyor->Get());
+	//SmartDashboard::PutNumber("Conveyor Speed", Conveyor->Get());
 }

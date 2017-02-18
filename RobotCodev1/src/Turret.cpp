@@ -150,10 +150,11 @@ void TurretClass::Tele_Start()
 #if TURRET_TALON_CONTROL
 	Turret->SetControlMode(CANTalon::kPercentVbus);
 #else
-	TurretPIDController->Disable();
-	TurretPIDController->Reset();
 
-	SetTurret(GetTurretEncoder());
+	TurretPIDController->Reset();
+	TurretPIDController->Disable();
+	Turret->Set(0);
+	//	SetTurret(GetTurretEncoder());
 #endif
 	isTracking = false;
 

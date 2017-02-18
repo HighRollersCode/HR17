@@ -290,7 +290,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new GearManipulatorCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->GearMpltr->UpdateGear(0,m_Parameters[0],0,m_Parameters[1],0);
+		MyRobotClass::Get()->GearMpltr->UpdateGear(0,m_Parameters[0],0,m_Parameters[1]);
 	}
 };
 class SetIntakeCommand : public HrScriptCommandClass
@@ -402,16 +402,22 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Load_And_Run_Script("RobotSettings.hrs");
 
 	// Load all of the auto-mode scripts
-	m_ScriptSystem->Set_Auto_Script(1,"GEAR_MIDDLE_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(11,"GEAR_RIGHT_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(12,"GEAR_LEFT_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(2,"GEAR_MIDDLE_BLUE.hrs");
-	m_ScriptSystem->Set_Auto_Script(21,"GEAR_RIGHT_BLUE.hrs");
-	m_ScriptSystem->Set_Auto_Script(22,"GEAR_LEFT_BLUE.hrs");
-	m_ScriptSystem->Set_Auto_Script(3,"HOPPER_CLOSE_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(31,"HOPPER_MIDDLE_RED.hrs");
-	m_ScriptSystem->Set_Auto_Script(4,"HOPPER_CLOSE_BLUE.hrs");
-	m_ScriptSystem->Set_Auto_Script(41,"HOPPER_MIDDLE_BLUE.hrs");
+
+	//Red Side Autos
+	m_ScriptSystem->Set_Auto_Script(11,"RED_GEAR_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(112,"RED_GEAR_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(113,"RED_GEAR_LEFT.hrs");
+	m_ScriptSystem->Set_Auto_Script(12,"RED_HOPPER_CLOSE.hrs");
+	m_ScriptSystem->Set_Auto_Script(122,"RED_HOPPER_MIDDLE.hrs");
+
+	//Blue Side Autos
+	m_ScriptSystem->Set_Auto_Script(21,"BLUE_GEAR_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(212,"BLUE_GEAR_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(213,"BLUE_GEAR_LEFT.hrs");
+	m_ScriptSystem->Set_Auto_Script(22,"BLUE_HOPPER_CLOSE.hrs");
+	m_ScriptSystem->Set_Auto_Script(222,"BLUE_HOPPER_MIDDLE.hrs");
+
+	//EmptyAuto
 	m_ScriptSystem->Set_Auto_Script(999,"EMPTY.hrs");
 
 	//Settings

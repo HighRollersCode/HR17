@@ -14,7 +14,8 @@
 
 class ConveyorClass {
 public:
-	CANTalon *Conveyor;
+
+	//CANTalon *Conveyor;
 
 	ConveyorClass();
 	virtual ~ConveyorClass();

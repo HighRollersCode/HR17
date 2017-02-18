@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <Uptake.h>
+#include "Spark.h"
 
 #include "Drivetrain.h"
 #include "Intake.h"
@@ -58,7 +59,7 @@ public:
 	BallManager *BallMng;
 	Auton *AutonomousControl;
 
-	Relay *LightRelay;
+	Spark *LightRelay;
 
 	Timer *ReconnectTimer;
 	Timer *GameTimer;

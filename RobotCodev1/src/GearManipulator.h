@@ -16,17 +16,23 @@
 class GearManipulator {
 public:
 
-	CANTalon *GearIntake;
-
-	Solenoid *IntakeDown;
-	Solenoid *IntakeUp;
-
 	GearManipulator();
 	virtual ~GearManipulator();
 
-	void UpdateGear(bool down_intake, bool down_outtake,bool intake,bool up,TurretClass* Turret);
+	void UpdateGear(bool down, bool down_outtake,bool intake,bool up);
+	void Send_Data();
+	void ResetGearEncoder();
+
+private:
+
+	CANTalon *GearIntake;
+	CANTalon *GearLift;
+
 	void GearIn();
 	void GearOut();
+	void UpdateGearManual(bool down, bool down_outtake,bool intake,bool up);
+	void UpdateGearTalon(bool down, bool down_outtake,bool intake,bool up);
+
 };
 
 #endif /* SRC_GEARMANIPULATOR_H_ */

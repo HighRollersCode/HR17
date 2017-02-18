@@ -44,7 +44,8 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->SetControlMode(CANTalon::kSpeed);
 	Shooter_2->SetControlMode(CANTalon::kFollower);
 	Shooter_2->Set(Tal_Shooter_Wheel);
-	Shooter->SetClosedLoopOutputDirection(true);
+	Shooter->SetClosedLoopOutputDirection(false);
+	Shooter->SetStatusFrameRateMs(CANTalon::StatusFrameRateAnalogTempVbat,10);
 
 	Shooter->SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 	SetShooterConstants(Shooter_WheelK,0,0,.00019);//,Shooter_WheelK_Down);
@@ -52,16 +53,17 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->ConfigNominalOutputVoltage(+0.f,-0.f);
 	Shooter->ConfigPeakOutputVoltage(+12.f,-12.f);
 	Shooter->SelectProfileSlot(0);
-	Shooter->SetSensorDirection(true);
+	Shooter->SetSensorDirection(false);
 	Shooter->SetVoltageRampRate(100);
 	Shooter_2->SetVoltageRampRate(100);
+#else
+	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
+	ShooterEnc->Reset();
 #endif
 
 	//HoodUp = new Solenoid(Sol_Hood_Up);
 	//HoodDown = new Solenoid(Sol_Hood_Down);
 
-	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
-	ShooterEnc->Reset();
 
 	RPMList =  new std::vector<float>();
 	RPMList->empty();
@@ -306,10 +308,13 @@ void ShooterWheelClass::SetState(int newstate)
 }
 void ShooterWheelClass::Send_Data()
 {
+#if TALON_SPEED_CONTROL
 	SmartDashboard::PutNumber("ShooterRPM",RPM);
 	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
+#else
 	SmartDashboard::PutNumber("ShooterEnc", ShooterEnc->Get());
+#endif
 	SmartDashboard::PutNumber("Target RPM", trpm);
 	SmartDashboard::PutNumber("Target Distance", tdistance);
 	SmartDashboard::PutNumber("Target Y", targy);
