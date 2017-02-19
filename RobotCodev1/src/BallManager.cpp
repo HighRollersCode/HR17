@@ -17,7 +17,7 @@ BallManager::BallManager(IntakeClass *RobotIntake,UptakeClass *RobotUptake,Conve
 BallManager::~BallManager() {
 	// TODO Auto-generated destructor stub
 }
-void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake)
+void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake,float shaker)
 {
 	bool intake_mtr = (intake);//||(uptake));
 	bool outake_mtr = (outake);
@@ -29,7 +29,7 @@ void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake)
 	bool downtake_mtr = (downtake);
 
 	Intake->UpdateIntake(intake_mtr,outake_mtr);
-	Uptake->UpdateUptake(uptake_mtr,downtake_mtr);
+	Uptake->UpdateUptake(uptake_mtr,downtake_mtr,shaker);
 	//Conveyor->Update(conveyor_in_mtr,conveyor_out_mtr);
 }
 void BallManager::SendData()

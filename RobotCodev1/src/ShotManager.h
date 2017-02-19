@@ -16,12 +16,6 @@
 #ifndef SRC_SHOTMANAGER_H_
 #define SRC_SHOTMANAGER_H_
 
-/*struct Vector2
-{
-	float x;
-	float y;
-};*/
-
 class ShotManager {
 public:
 
@@ -44,13 +38,21 @@ public:
 	int counter = 0;
 	bool transitioning = false;
 
+	float AdjustRPM = 0;
+	float AdjustAngle = 0;
+	float AdjustForward  = 0;
+	float AdjustSide = 0;
+	Vector2 RobotVel = Vector2();
+
+
 	RobotMode currentMode = RobotMode::Free;
 	ShotManager(TurretClass *RobotTurret,ShooterWheelClass *RobotShooterWheel);
 	virtual ~ShotManager();
 
 	void EnterState(RobotMode mode);
 	void StartTracking(float enable);
-	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideRPM,float tx,float calx,float ty);//,Vector2 RobotVelocity);
+	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideMtr,float OverrideRPM,float tx,
+			float calx,float ty, Vector2 RobotVelocity);
 	void Send_Data();
 
 };

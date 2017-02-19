@@ -147,8 +147,16 @@ float Drivetrainclass::Compute_Speed()
 	float ticks_per_revolution = 1024;
 	float feet_per_revolution = 1.57f;
 
-	float left_rpm = ((1.0f/(LeftEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
-	float right_rpm = ((1.0f/(RightEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
+	float left_rpm = 0.0f;
+	float right_rpm = 0.0f;
+	if (!LeftEncoder->GetStopped())
+	{
+		left_rpm = ((1.0f/(LeftEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
+	}
+	if (!RightEncoder->GetStopped())
+	{
+		right_rpm = ((1.0f/(RightEncoder->GetPeriod()))*60.0f)/ticks_per_revolution;
+	}
 	float average_rpm = ((left_rpm + right_rpm)/2);
 
 	float average_fpm = feet_per_revolution/average_rpm;

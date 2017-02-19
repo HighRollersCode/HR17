@@ -31,8 +31,6 @@ enum ShooterState
 class ShooterWheelClass
 {
 
-	int prevlow = 0;
-	int prevoverride = 0;
 	int State = 0;
 
 	float currentPresetSpeed = 0;
@@ -68,6 +66,10 @@ public:
 	bool isTracking = false;
 	bool CurrentEnableTracking = false;
 	bool PrevEnableTracking = false;
+	bool CurOverridePower = false;
+	bool CurOverrideRPM = false;
+	bool PrevOverridePower = false;
+	bool PrevOverrideRPM = false;
 
 	ShooterWheelClass();
 	virtual ~ShooterWheelClass();
@@ -75,7 +77,7 @@ public:
 	void SetSpeed(float command);
 	void Send_Data();
 	void WheelOff();
-	void UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
+	void UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
 	void SetShooterConstants(float p,float i,float d,float f);//,float k_down);

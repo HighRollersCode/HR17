@@ -43,11 +43,11 @@ void IntakeClass::UpdateIntake(float intake, float outtake)
 }
 void IntakeClass::IntakeIn()
 {
-	Intake->Set(-1);
+	Intake->Set(-.8f);
 }
 void IntakeClass::IntakeOut()
 {
-	Intake->Set(1);
+	Intake->Set(.8f);
 }
 void IntakeClass::IntakeOff()
 {

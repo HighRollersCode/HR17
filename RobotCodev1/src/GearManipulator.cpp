@@ -7,7 +7,7 @@
 
 #include <GearManipulator.h>
 
-#define GEAR_TALON_CONTROL 1
+#define GEAR_TALON_CONTROL 0
 
 #define Gear_Intake_Position 2000
 
@@ -131,4 +131,6 @@ void GearManipulator::Send_Data()
 void GearManipulator::ResetGearEncoder()
 {
 	GearLift->SetEncPosition(0);
+	GearLift->SelectProfileSlot(1);
+	GearLift->SetSetpoint(ticks_to_revs(0));
 }

@@ -7,6 +7,8 @@
 
 #include <MyRobot.h>
 
+#define IsCalibrating 1
+
 class ShutdownJetsonCommand : public Command
 {
 public:
@@ -30,6 +32,8 @@ MyRobotClass::MyRobotClass()
 	TheRobot = this;
 
 	SmartDashboard::init();
+
+	Calibratemtr = new CANTalon(60);
 
 	leftStick = new Joystick(0);
 	rightStick = new Joystick(1);
@@ -126,6 +130,7 @@ void MyRobotClass::Reset_State()
 }
 void MyRobotClass::Autonomous(void)
 {
+	flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
 	Load_Scripts();
 		printf("loaded\n");
 		m_ScriptSystem->Run_Auto_Script(0);
@@ -180,6 +185,7 @@ void MyRobotClass::OperatorControl(void)
 	while (IsOperatorControl() && IsEnabled())
 	{
 
+
 		int prevtele = intele;
 		intele  = 1;
 		if(prevtele == 0 && intele == 1)
@@ -213,11 +219,25 @@ void MyRobotClass::OperatorControl(void)
 		{
 			RPM = 0;
 		}
+		if(leftStick->GetRawButton(8))
+		{
+			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
+			Calibratemtr->Set(1);
+		}
+		else if(leftStick->GetRawButton(9))
+		{
+			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
+			Calibratemtr->Set(-1);
+		}
+		else
+		{
+			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
+			Calibratemtr->Set(0);
+		}
+		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)*.5f),
+				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity());
 
-		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_LOW,SHOOTER_ENABLE_OVERRIDE,RPM,
-				TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset());//,Compute_Robot_Velocity());
-
-		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE);
+		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE,((rightStick->GetZ() + 1.0f) * .5f));
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
 
 		if (GEAR_RESET)
@@ -260,8 +280,10 @@ void MyRobotClass::OperatorControl(void)
 Vector2 MyRobotClass::Compute_Robot_Velocity()
 {
 	Vector2 velocity;
-	velocity.x = Drivetrain->Compute_Speed();
-	velocity.y = Turret->Compute_Robot_Angle();
+	float speed = Drivetrain->Compute_Speed();
+	float angle = Turret->Compute_Robot_Angle();
+	velocity.x = sin(angle * (3.14f/180.0f)) * speed;
+	velocity.y = cos(angle * (3.14f/180.0f)) * speed;
 	return velocity;
 }
 START_ROBOT_CLASS(MyRobotClass);

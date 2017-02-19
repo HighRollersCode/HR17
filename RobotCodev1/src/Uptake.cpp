@@ -10,6 +10,7 @@
 UptakeClass::UptakeClass()
 {
 	Uptake = new CANTalon(Tal_Hopper);
+	Shaker = new Victor(Vic_Shaker);
 
 	UptakeTimer = new Timer();
 	UptakeTimer->Reset();
@@ -21,8 +22,9 @@ UptakeClass::UptakeClass()
 UptakeClass::~UptakeClass() {
 	// TODO Auto-generated destructor stub
 }
-void UptakeClass::UpdateUptake(bool uptake,bool downtake)
+void UptakeClass::UpdateUptake(bool uptake,bool downtake,float shaker)
 {
+	Shaker->Set(shaker);
 	if(uptake)
 	{
 		UptakeUp();
@@ -38,11 +40,11 @@ void UptakeClass::UpdateUptake(bool uptake,bool downtake)
 }
 void UptakeClass::UptakeUp()
 {
-	Uptake->Set(.8f);
+	Uptake->Set(-.8f);
 }
 void UptakeClass::UptakeDown()
 {
-	Uptake->Set(-.8f);
+	Uptake->Set(.8f);
 }
 void UptakeClass::UptakeOff()
 {

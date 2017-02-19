@@ -23,7 +23,7 @@ public:
 	BallManager(IntakeClass *RobotIntake,UptakeClass *RobotUptake,ConveyorClass *RobotConveyor);
 	virtual ~BallManager();
 
-	void Update(bool intake, bool outake,bool uptake,bool downtake);
+	void Update(bool intake, bool outake,bool uptake,bool downtake,float shaker);
 	void SendData();
 
 };

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <Uptake.h>
 #include "Spark.h"
+#include "CANTalon.h"
 
 #include "Drivetrain.h"
 #include "Intake.h"
@@ -27,11 +28,6 @@
 #include "Auton.h"
 #include "XboxController.h"
 
-struct Vector2
-{
-	float x;
-	float y;
-};
 class MyRobotClass : public SampleRobot
 {
 public:
@@ -40,6 +36,8 @@ public:
 	float commandRight = 0;
 	float commandIntake = 0;
 	float intele = 0;
+
+	CANTalon *Calibratemtr;
 
 	Joystick *leftStick;
 	Joystick *rightStick;
@@ -66,6 +64,8 @@ public:
 	Timer *SendTimer;
 	Timer *SmartDashTimer;
 	int connectionattempts = 0;
+
+	bool flipauto = false;
 
 	bool JetsonConnected = false;
 

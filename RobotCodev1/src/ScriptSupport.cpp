@@ -156,7 +156,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveHeadingTicksCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->AutonomousControl->Auto_GYROSTRAIGHT(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		if(MyRobotClass::Get()->flipauto)
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROSTRAIGHT(m_Parameters[0], m_Parameters[1],-m_Parameters[2]);
+		}
+		else
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROSTRAIGHT(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		}
 	}
 };
 class DriveTicksCommand : public HrScriptCommandClass
@@ -167,7 +174,14 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new DriveTicksCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->AutonomousControl->Auto_DriveEncoder(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		if(MyRobotClass::Get()->flipauto)
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_DriveEncoder(m_Parameters[0], -m_Parameters[1],m_Parameters[2]);
+		}
+		else
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_DriveEncoder(m_Parameters[0], m_Parameters[1],m_Parameters[2]);
+		}
 	}
 };
 class GyroTurnCommand : public HrScriptCommandClass
@@ -178,7 +192,15 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new GyroTurnCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN(m_Parameters[0]);
+		if(MyRobotClass::Get()->flipauto)
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN(-m_Parameters[0]);
+		}
+		else
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN(m_Parameters[0]);
+		}
+
 	}
 };
 class GyroTurnTimeCommand : public HrScriptCommandClass
@@ -190,7 +212,15 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new GyroTurnTimeCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN_TIMED(m_Parameters[0],m_Parameters[1]);
+		if(MyRobotClass::Get()->flipauto)
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN_TIMED(-m_Parameters[0],m_Parameters[1]);
+		}
+		else
+		{
+			MyRobotClass::Get()->AutonomousControl->Auto_GYROTURN_TIMED(m_Parameters[0],m_Parameters[1]);
+		}
+
 	}
 };
 
@@ -249,20 +279,27 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetTurretCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->Turret->SetTurret((int)m_Parameters[0]);
+		if(MyRobotClass::Get()->flipauto)
+		{
+			MyRobotClass::Get()->Turret->SetTurret(-(int)m_Parameters[0]);
+		}
+		else
+		{
+			MyRobotClass::Get()->Turret->SetTurret((int)m_Parameters[0]);
+		}
 	}
 };
-/*class FullShotCommand : public HrScriptCommandClass
+class ShootingCommand : public HrScriptCommandClass
 {
 public:
-	virtual const char * Get_Command_Name() { return "FullShot"; }
-	virtual int Get_Parameter_Count() { return 0; }
-	virtual HrScriptCommandClass * Create_Command() { return new FullShotCommand(); }
+	virtual const char * Get_Command_Name() { return "Shooting"; }
+	virtual int Get_Parameter_Count() { return 2; }
+	virtual HrScriptCommandClass * Create_Command() { return new ShootingCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->Arm->FullShot();
+		MyRobotClass::Get()->BallMng->Update(m_Parameters[0],0,m_Parameters[0],m_Parameters[1],0);
 	}
-};*/
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,7 +414,7 @@ void MyRobotClass::Init_Scripts_System()
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	m_ScriptSystem->Add_Command(new SetTurretCommand());
-	//m_ScriptSystem->Add_Command(new FullShotCommand());
+	m_ScriptSystem->Add_Command(new ShootingCommand());
 	m_ScriptSystem->Add_Command(new TrackingCommand());
 	m_ScriptSystem->Add_Command(new TurretEnablePIDCommand());
 
@@ -407,8 +444,9 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Set_Auto_Script(11,"RED_GEAR_MIDDLE.hrs");
 	m_ScriptSystem->Set_Auto_Script(112,"RED_GEAR_RIGHT.hrs");
 	m_ScriptSystem->Set_Auto_Script(113,"RED_GEAR_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(12,"RED_HOPPER_CLOSE.hrs");
+	m_ScriptSystem->Set_Auto_Script(12,"RED_HOPPER_RIGHT.hrs");
 	m_ScriptSystem->Set_Auto_Script(122,"RED_HOPPER_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(123,"RED_GEAR_HOPPER_RIGHT.hrs");
 
 	//Blue Side Autos
 	m_ScriptSystem->Set_Auto_Script(21,"BLUE_GEAR_MIDDLE.hrs");

@@ -227,8 +227,8 @@ bool Auton::Auto_System_Update()
 	if(Running())
 	{
 		Targeting->Update();
-		ShotMng->Update(0,false,false,false,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset());
-		BallMng->Update(intake,outake,(uptake || ShotMng->isReady),downtake);
+		ShotMng->Update(0,false,false,false,0,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(), Vector2());
+		BallMng->Update(intake,outake,(uptake || ShotMng->isReady),downtake,0);
 
 		SendData();
 

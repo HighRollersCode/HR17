@@ -10,6 +10,13 @@
 #ifndef SRC_DEFINES_H_
 #define SRC_DEFINES_H_
 
+
+struct Vector2
+{
+	float x = 0;
+	float y = 0;
+};
+
 #define USING_GAMEPAD 0
 
 #define USING_MXP 0
@@ -51,15 +58,15 @@
 
 #define TRACKING_ENABLE turretStick->GetRawButton(2)
 
-#define SHOOTER_ENABLE_LOW turretStick->GetRawButton(4)
+#define SHOOTER_ENABLE_MTR turretStick->GetRawButton(11)
 
-#define CALIBRATEJETSON turretStick->GetRawButton(6)
+#define CALIBRATEJETSON turretStick->GetRawButton(7)
 
 #define SHUTDOWN_JETSON turretStick->GetRawButton(8) && turretStick->GetRawButton(9)
 
 #define SHOOTER_ENABLE_OVERRIDE turretStick->GetRawButton(10)
 
-#define HOPPER_OUTAKE turretStick->GetRawButton(11)
+#define HOPPER_OUTAKE turretStick->GetRawButton(6)
 
 //Ports for the Victor Drivetrain
 
@@ -70,6 +77,8 @@
 #define Vic_Drive_Right_2 3
 
 #define Vic_Turret 4
+
+#define Vic_Shaker 5
 
 //Device ID for Talon Motors
 #define Tal_Intake 3

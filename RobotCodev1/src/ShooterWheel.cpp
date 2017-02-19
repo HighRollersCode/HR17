@@ -14,12 +14,16 @@ static float rpDes;
 static float cmdCorrection;
 
 //Estimate Distance from Target Pixels
-static float YDTable_Y[] = { -.39f, -.16, .24};//-.2667f,  0.2020f, 0.4680f, 0.9792f };
-static float YDTable_Distance[] = {  12.5f, 10.0f, 7.0f};//11.0f, 4.0f, 2.7083f, 0.9583f };
+static float YDTable_Y[] = { -.50f, -.16f, .24f, .86f};//-.2667f,  0.2020f, 0.4680f, 0.9792f };
+static float YDTable_Distance[] = {  12.0f, 10.0f, 8.0f, 6.25f};//11.0f, 4.0f, 2.7083f, 0.9583f };
 
-//Estimate RPM from Target Distance
-static float DRPM_DistanceTable75[] = { 7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
-static float DRPM_RPMTable75[] = { 3072.0f, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};
+/*Estimate RPM from Target Distance Narrow FOV
+static float DRPM_DistanceTable75[] = { 8.3f, 13.1f, 15.0f};  //7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
+static float DRPM_RPMTable75[] = {  3240.0f, 3660.0f, 3718.0f};//3072.0f,, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};*/
+
+//Estimate RPM from Target Distance Wide FOV
+static float DRPM_DistanceTable75[] = { 8.6f, 9.5f,  10.3f, 14.4f, 15.2f};  //7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
+static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f};//3072.0f,, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -33,6 +37,28 @@ static int RPM_TABLE_2_MTR_COUNT = sizeof(RPMTable_2mtr) / sizeof(RPMTable_2mtr[
 
 static int DRPM_TABLE_COUNT = sizeof(DRPM_DistanceTable75) / sizeof(DRPM_DistanceTable75[0]);
 static int YDTABLE_COUNT = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
+
+
+
+
+inline float ComputeDistance(float y)
+{
+	float FOV = 45.f; //Narrow FOV35.f;
+	float HRobot = 19.f;
+	float HBoiler = 90.f;
+	float CamAngle = 39.f;
+
+	float HDelta = HBoiler-HRobot;
+
+	float TargetAngle = (CamAngle+y*FOV/2);
+	float TargetAngleRadians = TargetAngle*3.14f/180.f;
+
+	float DistanceIn = (HDelta*(1/TargetAngleRadians));
+	float DistanceFt = DistanceIn/12;
+
+	return DistanceFt;
+}
+
 
 ShooterWheelClass::ShooterWheelClass()
 {
@@ -53,7 +79,7 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->ConfigNominalOutputVoltage(+0.f,-0.f);
 	Shooter->ConfigPeakOutputVoltage(+12.f,-12.f);
 	Shooter->SelectProfileSlot(0);
-	Shooter->SetSensorDirection(false);
+	Shooter->SetSensorDirection(true);
 	Shooter->SetVoltageRampRate(100);
 	Shooter_2->SetVoltageRampRate(100);
 #else
@@ -212,21 +238,22 @@ void ShooterWheelClass::WheelOff()
 	Shooter_2->Set(0.0f);
 	ShooterToggle = 1;
 }
-void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float OverrideRPM,bool TrackingEnable,float ty)//,double RobotTime,float crossY)
+void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty)//,double RobotTime,float crossY)
 {
+
+	PrevOverridePower = CurOverridePower;
+	CurOverridePower = EnableOverrideMtr;
+
+	PrevOverrideRPM = CurOverrideRPM;
+	CurOverrideRPM = EnableOverrideRPM;
 
 	PrevEnableTracking = CurrentEnableTracking;
 	CurrentEnableTracking = TrackingEnable;
 
-	/*float y = ty;
-	float distance = EstimateDistance(y);
-	float rpm = EstimateRPM(distance);
-	float power = EstimatePower(rpm);*/
-
-	//printf("Target Y",y);
-	//printf("Estimated Distance",distance);
-	//printf("Estimated RPM",rpm);
-	//printf("Estimated Power",power);
+	targy = ty;
+	tdistance = ComputeDistance(targy);
+	trpm = EstimateRPM(tdistance);
+	//float power = EstimatePower(trpm);
 
 #if TALON_SPEED_CONTROL
 	RPM = Shooter->GetSpeed();
@@ -246,12 +273,11 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 	}
 	RPM = sum/RPMList->size();
 #endif
-	if((EnableLow == 1)&&(prevlow == 0))
+	if((EnableOverrideMtr == 1)&&(PrevOverridePower == 0))
 	{
-		SetState(ShooterState_Low);
-		currentPresetSpeed = Shooter_Preset_Low;
+		SetState(ShooterState_override);
 	}
-	if((EnableOverride == 1)&&(prevoverride == 0))
+	if((EnableOverrideRPM == 1)&&(PrevOverrideRPM == 0))
 	{
 		SetState(ShooterState_overrideRPM);
 	}
@@ -259,7 +285,7 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 	{
 		SetState(ShooterState_tracking);
 	}
-	else if((CurrentEnableTracking == 0)&&(PrevEnableTracking == 1))
+	if((CurrentEnableTracking == 0)&&(PrevEnableTracking == 1))
 	{
 		SetState(ShooterState_off);
 	}
@@ -274,31 +300,30 @@ void ShooterWheelClass::UpdateShooter(int EnableLow,int EnableOverride,float Ove
 
 		if(State == ShooterState_overrideRPM)
 		{
+			Shooter->SetControlMode(CANTalon::kSpeed);
+			Shooter_2->SetControlMode(CANTalon::kFollower);
+			Shooter_2->Set(Tal_Shooter_Wheel);
 			PUpdate(OverrideRPM);
 		}
 		else if(State == ShooterState_override)
 		{
-#if !TALON_SPEED_CONTROL
-			SetSpeed(OverrideCommand);
-#endif
+			Shooter->SetControlMode(CANTalon::kPercentVbus);
+			Shooter_2->SetControlMode(CANTalon::kPercentVbus);
+			Shooter_2->Set(-OverrideMtr);
+			Shooter->Set(-OverrideMtr);
 		}
 		else if(State == ShooterState_tracking)
 		{
-			float distance = EstimateDistance(ty);
-			float rpm = EstimateRPM(distance);
-			PUpdate(rpm);
-			tdistance = distance;
-			trpm = rpm;
-			targy = ty;
+			Shooter->SetControlMode(CANTalon::kSpeed);
+			Shooter_2->SetControlMode(CANTalon::kFollower);
+			Shooter_2->Set(Tal_Shooter_Wheel);
+			PUpdate(trpm);
 		}
 		else
 		{
 			PUpdate(currentPresetSpeed);
 		}
 	}
-
-	prevlow = EnableLow;
-	prevoverride = EnableOverride;
 
 }
 void ShooterWheelClass::SetState(int newstate)
@@ -309,9 +334,15 @@ void ShooterWheelClass::SetState(int newstate)
 void ShooterWheelClass::Send_Data()
 {
 #if TALON_SPEED_CONTROL
-	SmartDashboard::PutNumber("ShooterRPM",RPM);
+	float rpmtemp = RPM;
+	if(rpmtemp < 3000)
+	{
+		rpmtemp = 3000;
+	}
+	SmartDashboard::PutNumber("ShooterRPM",rpmtemp);
 	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
+	SmartDashboard::PutNumber("ShooterEnc", Shooter->GetEncPosition());
 #else
 	SmartDashboard::PutNumber("ShooterEnc", ShooterEnc->Get());
 #endif
