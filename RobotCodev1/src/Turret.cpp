@@ -165,7 +165,7 @@ void TurretClass::Tele_Start()
 	LastShotTimer->Start();
 
 }
-void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,float target_area)
+void TurretClass::Update(float turret,bool TrackingEnable)
 {
 	isTracking = TrackingEnable;
 	PrevEnableTracking = CurrentEnableTracking;
@@ -200,7 +200,6 @@ void TurretClass::Update(float turret,bool TrackingEnable,float cx,float calx,fl
 		TurretPIDController->Disable();
 #endif
 	}
-		HandleTarget(cx,calx,target_area);
 		ArmTimer->Reset();
 		ArmTimer->Start();
 
@@ -210,7 +209,7 @@ void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_a
 {
 	if(ArmTimer->Get() > .01f)
 	{
-		HandleTarget(tx,crossX,target_area);
+		HandleTarget(tx,crossX,target_area,false,0);
 		ArmTimer->Reset();
 		ArmTimer->Start();
 	}
@@ -248,7 +247,7 @@ int TurretClass::GetTurretEncoder()
 	return TurretEncoder->Get();
 #endif
 }
-void TurretClass::HandleTarget(float centerX,float calX,float target_a)
+void TurretClass::HandleTarget(float centerX,float calX,float target_a,bool data_only,float AdjustAngle)
 {
 	if(fabs(centerX) >= 1)
 	{
@@ -274,13 +273,13 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a)
 
 		float xFOV = 76.00f;
 
-		moveByX_Degrees = (calX - centerX) * (xFOV*.5f);
+		moveByX_Degrees = -(calX - centerX) * (xFOV*.5f);
 
 		LastMoveByDegreesX = moveByX_Degrees;
 
-		moveByX_Ticks = moveByX_Degrees / TURRET_DEGREES_PER_TICK;
+		moveByX_Ticks = -(moveByX_Degrees + AdjustAngle) / TURRET_DEGREES_PER_TICK;
 
-		if(CurrentEnableTracking)
+		if((CurrentEnableTracking)&&(!data_only))
 		{
 			const float FRACTION = 1.0f;
 			int new_turret_target = GetTurretEncoder()-(moveByX_Ticks* FRACTION);
@@ -322,7 +321,8 @@ float TurretClass::Compute_Robot_Angle()
 #if TURRET_TALON_CONTROL
 	float dir = -Turret_Encoder_To_Degrees(Turret->GetPosition()) - LockonDegreesX;
 #else
-	float dir = -Turret_Encoder_To_Degrees(TurretEncoder->Get()) - LockonDegreesX;
+
+	float dir = -Turret_Encoder_To_Degrees(TurretEncoder->Get()) - LastMoveByDegreesX;
 #endif
 	return dir;
 }
@@ -330,6 +330,7 @@ float TurretClass::Compute_Robot_Angle()
 void TurretClass::Send_Data()
 {
 	SmartDashboard::PutNumber("Turret Speed", Turret->Get());
+	SmartDashboard::PutNumber("Robot Angle", Compute_Robot_Angle());
 #if TURRET_TALON_CONTROL
 	SmartDashboard::PutNumber("Talon Turret Encoder", Turret->GetEncPosition());
 	SmartDashboard::PutNumber("Turret Error", Turret->GetClosedLoopError());

@@ -144,6 +144,20 @@ void Drivetrainclass::Drive_Auton(float Left,float Right)
 }
 float Drivetrainclass::Compute_Speed()
 {
+	// high gear - 100 ticks = 1.5ft
+	float ft_per_pulse = 1.5f / 100.0f;
+
+	LeftEncoder->SetDistancePerPulse(ft_per_pulse);
+	RightEncoder->SetDistancePerPulse(ft_per_pulse);
+
+	LeftEncoder->SetSamplesToAverage(5);
+	RightEncoder->SetSamplesToAverage(5);
+
+	float left_fps = LeftEncoder->GetRate();
+	float right_fps = RightEncoder->GetRate();
+	float average_fps = 0.5f*(left_fps + right_fps);
+	return average_fps;
+#if 0
 	float ticks_per_revolution = 1024;
 	float feet_per_revolution = 1.57f;
 
@@ -163,6 +177,7 @@ float Drivetrainclass::Compute_Speed()
 	float average_fps = average_fpm/60.0f;
 
 	return average_fps;
+#endif
 }
 void Drivetrainclass::Send_Data()
 {

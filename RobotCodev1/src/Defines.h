@@ -147,8 +147,8 @@ struct Vector2
 
 // The turret is zero'd when it is centered pointing forward.
 #define TURRET_DEGREES_PER_TICK (90.f/1420.f)
-#define TURRET_MIN_ENCODER	-3000  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
-#define TURRET_MAX_ENCODER	1650
+#define TURRET_MIN_ENCODER	-1700  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
+#define TURRET_MAX_ENCODER  1700
 
 #define TURRET_CORRECTION_P 0.001f   // motor power per tick to correct invalid turret configurations
 

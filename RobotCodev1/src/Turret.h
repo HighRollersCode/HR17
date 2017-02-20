@@ -59,14 +59,14 @@ public:
 	void Auto_Start();
 	void Tele_Start();
 
-	void Update(float Turret, bool TrackingEnable, float cx, float calx, float target_area);
+	void Update(float Turret, bool TrackingEnable);
 	void HandleUser(float turret);
 	int GetTurretEncoder();
 	void SetTurret(int targ);
 	void StartTracking(int enable);
 	void AutonomousTrackingUpdate(float tx, float crossX, float target_area);
 
-	void HandleTarget(float centerX, float calX,float target_a);
+	void HandleTarget(float centerX, float calX,float target_a,bool data_only,float AdjustAngle);
 
 	void Send_Data();
 

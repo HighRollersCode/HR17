@@ -127,11 +127,7 @@ void ShooterWheelClass::SetShooterConstants(float p,float i,float d,float f)//,f
 }
 float ShooterWheelClass::Get_Goal_Distance(float y)
 {
-	return EstimateDistance(y);
-}
-float ShooterWheelClass::EstimateDistance(float ty)
-{
-	return Interpolate(YDTable_Y,YDTable_Distance,YDTABLE_COUNT,ty);
+	return ComputeDistance(y);
 }
 float ShooterWheelClass::EstimateRPM(float distance)
 {
@@ -238,7 +234,7 @@ void ShooterWheelClass::WheelOff()
 	Shooter_2->Set(0.0f);
 	ShooterToggle = 1;
 }
-void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty)//,double RobotTime,float crossY)
+void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward)//,double RobotTime,float crossY)
 {
 
 	PrevOverridePower = CurOverridePower;
@@ -252,7 +248,7 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 
 	targy = ty;
 	tdistance = ComputeDistance(targy);
-	trpm = EstimateRPM(tdistance);
+	trpm = EstimateRPM(tdistance + AdjustForward);
 	//float power = EstimatePower(trpm);
 
 #if TALON_SPEED_CONTROL

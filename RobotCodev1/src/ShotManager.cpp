@@ -61,8 +61,61 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		ShouldTrack = false;
 	}
 
-	Turret->Update(turret,ShouldTrack,tx,calx,ty);
-	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty);
+
+	Turret->HandleTarget(tx,calx,ty,true,0);
+
+	float distance_to_goal = ShooterWheel->Get_Goal_Distance(ty);
+
+	float RobotVel_Forward = RobotVel.x;
+	float RobotVel_Side = RobotVel.y;
+
+	const float RPMtoFPS = 10.0f/3000.0f;
+
+	float ideal_stationary_rpm = ShooterWheel->EstimateRPM(distance_to_goal);
+	ideal_stationary_rpm = fmax(ideal_stationary_rpm, 1000.f);
+	float t = distance_to_goal/(ideal_stationary_rpm * RPMtoFPS);
+	AdjustForward = RobotVel_Forward * t;
+	AdjustSide = RobotVel_Side * t;
+
+	if(fabs(AdjustSide) < 0.01f)
+	{
+		AdjustAngle = 0.0f;
+	}
+	else
+	{
+
+		AdjustAngle = -std::atan2(AdjustSide,AdjustForward + distance_to_goal);
+		AdjustAngle *= (180.f/3.14f);
+	}
+
+	float NewRPM = ShooterWheel->EstimateRPM(distance_to_goal + AdjustForward);
+	AdjustRPM = NewRPM - ideal_stationary_rpm;
+
+	for(int i = 0; i < 1000; i++)
+	{
+		distance_to_goal = ShooterWheel->Get_Goal_Distance(ty) + AdjustForward;
+		t = distance_to_goal/(NewRPM * RPMtoFPS);
+
+		AdjustForward = RobotVel_Forward * t;
+		AdjustSide = RobotVel_Side * t;
+
+		if(fabs(AdjustSide) < 0.01f)
+		{
+			AdjustAngle = 0.0f;
+		}
+		else
+		{
+			AdjustAngle = -std::atan2(AdjustSide,AdjustForward + distance_to_goal);
+			AdjustAngle *= (180.f/3.14f);
+		}
+
+		NewRPM = ShooterWheel->EstimateRPM(distance_to_goal + AdjustForward);
+		AdjustRPM = NewRPM - ideal_stationary_rpm;
+	}
+
+	Turret->Update(turret,ShouldTrack);
+	Turret->HandleTarget(tx,calx,ty,false,AdjustAngle);
+	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty,AdjustForward);
 	if(ShouldTrack)
 	{
 		if(currentMode == RobotMode::Shooting)
@@ -75,32 +128,7 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		}
 	}
 
-	float g = 32.174;//ft/s2
 
-	float goal_height = 6.0f;
-	float shooter_height = 2.0f;
-	float YDelta = goal_height - shooter_height;
-
-	float distance_to_goal = ShooterWheel->Get_Goal_Distance(ty);
-
-	//float desstartspeed=sqrt(((-.5*g*(distance_to_goal/cos(ShooterWheel->hood_angle))^2)/(YDelta - tan(ShooterWheel->hood_angle)*distance_to_goal)));
-
-	float RobotVel_Forward = RobotVel.x;
-	float RobotVel_Side = RobotVel.y;
-
-//	float Ballx = desstartspeed*cos(ShooterWheel->hood_angle));
-//	float Bally = 0;
-//	float Ballz = -0.5*(g)*t^2+desstartspeed*sin(ShooterWheel->hood_angle)*t+shooter_height);
-
-	const float RPMtoFPS = .01f;
-
-	float t = distance_to_goal/(ShooterWheel->RPM * RPMtoFPS);
-	AdjustForward = RobotVel_Forward * t;
-	AdjustSide = RobotVel_Side * t;
-
-	AdjustAngle = atan2(AdjustSide,AdjustForward);
-	float NewRPM = ShooterWheel->EstimateRPM(distance_to_goal + AdjustForward);
-	AdjustRPM = NewRPM - ShooterWheel->EstimateRPM(distance_to_goal);
 
 
 }

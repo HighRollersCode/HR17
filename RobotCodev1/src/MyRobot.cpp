@@ -282,8 +282,8 @@ Vector2 MyRobotClass::Compute_Robot_Velocity()
 	Vector2 velocity;
 	float speed = Drivetrain->Compute_Speed();
 	float angle = Turret->Compute_Robot_Angle();
-	velocity.x = sin(angle * (3.14f/180.0f)) * speed;
-	velocity.y = cos(angle * (3.14f/180.0f)) * speed;
+	velocity.x = -cos(angle * (3.14f/180.0f)) * speed;
+	velocity.y = sin(angle * (3.14f/180.0f)) * speed;
 	return velocity;
 }
 START_ROBOT_CLASS(MyRobotClass);
