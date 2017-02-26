@@ -42,7 +42,7 @@ public:
 	bool ToggleState;// = 1;
 	bool ToggleStateNeutral;// = -1;
 
-	float mult = -.15f;
+	float mult = .6f;
 
 	Drivetrainclass(CANTalon *GyroTalon);
 	virtual ~Drivetrainclass();
@@ -60,7 +60,7 @@ public:
 	void StandardTank(float left, float right);
 	void StandardArcade(float forward, float turn);
 	void Shifter_Update(bool ShifterEnable);
-	void Drive_Auton(float Left,float Right);
+	void Drive_Auton(float Forward,float Turn);
 	void Send_Data();
 };
 

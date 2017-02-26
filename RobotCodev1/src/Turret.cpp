@@ -197,7 +197,7 @@ void TurretClass::Update(float turret,bool TrackingEnable)
 		#if TURRET_TALON_CONTROL
 	Turret->SetControlMode(CANTalon::kPercentVbus);
 #else
-		TurretPIDController->Disable();
+		//TurretPIDController->Disable();
 #endif
 	}
 		ArmTimer->Reset();

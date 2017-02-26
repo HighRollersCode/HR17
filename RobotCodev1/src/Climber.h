@@ -9,7 +9,6 @@
 #include "TalonSRX.h"
 #include "CANTalon.h"
 #include "Defines.h"
-#include "PowerDistributionPanel.h"
 
 #ifndef SRC_CLIMBER_H_
 #define SRC_CLIMBER_H_
@@ -18,14 +17,14 @@ class ClimberClass {
 public:
 	CANTalon *Climber;
 	CANTalon *Climber_2;
-	PowerDistributionPanel *PDP;
 
 	bool UseFullPower = true;
 
 	ClimberClass();
 	virtual ~ClimberClass();
 
-	void UpdateClimber(bool ClimbUp,bool ClimbDown);
+	void UpdateClimber(bool ClimbUp);
+	void SendData();
 
 };
 

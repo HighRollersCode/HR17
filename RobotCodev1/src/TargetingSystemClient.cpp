@@ -74,12 +74,15 @@ void TargetingSystemClient::DoCalibrate()
 {
 	Send("4\r\n",3);
 }
+
 bool TargetingSystemClient::Update()
 {
 	if (m_Connected == false)
 	{
 		return false;
 	}
+	m_UpdateCounter++;
+
 	gotdata = false;
 	fd_set read_set;
 	FD_ZERO(&read_set);
@@ -239,5 +242,27 @@ void TargetingSystemClient::Set_Camera_Mode(CameraMode mode)
 	{
 		Send_Camera_Mode_Msg(mode);
 		m_CamMode = mode;
+	}
+}
+
+void TargetingSystemClient::Set_Moving_Target_Offset(float x,float y)
+{
+	float dx = x - m_MovingTargetX;
+	float dy = y - m_MovingTargetY;
+	int dt = m_UpdateCounter - m_LastMovingTargetTimestamp;
+
+	if ((fabs(dx) > 0.01f) || (fabs(dy) > 0.01f))
+	{
+		// don't spam too much, this is just for visual feedback to the drivers
+		if (dt > 10)
+		{
+			m_LastMovingTargetTimestamp = m_UpdateCounter;
+			m_MovingTargetX = x;
+			m_MovingTargetY = y;
+
+			char buffer[256];
+			sprintf(buffer,"8 %f %f\r\n",m_MovingTargetX,m_MovingTargetY);
+			Send(buffer,strlen(buffer));
+		}
 	}
 }

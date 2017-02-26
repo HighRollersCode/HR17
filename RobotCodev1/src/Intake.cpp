@@ -10,7 +10,6 @@
 IntakeClass::IntakeClass()
 {
 	Intake = new CANTalon(Tal_Intake);
-	PDP = new PowerDistributionPanel(1);
 }
 
 IntakeClass::~IntakeClass()
@@ -18,23 +17,19 @@ IntakeClass::~IntakeClass()
 	// TODO Auto-generated destructor stub
 }
 
-void IntakeClass::UpdateIntake(float intake, float outtake)
+void IntakeClass::UpdateIntake(float intake, float outtake,float shooting_intake)
 {
-	if(intake)
+	if((intake)&&(!shooting_intake))
 	{
 		IntakeIn();
-		if(PDP->GetCurrent(PDP_Intake) > 12.0f)
-		{
-			motor_stall = true;
-		}
-		else
-		{
-			motor_stall = false;
-		}
 	}
 	else if(outtake)
 	{
 		IntakeOut();
+	}
+	else if (shooting_intake)
+	{
+		Intake->Set(.5f);
 	}
 	else
 	{

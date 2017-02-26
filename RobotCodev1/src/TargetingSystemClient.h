@@ -16,7 +16,7 @@
 #define SRC_TARGETINGSYSTEMCLIENT_H_
 
 
-#define JETSON_IP "10.20.17.11"
+#define JETSON_IP "10.20.17.11" //"10.9.87.11"
 #define JETSON_PORT 5800
 
 class TargetingSystemClient {
@@ -46,6 +46,7 @@ public:
 	float Get_Cal_Y() { return yCal; }
 	float Get_Connected() { return m_Connected; }
 	float Get_TargetArea() {return m_TargetArea; }
+	void Set_Moving_Target_Offset(float x,float y);
 	void DoCalibrate();
 	void SmartDashboardUpdate();
 	void Disconnect();
@@ -58,6 +59,7 @@ protected:
 	void Handle_CalibrationRefresh(char *data);
 	void Send_Camera_Mode_Msg(CameraMode mode);
 
+	int m_UpdateCounter = 0;
 	float m_TurretAngle = 0;
 	float m_XOffset = 0;
 	float m_YOffset = 0;
@@ -69,6 +71,10 @@ protected:
 	float yCal = 0;
 	CameraMode m_CamMode = CAM_FRONT;
 	Timer *m_CommTimer;
+
+	float m_MovingTargetX = 0;
+	float m_MovingTargetY = 0;
+	int m_LastMovingTargetTimestamp = 0;
 };
 
 #endif /* SRC_TARGETINGSYSTEMCLIENT_H_ */

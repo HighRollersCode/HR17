@@ -21,7 +21,9 @@ inline float ticks_to_revs(float ticks)
 GearManipulator::GearManipulator()
 {
 	GearIntake = new CANTalon(Tal_Gear_Intake);
+	GearIntake->SetInverted(true);
 	GearLift = new CANTalon(Tal_Gear_Lift);
+	GearLift->SetInverted(true);
 
 #if GEAR_TALON_CONTROL
 	GearLift->SetControlMode(CANTalon::kPosition);

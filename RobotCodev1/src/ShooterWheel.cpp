@@ -21,9 +21,13 @@ static float YDTable_Distance[] = {  12.0f, 10.0f, 8.0f, 6.25f};//11.0f, 4.0f, 2
 static float DRPM_DistanceTable75[] = { 8.3f, 13.1f, 15.0f};  //7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
 static float DRPM_RPMTable75[] = {  3240.0f, 3660.0f, 3718.0f};//3072.0f,, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};*/
 
-//Estimate RPM from Target Distance Wide FOV
-static float DRPM_DistanceTable75[] = { 8.6f, 9.5f,  10.3f, 14.4f, 15.2f};  //7.0f , 10.0f,11.15f, 12.5f};//2.0f, 6.0f, 8.0f, 11.0f};
-static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f};//3072.0f,, 3350.0f, 3600.f, 3864.0f};//2000.0f, 2600.0f, 3000.0f, 3500.0f};
+/*//Estimate RPM from Target Distance Wide FOV Practice Bot
+static float DRPM_DistanceTable75[] = { 8.6f, 9.5f,  10.3f, 14.4f, 15.2f};
+static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f};*/
+
+//Estimate RPM from Target Distance Wide FOV Comp Bot
+static float DRPM_DistanceTable75[] = { 4.0f, 7.6f, 10.0f};
+static float DRPM_RPMTable75[] = {  3000.0f, 3496.0f, 4000.0f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -287,6 +291,8 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 	}
 	if(ShooterToggle == 1)
 	{
+		Shooter->SetControlMode(CANTalon::kPercentVbus);
+		Shooter_2->SetControlMode(CANTalon::kPercentVbus);
 		SetSpeed(0.0f);
 		INDICATOR = 0;
 	}
@@ -330,12 +336,7 @@ void ShooterWheelClass::SetState(int newstate)
 void ShooterWheelClass::Send_Data()
 {
 #if TALON_SPEED_CONTROL
-	float rpmtemp = RPM;
-	if(rpmtemp < 3000)
-	{
-		rpmtemp = 3000;
-	}
-	SmartDashboard::PutNumber("ShooterRPM",rpmtemp);
+	SmartDashboard::PutNumber("ShooterRPM",RPM);
 	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
 	SmartDashboard::PutNumber("ShooterEnc", Shooter->GetEncPosition());
@@ -345,5 +346,4 @@ void ShooterWheelClass::Send_Data()
 	SmartDashboard::PutNumber("Target RPM", trpm);
 	SmartDashboard::PutNumber("Target Distance", tdistance);
 	SmartDashboard::PutNumber("Target Y", targy);
-	//sSmartDashboard::PutBoolean("Encoder Status", sensorpluggedin);
 }

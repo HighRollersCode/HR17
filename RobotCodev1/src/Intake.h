@@ -22,14 +22,13 @@ class IntakeClass {
 public:
 
 	CANTalon *Intake;
-	PowerDistributionPanel *PDP;
 
 	bool motor_stall = false;
 
 	IntakeClass();
 	virtual ~IntakeClass();
 
-	void UpdateIntake(float intake, float outtake);
+	void UpdateIntake(float intake, float outtake,float shooting_intake);
 	void IntakeIn();
 	void IntakeOut();
 	void IntakeOff();

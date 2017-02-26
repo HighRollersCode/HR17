@@ -86,7 +86,9 @@ int Drivetrainclass::GetRightEncoder()
 void Drivetrainclass::Zero_Yaw()
 {
 #if USEPIGEON
-	pigeon->SetFusedHeading(0);
+	pigeon->SetFusedHeading(0.0f);
+	pigeon->SetAccumZAngle(0.0f);
+	pigeon->SetYaw(0);
 #else
 	if(gyro != NULL)
 	{
@@ -108,7 +110,7 @@ double Drivetrainclass::GetHeading()
 		yawpitchroll[0] = gyro->GetAngle();
 	}
 #endif
-	return yawpitchroll[0];
+	return -yawpitchroll[0];
 }
 float Drivetrainclass::ComputeAngleDelta(float t)
 {
@@ -138,9 +140,9 @@ void Drivetrainclass::Shifter_Update(bool ShifterEnable)
 		Highgear->Set(true);
 	}
 }
-void Drivetrainclass::Drive_Auton(float Left,float Right)
+void Drivetrainclass::Drive_Auton(float Forward,float Turn)
 {
-	StandardTank(Left,Right);
+	StandardArcade(Forward,Turn);
 }
 float Drivetrainclass::Compute_Speed()
 {

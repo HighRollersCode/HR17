@@ -268,7 +268,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new TrackingCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->ShotMng->StartTracking((int)m_Parameters[0]);
+		MyRobotClass::Get()->AutonomousControl->dotrack = m_Parameters[0];
 	}
 };
 class SetTurretCommand : public HrScriptCommandClass
@@ -297,7 +297,9 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new ShootingCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->BallMng->Update(m_Parameters[0],0,m_Parameters[0],m_Parameters[1],0);
+		MyRobotClass::Get()->AutonomousControl->uptake = m_Parameters[0];
+		MyRobotClass::Get()->AutonomousControl->intake = m_Parameters[0];
+		MyRobotClass::Get()->AutonomousControl->downtake = m_Parameters[1];
 	}
 };
 
@@ -419,7 +421,7 @@ void MyRobotClass::Init_Scripts_System()
 	m_ScriptSystem->Add_Command(new TurretEnablePIDCommand());
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	//m_ScriptSystem->Add_Command(new SetIntakeLiftCommand());*/
+	m_ScriptSystem->Add_Command(new GearManipulatorCommand());
 	m_ScriptSystem->Add_Command(new SetIntakeCommand());
 	//m_ScriptSystem->Add_Command(new DropperCommand());
 
@@ -441,19 +443,16 @@ void MyRobotClass::Load_Scripts()
 	// Load all of the auto-mode scripts
 
 	//Red Side Autos
-	m_ScriptSystem->Set_Auto_Script(11,"RED_GEAR_MIDDLE.hrs");
-	m_ScriptSystem->Set_Auto_Script(112,"RED_GEAR_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(113,"RED_GEAR_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(12,"RED_HOPPER_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(122,"RED_HOPPER_MIDDLE.hrs");
-	m_ScriptSystem->Set_Auto_Script(123,"RED_GEAR_HOPPER_RIGHT.hrs");
-
-	//Blue Side Autos
-	m_ScriptSystem->Set_Auto_Script(21,"BLUE_GEAR_MIDDLE.hrs");
-	m_ScriptSystem->Set_Auto_Script(212,"BLUE_GEAR_RIGHT.hrs");
-	m_ScriptSystem->Set_Auto_Script(213,"BLUE_GEAR_LEFT.hrs");
-	m_ScriptSystem->Set_Auto_Script(22,"BLUE_HOPPER_CLOSE.hrs");
-	m_ScriptSystem->Set_Auto_Script(222,"BLUE_HOPPER_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(111,"GEAR_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(112,"GEAR_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(113,"GEAR_LEFT.hrs");
+	m_ScriptSystem->Set_Auto_Script(121,"FARHOPPER_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(122,"FARHOPPER_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(131,"CLOSEHOPPER_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(132,"CLOSEHOPPER_MIDDLE.hrs");
+	m_ScriptSystem->Set_Auto_Script(141,"RIGHTGEAR_FARHOPPER.hrs");
+	m_ScriptSystem->Set_Auto_Script(142,"RIGHTGEAR_CLOSEHOPPER.hrs");
+	m_ScriptSystem->Set_Auto_Script(151,"MIDDLEGEAR_CLOSEHOPPER.hrs");
 
 	//EmptyAuto
 	m_ScriptSystem->Set_Auto_Script(999,"EMPTY.hrs");

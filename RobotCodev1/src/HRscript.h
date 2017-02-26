@@ -15,7 +15,7 @@
 
 const int MAX_HRSCRIPT_COMMAND_PARAMS = 16;
 const int MAX_HRSCRIPT_COMMANDS = 256;
-const int MAX_AUTO_MODES = 64;
+const int MAX_AUTO_MODES = 2048;
 const int MAX_COMMAND_PROTOTYPES = 256;
 
 

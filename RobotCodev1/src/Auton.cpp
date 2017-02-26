@@ -43,6 +43,7 @@ void Auton::Auto_Start()
 	SendTimer->Reset();
 	SendTimer->Start();
 	DriveTrain->ResetEncoders_Timers();
+	Turret->CurrentEnableTracking = false;
 	//Intake->ResetEncoderLift();
 
 	Turret->Auto_Start();
@@ -141,9 +142,9 @@ void Auton::AutonWaitForIntake()
 		Auto_System_Update();
 	}
 }
-void Auton::Auto_DriveTimer(float Left, float Right, float seconds)
+void Auton::Auto_DriveTimer(float Forward, float Turn, float seconds)
 {
-	DriveTrain->Drive_Auton(Left, Right);
+	DriveTrain->Drive_Auton(Forward, Turn);
 	AutonWait(seconds);
 	DriveTrain->Drive_Auton(0.0f, 0.0f);
 }
@@ -152,15 +153,16 @@ void Auton::Auto_GYROTURN(float heading)
 	DriveTrain->ResetEncoders_Timers();
 
 	float angle_error = DriveTrain->ComputeAngleDelta(heading);
-	float turn = DriveTrain->mult * 5 * angle_error;
+	float turn = DriveTrain->mult * angle_error;
 	printf("initial error: %f", angle_error);
-	while((fabs(angle_error) > 3.0f)&&(Running()))
+	while((fabs(angle_error) > 0.0f)&&(Running()))
 	{
 		angle_error = DriveTrain->ComputeAngleDelta(heading);
 		turn = DriveTrain->mult * angle_error;
 		printf(" error: %f", angle_error);
 		Auto_System_Update();
 		DriveTrain->StandardArcade(0,turn);
+		SmartDashboard::PutNumber("Turn", turn);
 		SmartDashboard::PutNumber("gyroerror",angle_error);
 	}
 }
@@ -174,11 +176,11 @@ void Auton::Auto_GYROTURN_TIMED(float heading, float seconds)
 	while(AutonTimer->Get() < timtarg && Running())
 	{
 		float angle_error = DriveTrain->ComputeAngleDelta(heading);
-		float turn = DriveTrain->mult *10* angle_error;
+		float turn = DriveTrain->mult* angle_error;
 
-		DriveTrain->StandardTank(0,turn);
+		DriveTrain->StandardArcade(0,turn);
 	}
-	DriveTrain->StandardTank(0,0);
+	DriveTrain->Drive_Auton(0,0);
 }
 void Auton::Auto_GYROSTRAIGHT(float forward, float ticks, float desheading)
 {
@@ -194,6 +196,7 @@ void Auton::Auto_GYROSTRAIGHT(float forward, float ticks, float desheading)
 		{
 			float err = DriveTrain->ComputeAngleDelta(MAINTAIN);
 			turn = err * GYRO_P;
+			SmartDashboard::PutNumber("Gyro Error", err);
 
 			DriveTrain->StandardArcade(forward,turn);
 			Auto_System_Update();
@@ -227,7 +230,7 @@ bool Auton::Auto_System_Update()
 	if(Running())
 	{
 		Targeting->Update();
-		ShotMng->Update(0,false,false,false,0,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(), Vector2());
+		ShotMng->Update(0,dotrack,false,false,0,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(), Vector2());
 		BallMng->Update(intake,outake,(uptake || ShotMng->isReady),downtake,0);
 
 		SendData();

@@ -36,6 +36,7 @@ class Auton
 		bool outake = false;
 		bool uptake = false;
 		bool downtake = false;
+		bool dotrack = false;
 
 		bool Running();
 		void AutonWait(float Seconds);

@@ -41,7 +41,7 @@ MyRobotClass::MyRobotClass()
 	XBoxController = new XboxController(3);
 	Climber = new ClimberClass();
 
-	Drivetrain = new Drivetrainclass(Climber->Climber);
+	Drivetrain = new Drivetrainclass(Climber->Climber_2);
 	Intake = new IntakeClass();
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
@@ -120,18 +120,22 @@ void MyRobotClass::Disabled(void)
 	{
 		Jetson_Connection();
 		Send_Data();
+		Wait(0.001);
 	}
-	Wait(0.001);
+
 }
 void MyRobotClass::Reset_State()
 {
 	Drivetrain->StandardTank(0,0);
+	Drivetrain->ResetEncoders_Timers();
+	Drivetrain->Zero_Yaw();
 	Turret->Tele_Start();
 }
 void MyRobotClass::Autonomous(void)
 {
 	flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
-	Load_Scripts();
+	LightRelay->Set(1);
+		Load_Scripts();
 		printf("loaded\n");
 		m_ScriptSystem->Run_Auto_Script(0);
 		printf("ransettings\n");
@@ -161,15 +165,17 @@ void MyRobotClass::Send_Data()
 		SmartDashTimer->Reset();
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
 		SmartDashboard::PutNumber("DesiredRPM", OVERRIDE_RPM_CMD);
-		SmartDashboard::PutNumber("Climber Current",Climber->PDP->GetCurrent(PDP_Climber));
 		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
 		SmartDashboard::PutNumber("Game Timer", GameTimer->Get());
+		SmartDashboard::PutBoolean("DriveStation Color", flipauto);
+
 
 		Drivetrain->Send_Data();
 		ShotMng->Send_Data();
 		TargClient->SmartDashboardUpdate();
 		BallMng->SendData();
 		GearMpltr->Send_Data();
+		Climber->SendData();
 	}
 }
 void MyRobotClass::OperatorControl(void)
@@ -212,30 +218,18 @@ void MyRobotClass::OperatorControl(void)
 		Drivetrain->StandardTank(commandLeft, commandRight);
 		Drivetrain->Shifter_Update(SHIFTER_UPDATE);
 
-		Intake->UpdateIntake(INTAKE_IN,INTAKE_OUT);
-
 		float RPM = OVERRIDE_RPM_CMD;
 		if(RPM < 0)
 		{
 			RPM = 0;
 		}
-		if(leftStick->GetRawButton(8))
-		{
-			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
-			Calibratemtr->Set(1);
-		}
-		else if(leftStick->GetRawButton(9))
-		{
-			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
-			Calibratemtr->Set(-1);
-		}
-		else
-		{
-			Calibratemtr->SetControlMode(CANTalon::kPercentVbus);
-			Calibratemtr->Set(0);
-		}
+		Calibratemtr->Set(leftStick->GetZ());
 		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)*.5f),
 				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity());
+
+		float fake_offset = 35.0f * sin(GameTimer->Get());
+		float fake_rpm = 1000.0f * cos(GameTimer->Get() * 2.0f);
+		TargClient->Set_Moving_Target_Offset(fake_offset,fake_rpm); //ShotMng->AdjustAngle,ShotMng->AdjustRPM);
 
 		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE,((rightStick->GetZ() + 1.0f) * .5f));
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
@@ -246,7 +240,7 @@ void MyRobotClass::OperatorControl(void)
 		}
 		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP);
 
-		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_DOWN);
+		Climber->UpdateClimber(CLIMBER_UP);
 		/*if(CLIMBER_UP)
 		{
 			Climber->UpdateClimber(true,false);
