@@ -1,0 +1,14 @@
+//100 Ticks = 16 3/4 in.
+DriveTicksHeading .2 394 0
+Wait 0.1
+GyroTurn -45
+Wait 0.1
+DriveTicksHeading .2 430 -45
+Wait 0.1
+GearManipulator 1 0
+Wait 0.1
+DriveTicksHeading .2 -50 -45
+Wait 0.1
+GearManipulator 0 1
+Wait 0.1
+Tracking 1

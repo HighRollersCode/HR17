@@ -1,0 +1,27 @@
+//100 Ticks = 16 3/4 in
+
+Tracking 0
+Shooting 0 0
+
+TurretEnablePID 1
+Turret 1000
+Wait 0.1
+
+DriveTicksHeading .9 -40 0 //788 guessed encoder ticks
+DriveTicksHeading .7 -83 0
+DriveTicksHeading .3 -275 -45
+DriveTicksHeading .3 -375 -52
+DriveTurnTimed 1 0 .5
+GearManipulator 1 0
+Wait .3
+DriveTicksHeading .9 50 -70
+GearManipulator 0 1
+DriveTicksHeading .7 75 -80
+GearManipulator 0 0
+Tracking 1
+DriveTicksHeading .5 100 -90
+DriveTicksHeading .5 400 -90
+Shooting 1 0
+Drive .2 0
+Wait 10
+

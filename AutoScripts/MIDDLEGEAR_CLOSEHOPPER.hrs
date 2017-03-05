@@ -1,0 +1,25 @@
+//100 Ticks = 16 3/4 in.
+
+Tracking 0
+Shooting 0 0
+
+TurretEnablePID 1
+Turret 1000
+Wait 0.1
+
+DriveTicksHeading .5 -325 0
+DriveTurnTimed 1 0 .5
+Wait 1
+GearManipulator 1 0
+Wait .3
+DriveTicksHeading .5 150 -45
+GearManipulator 1 0
+DriveTicksHeading .5 150 -110
+GearManipulator 0 0
+DriveTicksHeading .5 150 -200
+DriveTicksHeading .5 400 -95
+Tracking 1
+DriveTicksHeading .4 250 -90
+Shooting 1 0
+Drive .2 0
+Wait 10
