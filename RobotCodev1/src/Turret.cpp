@@ -9,12 +9,51 @@
 
 const float TURRET_TOLERANCE = 1;
 
-const float LOCKON_DEGREES_X = 2.5f;
-const float LOCKON_SECONDS = 0.35f;
+const float LOCKON_DEGREES_X = 0.5f;
+const float LOCKON_SECONDS = 0.1f;
 
-const float LOCKON_DEGREES_X_CLOSE = 2.5f;
+const float LOCKON_DEGREES_X_CLOSE = 0.5f;
 const float LOCKON_CLOSE_AREA = 0.03f;
 const float LOCKON_FAR_AREA = 0.0175f;
+
+
+
+
+// TurretVictorClass implements our "min-command" PID control and can incorporate the robot's angular velocity
+class TurretSpeedControllerClass : public CANTalon
+{
+public:
+	explicit TurretSpeedControllerClass(uint32_t can_channel,TurretClass * turret);
+	virtual void Set(double value) override;
+	virtual void PIDWrite(double output) override;
+
+protected:
+	TurretClass * m_Turret;
+};
+
+TurretSpeedControllerClass::TurretSpeedControllerClass(uint32_t can_channel,TurretClass * turret) :
+	CANTalon(can_channel),
+	m_Turret(turret)
+{
+	//SetSafetyEnabled(true);
+}
+
+void TurretSpeedControllerClass::Set(double value)
+{
+	value = m_Turret->Validate_Turret_Command(value,false);
+	CANTalon::Set(value);
+}
+
+void TurretSpeedControllerClass::PIDWrite(double value)
+{
+	value = m_Turret->Validate_Turret_Command(value, true);
+	CANTalon::Set(value);
+}
+
+
+
+
+
 
 TurretClass::TurretClass()
 {
@@ -35,7 +74,7 @@ TurretClass::TurretClass()
 	Turret->SetVoltageRampRate(100);
 
 #else
-	Turret = new CANTalon(Tal_Turret);
+	Turret = new TurretSpeedControllerClass(Tal_Turret,this);
 	TurretEncoder = new Encoder(Encoder_Arm_Turret_1,Encoder_Arm_Turret_2);
 #endif
 
@@ -297,7 +336,7 @@ void TurretClass::ResetEncoderTurret()
 	TurretPIDController->Reset();
 #endif
 }
-void TurretClass::SetTurretConstants(float p,float i,float d)
+void TurretClass::SetTurretConstants(float p,float i,float d,float min_cmd)
 {
 #if TURRET_TALON_CONTROL
 	p *= 1024;
@@ -309,13 +348,16 @@ void TurretClass::SetTurretConstants(float p,float i,float d)
 	TURRET_P = p;
 	TURRET_I = i;
 	TURRET_D = d;
+	MIN_TURRET_CMD = min_cmd;
 	TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
 #endif
 }
+
 float TurretClass::Turret_Encoder_To_Degrees(int enc)
 {
 	return enc * TURRET_DEGREES_PER_TICK;
 }
+
 float TurretClass::Compute_Robot_Angle()
 {
 #if TURRET_TALON_CONTROL
@@ -325,6 +367,24 @@ float TurretClass::Compute_Robot_Angle()
 	float dir = -Turret_Encoder_To_Degrees(TurretEncoder->Get()) - LastMoveByDegreesX;
 #endif
 	return dir;
+}
+
+double TurretClass::Validate_Turret_Command(double cmd, bool ispidcmd)
+{
+	if (ispidcmd)
+	{
+		// add in angular velocity
+
+		if(cmd > 0.0)
+		{
+			cmd = fmax(cmd, MIN_TURRET_CMD);
+		}
+		else if (cmd < 0.0)
+		{
+			cmd = fmin(cmd, -MIN_TURRET_CMD);
+		}
+	}
+	return cmd;
 }
 
 void TurretClass::Send_Data()

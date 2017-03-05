@@ -9,6 +9,7 @@
 #include "CanTalon.h"
 #include "Defines.h"
 #include "Turret.h"
+#include "Timer.h"
 
 #ifndef SRC_GEARMANIPULATOR_H_
 #define SRC_GEARMANIPULATOR_H_
@@ -27,6 +28,10 @@ private:
 
 	CANTalon *GearIntake;
 	CANTalon *GearLift;
+
+	//Timer *GearIntakeTimer;
+
+	bool intakedgear = false;
 
 	void GearIn();
 	void GearOut();

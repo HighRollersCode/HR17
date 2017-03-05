@@ -14,6 +14,7 @@
 #include <Uptake.h>
 #include "Spark.h"
 #include "CANTalon.h"
+#include "PWM.h"
 
 #include "Drivetrain.h"
 #include "Intake.h"
@@ -58,6 +59,8 @@ public:
 	Auton *AutonomousControl;
 
 	Spark *LightRelay;
+
+	Victor *LEDS;
 
 	Timer *ReconnectTimer;
 	Timer *GameTimer;

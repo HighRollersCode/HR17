@@ -105,8 +105,6 @@ struct Vector2
 #define CAN_PIGEON 10
 
 //Solenoid Ports
-//#define Sol_Gear_Up 0
-//#define Sol_Gear_Down 1
 
 #define Sol_Shifter_In 3
 #define Sol_Shifter_Out 2
@@ -120,26 +118,6 @@ struct Vector2
 #define Encoder_Arm_Turret_1 4
 #define Encoder_Arm_Turret_2 5
 
-//Plugged straight into the talon
-//#define Encoder_Shooter_Wheel_1 8
-//#define Encoder_Shooter_Wheel_2 9
-
-//#define Encoder_Intake_Lift_1 6
-//#define Encoder_Intake_Lift_2 7
-
-//Probably not needed
-#define Preset_Intake_Floor -500
-#define Preset_Intake_Defense -10
-#define Preset_Intake_Intake -435//-448
-#define Preset_Intake_Down -500     // value to use when reseting the intake encoder in-match
-#define Preset_Intake_Tower_Shot -195
-#define INTAKE_LIFT_MIN -500
-#define INTAKE_LIFT_MAX 10
-
-#define Preset_Tower_Shot_Shooter_Wheels -0.45f
-
-#define Intake_Lift_Limit_Switch 10
-#define TURRET_CENTER_LIMIT_SWITCH 11
 
 //
 //  Encoder values to limit the arm movement to keep the arm within the 15" envelope around the robot
@@ -147,8 +125,8 @@ struct Vector2
 
 // The turret is zero'd when it is centered pointing forward.
 #define TURRET_DEGREES_PER_TICK (90.f/1420.f)
-#define TURRET_MIN_ENCODER	-1700  //(-1650 * (60.0f/24.0f))   // we need a shot to the left in the spybot two-ball at -1500
-#define TURRET_MAX_ENCODER  1700
+#define TURRET_MIN_ENCODER	-2410  //1700 a little more than 90
+#define TURRET_MAX_ENCODER  2410
 
 #define TURRET_CORRECTION_P 0.001f   // motor power per tick to correct invalid turret configurations
 

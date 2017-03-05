@@ -17,9 +17,9 @@ class UptakeClass {
 public:
 
 	CANTalon *Uptake;
-	Victor *Shaker;
 
 	float speed = .5f;
+	bool slowdown = false;
 
 	Timer *UptakeTimer;
 	Timer *UptakeOffTimer;
@@ -27,7 +27,7 @@ public:
 	UptakeClass();
 	virtual ~UptakeClass();
 
-	void UpdateUptake(bool uptake,bool downtake,float shaker);
+	void UpdateUptake(bool uptake,bool downtake,bool slow = false);
 	void UptakeUp();
 	void UptakeDown();
 	void UptakeOff();

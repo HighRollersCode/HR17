@@ -7,9 +7,9 @@
 
 #include <GearManipulator.h>
 
-#define GEAR_TALON_CONTROL 0
+#define GEAR_TALON_CONTROL 1
 
-#define Gear_Intake_Position 2000
+#define Gear_Intake_Position -987
 
 
 inline float ticks_to_revs(float ticks)
@@ -31,11 +31,11 @@ GearManipulator::GearManipulator()
 	GearLift->SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 
 	GearLift->SelectProfileSlot(0);
-	GearLift->SetPID(.7,0.001,0);
+	GearLift->SetPID(1.2,0.001,.1);
 	GearLift->SetIzone(0.2);
 
 	GearLift->SelectProfileSlot(1);
-	GearLift->SetPID(.6,0,0);
+	GearLift->SetPID(.9,0.0015,0);
 
 	GearLift->ConfigLimitMode(CANTalon::kLimitMode_SrxDisableSwitchInputs);//  CANTalon::kLimitMode_SoftPositionLimits);
 	GearLift->DisableSoftPositionLimits();
@@ -43,6 +43,8 @@ GearManipulator::GearManipulator()
 	//GearLift->ConfigReverseLimit(ticks_to_revs(-5));
 	GearLift->SetClosedLoopOutputDirection(false);
 	GearLift->SetCurrentLimit(1.0f);
+
+	//GearIntakeTimer->Reset();
 #endif
 	ResetGearEncoder();
 }
@@ -55,7 +57,7 @@ GearManipulator::~GearManipulator()
 void GearManipulator::UpdateGear(bool down, bool down_outtake,bool intake,bool up)
 {
 #if GEAR_TALON_CONTROL
-	UpdateGearTalon(down,down_outtake,intake,up);
+		UpdateGearTalon(down,down_outtake,intake,up);
 #else
 	UpdateGearManual(down,down_outtake,intake,up);
 #endif
@@ -79,14 +81,34 @@ void GearManipulator::UpdateGearTalon(bool down, bool down_outtake,bool intake,b
 	{
 		GearLift->SelectProfileSlot(1);
 		GearLift->SetSetpoint(ticks_to_revs(0));
+		GearIn();
 	}
 	else if (intake)
 	{
 		GearIn();
+		if(GearIntake->GetOutputCurrent() > 25.0f)
+		{
+			/*GearIntakeTimer->Start();
+			if(GearIntakeTimer->Get() > .1)
+			{*/
+				GearLift->SelectProfileSlot(1);
+				GearLift->SetSetpoint(ticks_to_revs(0));
+				/*GearIntakeTimer->Reset();
+				GearIntakeTimer->Stop();
+			}*/
+		}
 	}
 	else
 	{
 		GearIntake->Set(0);
+	}
+	if(GearIntake->GetOutputCurrent() > 20.0f)
+	{
+		intakedgear = true;
+	}
+	else if(GearIntake->GetOutputCurrent() < 20.0f)
+	{
+		intakedgear = false;
 	}
 }
 
@@ -118,6 +140,12 @@ void GearManipulator::UpdateGearManual(bool down, bool down_outtake,bool intake,
 
 void GearManipulator::GearIn()
 {
+	float speedgain = -.1;
+	for(int i = 0; i < 10; i++)
+	{
+		speedgain = speedgain - .075f;
+		GearIntake->Set(speedgain);
+	}
 	GearIntake->Set(-1);
 }
 void GearManipulator::GearOut()
@@ -129,6 +157,8 @@ void GearManipulator::Send_Data()
 	SmartDashboard::PutNumber("Gear Lift Encoder",GearLift->GetEncPosition());
 	SmartDashboard::PutNumber("Gear Lift Power",GearLift->Get());
 	SmartDashboard::PutNumber("Gear Lift Current",GearLift->GetOutputCurrent());
+	SmartDashboard::PutBoolean("Intaked Gear?",intakedgear);
+	SmartDashboard::PutNumber("Gear Intake Current",GearIntake->GetOutputCurrent());
 }
 void GearManipulator::ResetGearEncoder()
 {

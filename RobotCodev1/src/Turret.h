@@ -25,6 +25,7 @@ public:
 	double TURRET_P = .005f;
 	double TURRET_I = 0.00001f;
 	double TURRET_D = 0.01;
+	double TURRET_OMEGA_K = 0.01f;  // multiplied by angular velocity
 
 #if TURRET_TALON_CONTROL
 	CANTalon *Turret;
@@ -71,7 +72,7 @@ public:
 	void Send_Data();
 
 	void ResetEncoderTurret();
-	void SetTurretConstants(float p,float i,float d);
+	void SetTurretConstants(float p,float i,float d,float min_cmd);
 	float Clamp_Target(float tar, float lowerlim, float upperlim);
 	TurretClass();
 	virtual ~TurretClass();
@@ -86,7 +87,7 @@ public:
 
 	float Turret_Encoder_To_Degrees(int enc);
 	float Compute_Robot_Angle();
-	float Validate_Turret_Command(float cmd, bool ispidcmd = false);
+	double Validate_Turret_Command(double cmd, bool ispidcmd = false);
 
 };
 

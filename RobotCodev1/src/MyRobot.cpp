@@ -41,7 +41,7 @@ MyRobotClass::MyRobotClass()
 	XBoxController = new XboxController(3);
 	Climber = new ClimberClass();
 
-	Drivetrain = new Drivetrainclass(Climber->Climber_2);
+	Drivetrain = new Drivetrainclass(Climber->Climber);
 	Intake = new IntakeClass();
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
@@ -61,6 +61,7 @@ MyRobotClass::MyRobotClass()
 
 	LightRelay = new Spark(4);
 
+	LEDS = new Victor(19);
 
 	ReconnectTimer = new Timer();
 	ReconnectTimer->Reset();
@@ -112,12 +113,12 @@ void MyRobotClass::Shutdown_Jetson(void)
 
 void MyRobotClass::Disabled(void)
 {
-	//LightRelay->Set(Relay::kOff);
 	LightRelay->Set(0);
 
 	printf("Disabled\r\n");
 	while(IsDisabled())
 	{
+		LEDS->Set(.7f);
 		Jetson_Connection();
 		Send_Data();
 		Wait(0.001);
@@ -134,6 +135,7 @@ void MyRobotClass::Reset_State()
 void MyRobotClass::Autonomous(void)
 {
 	flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
+
 	LightRelay->Set(1);
 		Load_Scripts();
 		printf("loaded\n");
@@ -147,8 +149,8 @@ void MyRobotClass::Autonomous(void)
 void MyRobotClass::UpdateInputs()
 {
 	#if !USING_GAMEPAD
-		commandLeft = -LEFT_MOTOR_CMD;//-leftStick->GetY();
-		commandRight = RIGHT_MOTOR_CMD;//rightStick->GetY();
+		commandLeft = -LEFT_MOTOR_CMD;
+		commandRight = RIGHT_MOTOR_CMD;
 
 		if (fabs(commandLeft) < 0.2f) commandLeft = 0.0f;
 		if (fabs(commandRight) < 0.2f) commandRight = 0.0f;
@@ -168,6 +170,7 @@ void MyRobotClass::Send_Data()
 		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
 		SmartDashboard::PutNumber("Game Timer", GameTimer->Get());
 		SmartDashboard::PutBoolean("DriveStation Color", flipauto);
+		SmartDashboard::PutNumber("LED Pulse", LEDS->GetSpeed());
 
 
 		Drivetrain->Send_Data();
@@ -183,14 +186,15 @@ void MyRobotClass::OperatorControl(void)
 	Load_Scripts();
 	m_ScriptSystem->Run_Auto_Script(0);
 	LightRelay->Set(1);
-	//LightRelay->Set(Relay::kOn);
 
 
 	Reset_State();
 
 	while (IsOperatorControl() && IsEnabled())
 	{
+		flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
 
+		LEDS->Set(-1.0f);
 
 		int prevtele = intele;
 		intele  = 1;
@@ -227,9 +231,7 @@ void MyRobotClass::OperatorControl(void)
 		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)*.5f),
 				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity());
 
-		float fake_offset = 35.0f * sin(GameTimer->Get());
-		float fake_rpm = 1000.0f * cos(GameTimer->Get() * 2.0f);
-		TargClient->Set_Moving_Target_Offset(fake_offset,fake_rpm); //ShotMng->AdjustAngle,ShotMng->AdjustRPM);
+		TargClient->Set_Moving_Target_Offset(ShotMng->AdjustAngle,ShotMng->AdjustRPM);
 
 		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE,((rightStick->GetZ() + 1.0f) * .5f));
 		//ShooterWheel->SetSpeed(turretStick->GetZ());
@@ -238,17 +240,11 @@ void MyRobotClass::OperatorControl(void)
 		{
 			GearMpltr->ResetGearEncoder();
 		}
+
 		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP);
 
 		Climber->UpdateClimber(CLIMBER_UP);
-		/*if(CLIMBER_UP)
-		{
-			Climber->UpdateClimber(true,false);
-		}
-		if(CLIMBER_DOWN)
-		{
-			Climber->UpdateClimber(false,true);
-		}*/
+
 		if(SET_CAM_FRONT)
 		{
 			TargClient->Set_Camera_Mode(TargetingSystemClient::CAM_FRONT);

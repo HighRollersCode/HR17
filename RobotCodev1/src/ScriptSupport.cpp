@@ -51,8 +51,7 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new SetTurretConstantsCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->Turret->SetTurretConstants(m_Parameters[0],m_Parameters[1], m_Parameters[2]);
-		MyRobotClass::Get()->Turret->MIN_TURRET_CMD = m_Parameters[3];
+		MyRobotClass::Get()->Turret->SetTurretConstants(m_Parameters[0],m_Parameters[1], m_Parameters[2], m_Parameters[3]);
 	}
 };
 

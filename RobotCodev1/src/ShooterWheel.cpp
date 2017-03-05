@@ -26,8 +26,8 @@ static float DRPM_DistanceTable75[] = { 8.6f, 9.5f,  10.3f, 14.4f, 15.2f};
 static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f};*/
 
 //Estimate RPM from Target Distance Wide FOV Comp Bot
-static float DRPM_DistanceTable75[] = { 4.0f, 7.6f, 10.0f};
-static float DRPM_RPMTable75[] = {  3000.0f, 3496.0f, 4000.0f};
+static float DRPM_DistanceTable75[] = { 8.4f, /*8.9f,*/ 12.53f};//8.7f 8.9f, 9.9f, 12.4f};
+static float DRPM_RPMTable75[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 3106.f, 3625.f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -90,10 +90,6 @@ ShooterWheelClass::ShooterWheelClass()
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
 	ShooterEnc->Reset();
 #endif
-
-	//HoodUp = new Solenoid(Sol_Hood_Up);
-	//HoodDown = new Solenoid(Sol_Hood_Down);
-
 
 	RPMList =  new std::vector<float>();
 	RPMList->empty();

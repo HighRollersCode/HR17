@@ -24,10 +24,10 @@ void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake,float
 	bool outake_mtr = (outake);
 
 	bool uptake_mtr = (uptake);
-	bool downtake_mtr = (downtake);
+	bool downtake_mtr = ((downtake) || (intake));
 
 	Intake->UpdateIntake(intake_mtr,outake_mtr,shooting_intake_mtr);
-	Uptake->UpdateUptake(uptake_mtr,downtake_mtr,shaker);
+	Uptake->UpdateUptake(uptake_mtr,downtake_mtr,intake);
 }
 void BallManager::SendData()
 {
