@@ -16,7 +16,7 @@
 #define SRC_TARGETINGSYSTEMCLIENT_H_
 
 
-#define JETSON_IP "10.20.17.11" //"10.9.87.11"
+#define JETSON_IP "10.20.17.11"
 #define JETSON_PORT 5800
 
 class TargetingSystemClient {
@@ -69,7 +69,7 @@ protected:
 	bool gotdata = false;
 	float xCal = 0;
 	float yCal = 0;
-	CameraMode m_CamMode = CAM_FRONT;
+	CameraMode m_CamMode = CAM_BACK;
 	Timer *m_CommTimer;
 
 	float m_MovingTargetX = 0;

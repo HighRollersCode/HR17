@@ -18,7 +18,6 @@ class Drivetrainclass {
 
 private:
 #if USEPIGEON
-	PigeonImu *pigeon;
 #else
 	AnalogGyro *gyro;
 #endif
@@ -26,6 +25,8 @@ private:
 
 
 public:
+	PigeonImu *pigeon;
+
 	Victor *LeftDrive;
 	Victor *RightDrive;
 	Victor *LeftDrive2;

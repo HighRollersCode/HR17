@@ -13,36 +13,39 @@ ClimberClass::ClimberClass() {
 	//Climber->SetCurrentLimit(1.0f); //To make the climber stop when we get to the top of the rope
 
 	Climber_2 = new CANTalon(Tal_Climber_2);
-	Climber_2->SetControlMode(CANTalon::kFollower);
-	Climber_2->Set(Tal_Climber);
 }
 
 ClimberClass::~ClimberClass() {
 	// TODO Auto-generated destructor stub
 }
-void ClimberClass::UpdateClimber(bool ClimbUp)
+void ClimberClass::UpdateClimber(bool ClimbUp, bool ClimberSlow)
 {
-//	if(PDP->GetCurrent(PDP_Climber) > 1.0f)
-//	{
-//		UseFullPower = true;
-//	}
-//	else
-//	{
-//		UseFullPower = false;
-//	}
+	/*if(Climber->GetOutputCurrent() > 100.0f)
+	{
+		UseFullPower = true;
+	}
+	else
+	{
+		UseFullPower = false;
+	}*/
 
 	if(ClimbUp)
 	{
-		if(UseFullPower)
-		{
+		/*if(UseFullPower)
+		{*/
 			Climber->Set(1);
 			Climber_2->Set(1);
-		}
+		/*}
 		else
 		{
 			Climber->Set(0.25f);
 			Climber_2->Set(0.25f);
-		}
+		}*/
+	}
+	else if(ClimberSlow)
+	{
+		Climber->Set(0.25f);
+		Climber_2->Set(0.25f);
 	}
 	else
 	{

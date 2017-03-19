@@ -25,9 +25,13 @@ static float DRPM_RPMTable75[] = {  3240.0f, 3660.0f, 3718.0f};//3072.0f,, 3350.
 static float DRPM_DistanceTable75[] = { 8.6f, 9.5f,  10.3f, 14.4f, 15.2f};
 static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f};*/
 
-//Estimate RPM from Target Distance Wide FOV Comp Bot
-static float DRPM_DistanceTable75[] = { 8.4f, /*8.9f,*/ 12.53f};//8.7f 8.9f, 9.9f, 12.4f};
-static float DRPM_RPMTable75[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 3106.f, 3625.f};
+//Estimate RPM from Target Distance Wide FOV Comp Bot 67 degree
+static float DRPM_DistanceTable67[] = { 8.4f, /*8.9f,*/ 12.53f};//8.7f 8.9f, 9.9f, 12.4f};
+static float DRPM_RPMTable67[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 3106.f, 3625.f};
+
+//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degree
+static float DRPM_DistanceTable69[] = { 8.1f, 8.55f, 9.08f, 10.0f, 11.2f,13.17};
+static float DRPM_RPMTable69[] = { 3020.f, 3060.f, 3125.f, 3239.f, 3560.f, 3777.f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -39,10 +43,11 @@ static float MotorCmd_2mtr[] = { 0, 0.109f, .207f , .304f  , .394f  , .492f  , .
 //static int RPM_TABLE_COUNT = sizeof(RPMTable) / sizeof(RPMTable[0]);
 static int RPM_TABLE_2_MTR_COUNT = sizeof(RPMTable_2mtr) / sizeof(RPMTable_2mtr[0]);
 
-static int DRPM_TABLE_COUNT = sizeof(DRPM_DistanceTable75) / sizeof(DRPM_DistanceTable75[0]);
-static int YDTABLE_COUNT = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
+static int DRPM_TABLE_COUNT67 = sizeof(DRPM_DistanceTable67) / sizeof(DRPM_DistanceTable67[0]);
+static int YDTABLE_COUNT67 = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 
-
+static int DRPM_TABLE_COUNT69 = sizeof(DRPM_DistanceTable69) / sizeof(DRPM_DistanceTable69[0]);
+static int YDTABLE_COUNT69 = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 
 
 inline float ComputeDistance(float y)
@@ -131,7 +136,8 @@ float ShooterWheelClass::Get_Goal_Distance(float y)
 }
 float ShooterWheelClass::EstimateRPM(float distance)
 {
-	return Interpolate(DRPM_DistanceTable75,DRPM_RPMTable75,DRPM_TABLE_COUNT,distance);
+	return Interpolate(DRPM_DistanceTable69,DRPM_RPMTable69,DRPM_TABLE_COUNT69,distance);
+	//return 146.486 * distance + 1860.405;
 }
 float ShooterWheelClass::EstimatePower(float desiredRPM)
 {
@@ -140,8 +146,19 @@ float ShooterWheelClass::EstimatePower(float desiredRPM)
 }
 float ShooterWheelClass::Interpolate(float inputs[], float outputs[],int listsize,float input)
 {
-	if(input < inputs[0]){return outputs[0];}
-	if(input > inputs[listsize-1]){return outputs[listsize-1];}
+	if(input < inputs[0])
+	{
+		return outputs[0];
+		//float slope = (outputs[1]-outputs[0])/(inputs[1] - inputs[0]);
+		//float b = outputs[0] - slope*inputs[0];
+		//return slope * input + b;
+	}
+	if(input > inputs[listsize-1])
+	{
+		float slope = (outputs[listsize-1]-outputs[listsize-2])/(inputs[listsize - 1] - inputs[listsize-2]);
+		float b = outputs[listsize-2] - slope*inputs[listsize-2];
+		return slope * input + b;
+	}
 
 	for(int i = 0; i < listsize; i++)
 	{
@@ -253,6 +270,7 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 
 #if TALON_SPEED_CONTROL
 	RPM = Shooter->GetSpeed();
+	RPM_avg = .03f * RPM + (1 - .03f) * RPM_avg;
 #else
 	RPM = ((1.0f/(ShooterEnc->GetPeriod()))*60.0f)/1024.0f;//Shooter->GetEncVel();((1.0f/(GearSensor->GetPeriod()))*60.0f)/6.0f;
 
@@ -333,6 +351,7 @@ void ShooterWheelClass::Send_Data()
 {
 #if TALON_SPEED_CONTROL
 	SmartDashboard::PutNumber("ShooterRPM",RPM);
+	SmartDashboard::PutNumber("ShooterRPM_avg",RPM_avg);
 	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
 	SmartDashboard::PutNumber("ShooterEnc", Shooter->GetEncPosition());
@@ -342,4 +361,9 @@ void ShooterWheelClass::Send_Data()
 	SmartDashboard::PutNumber("Target RPM", trpm);
 	SmartDashboard::PutNumber("Target Distance", tdistance);
 	SmartDashboard::PutNumber("Target Y", targy);
+
+	if(State == ShooterState_tracking)
+	{
+		printf("Shooter: dist: %f trpm: %f rpm: %f average: %f\r\n",tdistance,trpm,RPM,RPM_avg);
+	}
 }

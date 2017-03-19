@@ -58,9 +58,9 @@ public:
 	BallManager *BallMng;
 	Auton *AutonomousControl;
 
-	Spark *LightRelay;
+	Compressor *Comp;
 
-	Victor *LEDS;
+	Spark *LightRelay;
 
 	Timer *ReconnectTimer;
 	Timer *GameTimer;

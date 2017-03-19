@@ -29,7 +29,13 @@ private:
 	CANTalon *GearIntake;
 	CANTalon *GearLift;
 
-	//Timer *GearIntakeTimer;
+	Victor *LEDS;
+
+
+	Timer *GearIntakeTimer;
+
+	int PrevIntake = 0;
+	int CurIntake = 0;
 
 	bool intakedgear = false;
 

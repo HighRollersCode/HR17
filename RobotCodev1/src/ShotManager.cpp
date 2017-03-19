@@ -70,7 +70,7 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		float RobotVel_Forward = RobotVel.x;
 		float RobotVel_Side = RobotVel.y;
 
-		const float RPMtoFPS = 5.0f/3000.0f;
+		const float RPMtoFPS = 8.69f/3410.0f;
 
 		float ideal_stationary_rpm = ShooterWheel->EstimateRPM(distance_to_goal);
 		ideal_stationary_rpm = fmax(ideal_stationary_rpm, 1000.f);
@@ -108,12 +108,30 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 			{
 				AdjustAngle = -std::atan2(AdjustSide,AdjustForward + distance_to_goal);
 				AdjustAngle *= (180.f/3.14f);
+				const float MAX_ADJUST = 25.0f;
+				if (AdjustAngle < -MAX_ADJUST)
+				{
+					AdjustAngle = -MAX_ADJUST;
+				}
+				if (AdjustAngle > MAX_ADJUST)
+				{
+					AdjustAngle = MAX_ADJUST;
+				}
 			}
 
 			NewRPM = ShooterWheel->EstimateRPM(distance_to_goal + AdjustForward);
 			AdjustRPM = NewRPM - ideal_stationary_rpm;
 		}
 	}
+	else
+	{
+		AdjustForward = 0.0f;
+		AdjustSide = 0.0f;
+		AdjustRPM = 0.0f;
+		AdjustAngle = 0.0f;
+	}
+	AdjustAngle = 0;
+	AdjustForward = 0;
 	Turret->Update(turret,ShouldTrack);
 	Turret->HandleTarget(tx,calx,ty,false,AdjustAngle);
 	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty,AdjustForward);

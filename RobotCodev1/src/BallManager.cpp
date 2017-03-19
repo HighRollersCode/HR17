@@ -20,7 +20,7 @@ BallManager::~BallManager() {
 void BallManager::Update(bool intake,bool outake,bool uptake,bool downtake,float shaker)
 {
 	bool intake_mtr = (intake);
-	bool shooting_intake_mtr = ((intake)&&(uptake));
+	bool shooting_intake_mtr = (uptake);
 	bool outake_mtr = (outake);
 
 	bool uptake_mtr = (uptake);

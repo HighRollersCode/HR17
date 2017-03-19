@@ -54,6 +54,7 @@ public:
 
 	int INDICATOR = 0;
 	double RPM = 0;
+	double RPM_avg = 0;
 	double ERROR = 0;
 	float OverrideCommand = 0;
 	float hood_angle = 0;

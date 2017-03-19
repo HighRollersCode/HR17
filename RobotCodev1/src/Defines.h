@@ -34,7 +34,7 @@ struct Vector2
 #define GEAR_DOWN_INTAKE leftStick->GetRawButton(4)
 
 #define CLIMBER_UP leftStick->GetRawButton(6)
-#define CLIMBER_DOWN (leftStick->GetRawButton(6) && leftStick->GetRawButton(7))
+#define CLIMBER_SLOW leftStick->GetRawButton(7)
 
 #define GEAR_RESET leftStick->GetRawButton(10)
 
@@ -106,8 +106,8 @@ struct Vector2
 
 //Solenoid Ports
 
-#define Sol_Shifter_In 3
-#define Sol_Shifter_Out 2
+#define Sol_Shifter_In 1
+#define Sol_Shifter_Out 0
 
 //DIO ports for Encoders
 #define Encoder_Drive_Left_1 0

@@ -6,6 +6,7 @@
  */
 
 #include "Turret.h"
+#include "MyRobot.h"
 
 const float TURRET_TOLERANCE = 1;
 
@@ -236,7 +237,7 @@ void TurretClass::Update(float turret,bool TrackingEnable)
 		#if TURRET_TALON_CONTROL
 	Turret->SetControlMode(CANTalon::kPercentVbus);
 #else
-		//TurretPIDController->Disable();
+		TurretPIDController->Disable();
 #endif
 	}
 		ArmTimer->Reset();
@@ -246,12 +247,21 @@ void TurretClass::Update(float turret,bool TrackingEnable)
 }
 void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
 {
+	if(fabs(TurretPIDController->GetError()) < 200)
+	{
+		TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
+	}
+	else
+	{
+		TurretPIDController->SetPID(TURRET_P,0,TURRET_D);
+	}
 	if(ArmTimer->Get() > .01f)
 	{
 		HandleTarget(tx,crossX,target_area,false,0);
 		ArmTimer->Reset();
 		ArmTimer->Start();
 	}
+
 }
 float TurretClass::Clamp_Target(float tar,float lowerlim,float upperlim)
 {
@@ -371,10 +381,18 @@ float TurretClass::Compute_Robot_Angle()
 
 double TurretClass::Validate_Turret_Command(double cmd, bool ispidcmd)
 {
+	double xyzrate[3]{0,0,0};
+
 	if (ispidcmd)
 	{
 		// add in angular velocity
-
+		/*if ((cmd != 0.0)&&(MyRobotClass::Get()->IsAutonomous() == false))
+		{
+			MyRobotClass::Get()->Drivetrain->pigeon->GetRawGyro(xyzrate);
+			double Yawrate = xyzrate[2];
+			double Yawcorrection = Yawrate * .007f;
+			cmd += Yawcorrection;
+		}*/
 		if(cmd > 0.0)
 		{
 			cmd = fmax(cmd, MIN_TURRET_CMD);
@@ -384,13 +402,19 @@ double TurretClass::Validate_Turret_Command(double cmd, bool ispidcmd)
 			cmd = fmin(cmd, -MIN_TURRET_CMD);
 		}
 	}
+	SmartDashboard::PutNumber("Turret Command", cmd);
 	return cmd;
 }
 
 void TurretClass::Send_Data()
 {
+	double xyzrate[3]{0,0,0};
+	MyRobotClass::Get()->Drivetrain->pigeon->GetRawGyro(xyzrate);
+
 	SmartDashboard::PutNumber("Turret Speed", Turret->Get());
 	SmartDashboard::PutNumber("Robot Angle", Compute_Robot_Angle());
+	SmartDashboard::PutNumber("RobotVelocity", xyzrate[2]);
+	SmartDashboard::PutBoolean("Turret PID", TurretPIDController->IsEnabled());
 #if TURRET_TALON_CONTROL
 	SmartDashboard::PutNumber("Talon Turret Encoder", Turret->GetEncPosition());
 	SmartDashboard::PutNumber("Turret Error", Turret->GetClosedLoopError());

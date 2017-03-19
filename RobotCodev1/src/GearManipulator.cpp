@@ -44,8 +44,10 @@ GearManipulator::GearManipulator()
 	GearLift->SetClosedLoopOutputDirection(false);
 	GearLift->SetCurrentLimit(1.0f);
 
-	//GearIntakeTimer->Reset();
+	GearIntakeTimer = new Timer();
+	GearIntakeTimer->Reset();
 #endif
+	LEDS = new Victor(19);
 	ResetGearEncoder();
 }
 
@@ -66,6 +68,7 @@ void GearManipulator::UpdateGear(bool down, bool down_outtake,bool intake,bool u
 void GearManipulator::UpdateGearTalon(bool down, bool down_outtake,bool intake,bool up)
 {
 	//GearLift->SetControlMode(CANTalon::kPosition);
+	PrevIntake = CurIntake;
 	if (down)
 	{
 		GearLift->SelectProfileSlot(0);
@@ -88,27 +91,40 @@ void GearManipulator::UpdateGearTalon(bool down, bool down_outtake,bool intake,b
 		GearIn();
 		if(GearIntake->GetOutputCurrent() > 25.0f)
 		{
-			/*GearIntakeTimer->Start();
-			if(GearIntakeTimer->Get() > .1)
-			{*/
+			CurIntake = 1;
+
+			//if(GearIntakeTimer->Get() > .1)
+			//{
+			//	MyRobotClass::TheRobot->LEDS->Set(-0.5f);
 				GearLift->SelectProfileSlot(1);
-				GearLift->SetSetpoint(ticks_to_revs(0));
-				/*GearIntakeTimer->Reset();
-				GearIntakeTimer->Stop();
-			}*/
+				//GearLift->SetSetpoint(ticks_to_revs(0));
+
+			//}
+		}
+		else
+		{
+			CurIntake =0;
+		//	GearIntakeTimer->Reset();
 		}
 	}
 	else
 	{
 		GearIntake->Set(0);
 	}
-	if(GearIntake->GetOutputCurrent() > 20.0f)
+	if(GearIntake->GetOutputCurrent() > 25.0f)
 	{
 		intakedgear = true;
+		LEDS->Set(.7f);
 	}
-	else if(GearIntake->GetOutputCurrent() < 20.0f)
+	else if(GearIntake->GetOutputCurrent() < 25.0f)
 	{
 		intakedgear = false;
+		LEDS->Set(-.7f);
+	}
+	if(!PrevIntake && CurIntake)
+	{
+		GearIntakeTimer->Reset();
+		GearIntakeTimer->Start();
 	}
 }
 

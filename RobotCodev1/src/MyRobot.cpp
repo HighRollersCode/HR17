@@ -41,7 +41,7 @@ MyRobotClass::MyRobotClass()
 	XBoxController = new XboxController(3);
 	Climber = new ClimberClass();
 
-	Drivetrain = new Drivetrainclass(Climber->Climber);
+	Drivetrain = new Drivetrainclass(Climber->Climber_2);
 	Intake = new IntakeClass();
 	Turret = new TurretClass();
 	ShooterWheel = new ShooterWheelClass();
@@ -59,9 +59,11 @@ MyRobotClass::MyRobotClass()
 	printf("TargClient Initialized\r\n");
 	AutonomousControl = new Auton(Drivetrain,Turret,&DriverStation::GetInstance(),TargClient,ShotMng,BallMng);//ShooterWheel,Hopper);
 
-	LightRelay = new Spark(4);
 
-	LEDS = new Victor(19);
+	Comp = new Compressor();
+	Comp->SetClosedLoopControl(true);
+
+	LightRelay = new Spark(4);
 
 	ReconnectTimer = new Timer();
 	ReconnectTimer->Reset();
@@ -80,9 +82,9 @@ MyRobotClass::MyRobotClass()
 	m_ScriptSystem = 0;
 	Init_Scripts_System();
 
-	//ENABLE FOR COMPETITION
 	/*int connectionattempts = 0;
 	printf("Will block to connect... \r\n");
+
 	while ((connectionattempts < 5) && (TargClient->Get_Connected() == false))
 	{
 		if(ReconnectTimer->Get() > 2)
@@ -118,7 +120,6 @@ void MyRobotClass::Disabled(void)
 	printf("Disabled\r\n");
 	while(IsDisabled())
 	{
-		LEDS->Set(.7f);
 		Jetson_Connection();
 		Send_Data();
 		Wait(0.001);
@@ -162,7 +163,7 @@ void MyRobotClass::UpdateInputs()
 }
 void MyRobotClass::Send_Data()
 {
-	if(SmartDashTimer->Get() > .1f)
+	if(SmartDashTimer->Get() > .2f)
 	{
 		SmartDashTimer->Reset();
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
@@ -170,7 +171,6 @@ void MyRobotClass::Send_Data()
 		SmartDashboard::PutNumber("Target Y", TargClient->Get_YOffset());
 		SmartDashboard::PutNumber("Game Timer", GameTimer->Get());
 		SmartDashboard::PutBoolean("DriveStation Color", flipauto);
-		SmartDashboard::PutNumber("LED Pulse", LEDS->GetSpeed());
 
 
 		Drivetrain->Send_Data();
@@ -189,12 +189,12 @@ void MyRobotClass::OperatorControl(void)
 
 
 	Reset_State();
+	Comp->SetClosedLoopControl(true);
 
 	while (IsOperatorControl() && IsEnabled())
 	{
 		flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
 
-		LEDS->Set(-1.0f);
 
 		int prevtele = intele;
 		intele  = 1;
@@ -211,7 +211,6 @@ void MyRobotClass::OperatorControl(void)
 				Shutdown_Jetson();
 			}
 		}
-
 
 		Send_Data();
 
@@ -243,7 +242,7 @@ void MyRobotClass::OperatorControl(void)
 
 		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP);
 
-		Climber->UpdateClimber(CLIMBER_UP);
+		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_SLOW);
 
 		if(SET_CAM_FRONT)
 		{

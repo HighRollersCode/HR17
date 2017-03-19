@@ -453,6 +453,10 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Set_Auto_Script(142,"RIGHTGEAR_CLOSEHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(151,"MIDDLEGEAR_CLOSEHOPPER.hrs");
 
+	//Blue Side Auto
+	m_ScriptSystem->Set_Auto_Script(241,"RIGHTGEAR_FARHOPPER_BLUETWEAK.hrs");
+	m_ScriptSystem->Set_Auto_Script(242,"RIGHTGEAR_CLOSEHOPPER_BLUETWEAK.hrs");
+	m_ScriptSystem->Set_Auto_Script(251,"MIDDLEGEAR_CLOSEHOPPER_BLUETWEAK.hrs");
 	//EmptyAuto
 	m_ScriptSystem->Set_Auto_Script(999,"EMPTY.hrs");
 
