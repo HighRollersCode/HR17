@@ -234,14 +234,13 @@ void TurretClass::Update(float turret,bool TrackingEnable)
 	{
 		isReady = true;
 
-		#if TURRET_TALON_CONTROL
-	Turret->SetControlMode(CANTalon::kPercentVbus);
+#if TURRET_TALON_CONTROL
+		Turret->SetControlMode(CANTalon::kPercentVbus);
 #else
-		TurretPIDController->Disable();
 #endif
 	}
-		ArmTimer->Reset();
-		ArmTimer->Start();
+	ArmTimer->Reset();
+	ArmTimer->Start();
 
 	HandleUser(turret);
 }
@@ -386,13 +385,23 @@ double TurretClass::Validate_Turret_Command(double cmd, bool ispidcmd)
 	if (ispidcmd)
 	{
 		// add in angular velocity
-		/*if ((cmd != 0.0)&&(MyRobotClass::Get()->IsAutonomous() == false))
+		bool auto_tracking_enabled = false;
+		if (MyRobotClass::Get()->IsAutonomous())
+		{
+			auto_tracking_enabled = MyRobotClass::Get()->AutonomousControl->dotrack;
+		}
+		else if (MyRobotClass::Get()->IsOperatorControl())
+		{
+			auto_tracking_enabled = MyRobotClass::Get()->ShotMng->ShouldTrack;
+		}
+
+		if ((cmd != 0.0)&&(auto_tracking_enabled))
 		{
 			MyRobotClass::Get()->Drivetrain->pigeon->GetRawGyro(xyzrate);
 			double Yawrate = xyzrate[2];
-			double Yawcorrection = Yawrate * .007f;
+			double Yawcorrection = Yawrate * TURRET_YAW_CORRECTION_P;
 			cmd += Yawcorrection;
-		}*/
+		}
 		if(cmd > 0.0)
 		{
 			cmd = fmax(cmd, MIN_TURRET_CMD);
@@ -415,6 +424,7 @@ void TurretClass::Send_Data()
 	SmartDashboard::PutNumber("Robot Angle", Compute_Robot_Angle());
 	SmartDashboard::PutNumber("RobotVelocity", xyzrate[2]);
 	SmartDashboard::PutBoolean("Turret PID", TurretPIDController->IsEnabled());
+	SmartDashboard::PutNumber("Turret SetPoint", TurretPIDController->GetSetpoint());
 #if TURRET_TALON_CONTROL
 	SmartDashboard::PutNumber("Talon Turret Encoder", Turret->GetEncPosition());
 	SmartDashboard::PutNumber("Turret Error", Turret->GetClosedLoopError());

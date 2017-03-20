@@ -32,6 +32,8 @@ public:
 	bool ShouldTrack = false;
 	bool isReady = false;
 
+	bool MovingShotEnabled = true;
+
 	Timer *PresetTimer;
 
 	int state = 0;

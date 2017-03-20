@@ -24,5 +24,7 @@ DriveTicksHeading .5 210 -90
 Drive .15 0
 Wait .2
 Shooting 1 0
+Wait 1.0
+Drive 0 0
 Wait 10
 

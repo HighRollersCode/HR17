@@ -130,8 +130,13 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		AdjustRPM = 0.0f;
 		AdjustAngle = 0.0f;
 	}
-	AdjustAngle = 0;
-	AdjustForward = 0;
+
+	if(MovingShotEnabled == false)
+	{
+		AdjustAngle = 0;
+		AdjustForward = 0;
+	}
+
 	Turret->Update(turret,ShouldTrack);
 	Turret->HandleTarget(tx,calx,ty,false,AdjustAngle);
 	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty,AdjustForward);
@@ -147,11 +152,8 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 			isReady = false;
 		}
 	}
-
-
-
-
 }
+
 void ShotManager::Send_Data()
 {
 	Turret->Send_Data();

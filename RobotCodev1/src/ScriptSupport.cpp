@@ -55,6 +55,30 @@ public:
 	}
 };
 
+class SetTurretYawCorrectionCommand : public HrScriptCommandClass
+{
+public:
+	virtual const char * Get_Command_Name() { return "TurretYawCorrection"; }
+	virtual int Get_Parameter_Count() { return 1; }
+	virtual HrScriptCommandClass * Create_Command() { return new SetTurretYawCorrectionCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->Turret->TURRET_YAW_CORRECTION_P = m_Parameters[0];
+	}
+};
+
+class SetMovingShotEnableCommand : public HrScriptCommandClass
+{
+public:
+	virtual const char * Get_Command_Name() { return "MovingShotEnabled"; }
+	virtual int Get_Parameter_Count() { return 1; }
+	virtual HrScriptCommandClass * Create_Command() { return new SetMovingShotEnableCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->ShotMng->MovingShotEnabled = (m_Parameters[0] != 0.0);
+	}
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 										//Wait Code//
@@ -394,7 +418,8 @@ void MyRobotClass::Init_Scripts_System()
 	m_ScriptSystem->Add_Command(new SetDriveTrainConstantsCommand());
 	m_ScriptSystem->Add_Command(new SetShooterWheelConstantsCommand());
 	m_ScriptSystem->Add_Command(new SetTurretConstantsCommand());
-
+	m_ScriptSystem->Add_Command(new SetTurretYawCorrectionCommand());
+	m_ScriptSystem->Add_Command(new SetMovingShotEnableCommand());
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -452,6 +477,7 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Set_Auto_Script(141,"RIGHTGEAR_FARHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(142,"RIGHTGEAR_CLOSEHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(151,"MIDDLEGEAR_CLOSEHOPPER.hrs");
+	m_ScriptSystem->Set_Auto_Script(161,"CLOSEHOPPER_MOVING_SHOT_RIGHT.hrs");
 
 	//Blue Side Auto
 	m_ScriptSystem->Set_Auto_Script(241,"RIGHTGEAR_FARHOPPER_BLUETWEAK.hrs");

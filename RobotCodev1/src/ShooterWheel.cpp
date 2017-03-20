@@ -31,7 +31,7 @@ static float DRPM_RPMTable67[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 
 
 //Estimate RPM from Target Distance Wide FOV Comp Bot 69 degree
 static float DRPM_DistanceTable69[] = { 8.1f, 8.55f, 9.08f, 10.0f, 11.2f,13.17};
-static float DRPM_RPMTable69[] = { 3020.f, 3060.f, 3125.f, 3239.f, 3560.f, 3777.f};
+static float DRPM_RPMTable69[] = { 3030.f, 3060.f, 3125.f, 3239.f, 3560.f, 3777.f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};

@@ -26,6 +26,7 @@ public:
 	double TURRET_I = 0.00001f;
 	double TURRET_D = 0.01;
 	double TURRET_OMEGA_K = 0.01f;  // multiplied by angular velocity
+	double TURRET_YAW_CORRECTION_P = 0.007;
 
 #if TURRET_TALON_CONTROL
 	CANTalon *Turret;
@@ -43,7 +44,6 @@ public:
 
 	float LastMoveByDegreesX = 360.0f;
 	float LockonDegreesX;
-
 	int TurretEncoder_Cur = 0;
 	int TurretEncoder_Targ = 0;
 

@@ -138,14 +138,15 @@ void MyRobotClass::Autonomous(void)
 	flipauto = (DriverStation::GetInstance().GetAlliance() == DriverStation::Alliance::kBlue);
 
 	LightRelay->Set(1);
-		Load_Scripts();
-		printf("loaded\n");
-		m_ScriptSystem->Run_Auto_Script(0);
-		printf("ransettings\n");
-		AutonomousControl->Auto_Start();
-		printf("startfunction\n");
-		m_ScriptSystem->Run_Auto_Script(Auto_Index);
-		AutonomousControl->Auto_End();
+
+	Load_Scripts();
+	printf("loaded\n");
+	m_ScriptSystem->Run_Auto_Script(0);
+	printf("ransettings\n");
+	AutonomousControl->Auto_Start();
+	printf("startfunction\n");
+	m_ScriptSystem->Run_Auto_Script(Auto_Index);
+	AutonomousControl->Auto_End();
 }
 void MyRobotClass::UpdateInputs()
 {

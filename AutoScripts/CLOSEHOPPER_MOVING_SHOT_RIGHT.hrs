@@ -1,0 +1,38 @@
+//100 Ticks = 16 3/4 in
+
+Tracking 0
+Shooting 0 0
+
+TurretEnablePID 1
+Turret 1420
+Wait 0.1
+
+DriveTicksHeading .9 130 0 //788 guessed encoder ticks
+DriveTicksHeading .7 120 0
+DriveTicksHeading .3 150 45
+DriveTicksHeading .25 150 60
+DriveTicksHeading .2 200 85
+Tracking 1
+DriveTicksHeading .2 75 85
+Drive .15 0
+Wait .2
+Shooting 1 0
+Wait 1.0
+Drive 0 0
+
+// shoot while loading hopper
+Wait 1.8
+
+//enable MovingShot
+MovingShotEnabled 1
+
+// drive to gear
+DriveTicksHeading .2  -228 90
+DriveTicksHeading .2 -364 124
+GearManipulator 1 0
+Wait .3
+DriveTicksHeading .2 150 124
+GearManipulator 0 1
+Wait .2
+GearManipulator 0 0
+Wait 10
