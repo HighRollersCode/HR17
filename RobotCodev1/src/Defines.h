@@ -52,7 +52,7 @@ struct Vector2
 
 #define TURRET_MOTOR_CMD turretStick->GetX()
 
-#define OVERRIDE_RPM_CMD ((((turretStick->GetZ() + 1.0f)*.5f)* 3000.0f)+2500.0f)
+#define OVERRIDE_RPM_CMD ((((turretStick->GetZ() + 1.0f)*.5f)* 2500.0f)+2900.0f)
 
 #define HOPPER_UPTAKE turretStick->GetTrigger()
 

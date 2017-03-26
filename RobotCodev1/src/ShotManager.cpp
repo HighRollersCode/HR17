@@ -70,7 +70,7 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 		float RobotVel_Forward = RobotVel.x;
 		float RobotVel_Side = RobotVel.y;
 
-		const float RPMtoFPS = 8.69f/3410.0f;
+		const float RPMtoFPS = 8.69f/3400.0f;
 
 		float ideal_stationary_rpm = ShooterWheel->EstimateRPM(distance_to_goal);
 		ideal_stationary_rpm = fmax(ideal_stationary_rpm, 1000.f);

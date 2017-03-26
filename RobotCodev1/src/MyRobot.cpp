@@ -33,12 +33,9 @@ MyRobotClass::MyRobotClass()
 
 	SmartDashboard::init();
 
-	Calibratemtr = new CANTalon(60);
-
 	leftStick = new Joystick(0);
 	rightStick = new Joystick(1);
 	turretStick = new Joystick(2);
-	XBoxController = new XboxController(3);
 	Climber = new ClimberClass();
 
 	Drivetrain = new Drivetrainclass(Climber->Climber_2);
@@ -164,7 +161,7 @@ void MyRobotClass::UpdateInputs()
 }
 void MyRobotClass::Send_Data()
 {
-	if(SmartDashTimer->Get() > .2f)
+	if(SmartDashTimer->Get() > .02f)
 	{
 		SmartDashTimer->Reset();
 		SmartDashboard::PutBoolean("Light", LightRelay->Get());
@@ -227,14 +224,12 @@ void MyRobotClass::OperatorControl(void)
 		{
 			RPM = 0;
 		}
-		Calibratemtr->Set(leftStick->GetZ());
-		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)*.5f),
+		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)* .5f),
 				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity());
 
 		TargClient->Set_Moving_Target_Offset(ShotMng->AdjustAngle,ShotMng->AdjustRPM);
 
 		BallMng->Update(INTAKE_IN,INTAKE_OUT,(HOPPER_UPTAKE||ShotMng->isReady),HOPPER_OUTAKE,((rightStick->GetZ() + 1.0f) * .5f));
-		//ShooterWheel->SetSpeed(turretStick->GetZ());
 
 		if (GEAR_RESET)
 		{

@@ -477,6 +477,7 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Set_Auto_Script(141,"RIGHTGEAR_FARHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(142,"RIGHTGEAR_CLOSEHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(151,"MIDDLEGEAR_CLOSEHOPPER.hrs");
+	m_ScriptSystem->Set_Auto_Script(152,"MIDDLEGEAR_SHOOT.hrs");
 	m_ScriptSystem->Set_Auto_Script(161,"CLOSEHOPPER_MOVING_SHOT_RIGHT.hrs");
 
 	//Blue Side Auto

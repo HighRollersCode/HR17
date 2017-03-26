@@ -29,9 +29,13 @@ static float DRPM_RPMTable75[] = {  3132.0f, 3203.0f, 3460.0f, 3777.0f, 3800.0f}
 static float DRPM_DistanceTable67[] = { 8.4f, /*8.9f,*/ 12.53f};//8.7f 8.9f, 9.9f, 12.4f};
 static float DRPM_RPMTable67[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 3106.f, 3625.f};
 
-//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degree
-static float DRPM_DistanceTable69[] = { 8.1f, 8.55f, 9.08f, 10.0f, 11.2f,13.17};
-static float DRPM_RPMTable69[] = { 3030.f, 3060.f, 3125.f, 3239.f, 3560.f, 3777.f};
+/*//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degree
+static float DRPM_DistanceTable69[] = { 8.1f, 8.55f, 9.08f, 9.3f, 10.0f, 11.2f,13.17};
+static float DRPM_RPMTable69[] = { 3030.f, 3060.f, 3125.f, 3130.f, 3239.f, 3560.f, 3777.f};*/
+
+//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degrees 3 motors
+static float DRPM_DistanceTable69[] = { 7.8f, 	8.0f, 	8.5f, 	9.0f, 	9.5f, 	9.7f, 	10.0f, 	10.5f, 	11.0f};
+static float DRPM_RPMTable69[] = 	{ 	2987.f, 3063.f,	3085.f, 3125.f, 3175.f, 3205.f, 3351.f, 3397.f, 3461.f};
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -90,6 +94,7 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->SelectProfileSlot(0);
 	Shooter->SetSensorDirection(true);
 	Shooter->SetVoltageRampRate(100);
+	Shooter->SetIzone(500);
 	Shooter_2->SetVoltageRampRate(100);
 #else
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
@@ -352,7 +357,7 @@ void ShooterWheelClass::Send_Data()
 #if TALON_SPEED_CONTROL
 	SmartDashboard::PutNumber("ShooterRPM",RPM);
 	SmartDashboard::PutNumber("ShooterRPM_avg",RPM_avg);
-	//SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetAppliedThrottle());
+	SmartDashboard::PutNumber("ShooterSpeed", Shooter->GetOutputCurrent());
 	SmartDashboard::PutNumber("ShooterError", ERROR);
 	SmartDashboard::PutNumber("ShooterEnc", Shooter->GetEncPosition());
 #else

@@ -9,11 +9,11 @@ Wait 0.1
 
 DriveTicksHeading .5 -325 0
 DriveTurnTimed 1 0 .5
-Wait 1
+Wait .2
 GearManipulator 1 0
 Wait .3
-DriveTicksHeading .5 150 -45
-GearManipulator 1 0
+DriveTicksHeading .5 175 -45
+GearManipulator 0 1
 DriveTicksHeading .5 150 -110
 GearManipulator 0 0
 DriveTicksHeading .5 150 -200

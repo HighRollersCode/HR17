@@ -39,17 +39,17 @@ void UptakeClass::UpdateUptake(bool uptake,bool downtake,bool slow)
 }
 void UptakeClass::UptakeUp()
 {
-		Uptake->Set(1.0f);
+		Uptake->Set(-1.0f);
 }
 void UptakeClass::UptakeDown()
 {
 	if(slowdown)
 	{
-		Uptake->Set(-.8f);
+		Uptake->Set(.8f);
 	}
 	else
 	{
-		Uptake->Set(-1.0f);
+		Uptake->Set(1.0f);
 	}
 }
 void UptakeClass::UptakeOff()

@@ -8,7 +8,7 @@ Turret 1420
 Wait 0.1
 
 DriveTicksHeading .9 130 0 //788 guessed encoder ticks
-DriveTicksHeading .7 120 0
+DriveTicksHeading .7 110 0
 DriveTicksHeading .3 150 45
 DriveTicksHeading .25 150 60
 DriveTicksHeading .2 200 85

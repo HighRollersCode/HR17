@@ -29,7 +29,7 @@ void IntakeClass::UpdateIntake(float intake, float outtake,float shooting_intake
 	}
 	else if (shooting_intake)
 	{
-		Intake->Set(-.8f);
+		Intake->Set(-1.0f);
 	}
 	else
 	{

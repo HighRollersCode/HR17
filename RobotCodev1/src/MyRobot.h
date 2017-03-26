@@ -38,12 +38,9 @@ public:
 	float commandIntake = 0;
 	float intele = 0;
 
-	CANTalon *Calibratemtr;
-
 	Joystick *leftStick;
 	Joystick *rightStick;
 	Joystick *turretStick;
-	XboxController *XBoxController;
 
 	Drivetrainclass *Drivetrain;
 	IntakeClass *Intake;
