@@ -37,6 +37,9 @@ class Auton
 		bool uptake = false;
 		bool downtake = false;
 		bool dotrack = false;
+		bool dorpmoverride = false;
+
+		float rpmoverride = 2945.0f;
 
 		bool Running();
 		void AutonWait(float Seconds);

@@ -1,0 +1,25 @@
+//100 Ticks = 16 3/4 in
+
+Tracking 0
+Shooting 0 0
+
+DriveTicksHeading .9 -40 0 //788 guessed encoder ticks
+DriveTicksHeading .7 -75 0
+DriveTicksHeading .3 -275 45
+DriveTicksHeading .3 -300 60
+DriveTimed .2 0 .2
+GearManipulator 1 0
+Wait .3
+DriveTicksHeading .5 75 100
+GearManipulator 0 1
+DriveTicksHeading .5 100 180
+GyroTurnTimed 180 1.0
+GearManipulator 0 0
+DriveTicksHeading .5 100 180
+DriveTicksHeading 1.0 650 180
+DriveTicksHeading .4 482 180
+DriveTicksHeading .3 414 90
+DriveTImed .1 0 .2
+Wait 10
+
+

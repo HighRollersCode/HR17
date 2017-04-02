@@ -32,13 +32,11 @@ public:
 	bool ShouldTrack = false;
 	bool isReady = false;
 
-	bool MovingShotEnabled = true;
+	bool MovingShotEnabled = false;
 
 	Timer *PresetTimer;
 
-	int state = 0;
 	int counter = 0;
-	bool transitioning = false;
 
 	float AdjustRPM = 0;
 	float AdjustAngle = 0;
@@ -53,8 +51,8 @@ public:
 
 	void EnterState(RobotMode mode);
 	void StartTracking(float enable);
-	void Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideMtr,float OverrideRPM,float tx,
-			float calx,float ty, Vector2 RobotVelocity);
+	void Update(float turret,bool ShootingState,bool EnableOverrideMtr,bool EnableOverride,float OverrideMtr,float OverrideRPM,float tx,
+			float calx,float ty, Vector2 RobotVelocity,float ManualBoost);
 	void Send_Data();
 
 };

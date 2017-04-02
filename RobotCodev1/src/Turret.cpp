@@ -246,7 +246,7 @@ void TurretClass::Update(float turret,bool TrackingEnable)
 }
 void TurretClass::AutonomousTrackingUpdate(float tx, float crossX,float target_area)
 {
-	if(fabs(TurretPIDController->GetError()) < 200)
+	if(fabs(TurretPIDController->GetError()) < 100)
 	{
 		TurretPIDController->SetPID(TURRET_P,TURRET_I,TURRET_D);
 	}
@@ -302,9 +302,10 @@ void TurretClass::HandleTarget(float centerX,float calX,float target_a,bool data
 		LastMoveByDegreesX = 360.0f;
 		LockonDegreesX = LOCKON_DEGREES_X;
 
+
 		if (CurrentEnableTracking)
 		{
-			SetTurret(GetTurretEncoder());
+			//SetTurret(GetTurretEncoder());
 		}
 		return;
 	}

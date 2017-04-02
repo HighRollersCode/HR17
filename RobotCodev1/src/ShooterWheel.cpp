@@ -33,9 +33,13 @@ static float DRPM_RPMTable67[] = { 3060.f, /*3150.f,*/ 3769.f};//3075.f 2992.f, 
 static float DRPM_DistanceTable69[] = { 8.1f, 8.55f, 9.08f, 9.3f, 10.0f, 11.2f,13.17};
 static float DRPM_RPMTable69[] = { 3030.f, 3060.f, 3125.f, 3130.f, 3239.f, 3560.f, 3777.f};*/
 
-//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degrees 3 motors
+//Estimate RPM from Target Distance Wide FOV Comp Bot 69 degrees 2 motors and mass
 static float DRPM_DistanceTable69[] = { 7.8f, 	8.0f, 	8.5f, 	9.0f, 	9.5f, 	9.7f, 	10.0f, 	10.5f, 	11.0f};
 static float DRPM_RPMTable69[] = 	{ 	2987.f, 3063.f,	3085.f, 3125.f, 3175.f, 3205.f, 3351.f, 3397.f, 3461.f};
+
+//Estimate RPM from Target Distance Wide FOV Comp Bot 71 degrees 2 motors and mass
+static float DRPM_DistanceTable71[] = { 8.5f,  	9.0f, 	11.0f,	12.0f};
+static float DRPM_RPMTable71[] = 	{ 	2940.f, 3026.f, 3525.f,	3630.f };
 
 //Estimate Power from Optimum RPM
 //static float RPMTable[] = { 0, 160.0f, 720.0f, 1300.0f, 1900.0f, 2500.0f, 3200.0f, 3750.0f, 4500.0f, 5100.0f, 5600.0f};
@@ -52,6 +56,9 @@ static int YDTABLE_COUNT67 = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 
 static int DRPM_TABLE_COUNT69 = sizeof(DRPM_DistanceTable69) / sizeof(DRPM_DistanceTable69[0]);
 static int YDTABLE_COUNT69 = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
+
+static int DRPM_TABLE_COUNT71 = sizeof(DRPM_DistanceTable71) / sizeof(DRPM_DistanceTable71[0]);
+static int YDTABLE_COUNT71 = sizeof(YDTable_Y) / sizeof(YDTable_Y[0]);
 
 
 inline float ComputeDistance(float y)
@@ -94,7 +101,7 @@ ShooterWheelClass::ShooterWheelClass()
 	Shooter->SelectProfileSlot(0);
 	Shooter->SetSensorDirection(true);
 	Shooter->SetVoltageRampRate(100);
-	Shooter->SetIzone(500);
+	Shooter->SetIzone(300);
 	Shooter_2->SetVoltageRampRate(100);
 #else
 	ShooterEnc = new Encoder(Encoder_Shooter_Wheel_1,Encoder_Shooter_Wheel_2, false, Encoder::EncodingType::k1X);
@@ -141,7 +148,7 @@ float ShooterWheelClass::Get_Goal_Distance(float y)
 }
 float ShooterWheelClass::EstimateRPM(float distance)
 {
-	return Interpolate(DRPM_DistanceTable69,DRPM_RPMTable69,DRPM_TABLE_COUNT69,distance);
+	return Interpolate(DRPM_DistanceTable71,DRPM_RPMTable71,DRPM_TABLE_COUNT71,distance);
 	//return 146.486 * distance + 1860.405;
 }
 float ShooterWheelClass::EstimatePower(float desiredRPM)
@@ -254,9 +261,9 @@ void ShooterWheelClass::WheelOff()
 {
 	Shooter->Set(0.0f);
 	Shooter_2->Set(0.0f);
-	ShooterToggle = 1;
+	State = ShooterState_off;
 }
-void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward)//,double RobotTime,float crossY)
+void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward,float ManualBoost)//,double RobotTime,float crossY)
 {
 
 	PrevOverridePower = CurOverridePower;
@@ -270,7 +277,7 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 
 	targy = ty;
 	tdistance = ComputeDistance(targy);
-	trpm = EstimateRPM(tdistance + AdjustForward);
+	trpm = EstimateRPM(tdistance + AdjustForward) + (ManualBoost * 100);
 	//float power = EstimatePower(trpm);
 
 #if TALON_SPEED_CONTROL
@@ -308,14 +315,14 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 	{
 		SetState(ShooterState_off);
 	}
-	if(ShooterToggle == 1)
+	if(State == ShooterState_off)
 	{
 		Shooter->SetControlMode(CANTalon::kPercentVbus);
 		Shooter_2->SetControlMode(CANTalon::kPercentVbus);
 		SetSpeed(0.0f);
 		INDICATOR = 0;
 	}
-	else if(ShooterToggle == -1)
+	else
 	{
 		INDICATOR = 1;
 
@@ -349,7 +356,6 @@ void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRP
 }
 void ShooterWheelClass::SetState(int newstate)
 {
-	ShooterToggle = -ShooterToggle;
 	State = newstate;
 }
 void ShooterWheelClass::Send_Data()

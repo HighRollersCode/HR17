@@ -58,7 +58,6 @@ public:
 	double ERROR = 0;
 	float OverrideCommand = 0;
 	float hood_angle = 0;
-	int ShooterToggle = 1;
 
 	Encoder *ShooterEnc;
 
@@ -78,7 +77,7 @@ public:
 	void SetSpeed(float command);
 	void Send_Data();
 	void WheelOff();
-	void UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward);//,double RobotTime,float crossY);
+	void UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward,float ManualBoost);//,double RobotTime,float crossY);
 	void ShooterOverride(float input);
 	void ShooterOverrideRPM(float rpm);
 	void SetShooterConstants(float p,float i,float d,float f);//,float k_down);

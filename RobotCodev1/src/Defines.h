@@ -52,7 +52,7 @@ struct Vector2
 
 #define TURRET_MOTOR_CMD turretStick->GetX()
 
-#define OVERRIDE_RPM_CMD ((((turretStick->GetZ() + 1.0f)*.5f)* 2500.0f)+2900.0f)
+#define OVERRIDE_RPM_CMD ((((turretStick->GetZ() + 1.0f)*.5f)* 2500.0f)+2700.0f)
 
 #define HOPPER_UPTAKE turretStick->GetTrigger()
 
@@ -124,7 +124,7 @@ struct Vector2
 //
 
 // The turret is zero'd when it is centered pointing forward.
-#define TURRET_DEGREES_PER_TICK (90.f/1420.f)
+#define TURRET_DEGREES_PER_TICK (90.f/1600.f)
 #define TURRET_MIN_ENCODER	-2410  //1700 a little more than 90
 #define TURRET_MAX_ENCODER  2410
 

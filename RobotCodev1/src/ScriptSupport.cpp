@@ -291,7 +291,24 @@ public:
 	virtual HrScriptCommandClass * Create_Command() { return new TrackingCommand(); }
 	virtual void Execute()
 	{
-		MyRobotClass::Get()->AutonomousControl->dotrack = m_Parameters[0];
+		bool dotrack = (m_Parameters[0] != 0.0f);
+		MyRobotClass::Get()->AutonomousControl->dotrack = dotrack;
+		if(dotrack)
+		{
+			MyRobotClass::Get()->AutonomousControl->dorpmoverride = false;
+		}
+	}
+};
+class RPMOverrideCommand : public HrScriptCommandClass
+{
+public:
+	virtual const char * Get_Command_Name() {return "RPMOverride"; }
+	virtual int Get_Parameter_Count() { return 2; }
+	virtual HrScriptCommandClass * Create_Command() { return new RPMOverrideCommand(); }
+	virtual void Execute()
+	{
+		MyRobotClass::Get()->AutonomousControl->dorpmoverride = (m_Parameters[0] != 0.0f);
+		MyRobotClass::Get()->AutonomousControl->rpmoverride = m_Parameters[1];
 	}
 };
 class SetTurretCommand : public HrScriptCommandClass
@@ -442,6 +459,7 @@ void MyRobotClass::Init_Scripts_System()
 	m_ScriptSystem->Add_Command(new SetTurretCommand());
 	m_ScriptSystem->Add_Command(new ShootingCommand());
 	m_ScriptSystem->Add_Command(new TrackingCommand());
+	m_ScriptSystem->Add_Command(new RPMOverrideCommand());
 	m_ScriptSystem->Add_Command(new TurretEnablePIDCommand());
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -479,6 +497,7 @@ void MyRobotClass::Load_Scripts()
 	m_ScriptSystem->Set_Auto_Script(151,"MIDDLEGEAR_CLOSEHOPPER.hrs");
 	m_ScriptSystem->Set_Auto_Script(152,"MIDDLEGEAR_SHOOT.hrs");
 	m_ScriptSystem->Set_Auto_Script(161,"CLOSEHOPPER_MOVING_SHOT_RIGHT.hrs");
+	m_ScriptSystem->Set_Auto_Script(171,"LEFTGEAR_OPPHOPPER.hrs");
 
 	//Blue Side Auto
 	m_ScriptSystem->Set_Auto_Script(241,"RIGHTGEAR_FARHOPPER_BLUETWEAK.hrs");

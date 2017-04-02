@@ -230,7 +230,7 @@ bool Auton::Auto_System_Update()
 	if(Running())
 	{
 		Targeting->Update();
-		ShotMng->Update(0,dotrack,false,false,0,0,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(), MyRobotClass::Get()->Compute_Robot_Velocity());
+		ShotMng->Update(0,dotrack,false,dorpmoverride,0,rpmoverride,Targeting->Get_XOffset(),Targeting->Get_Cal_X(),Targeting->Get_YOffset(), MyRobotClass::Get()->Compute_Robot_Velocity(),0);
 		BallMng->Update(intake,outake,(uptake || ShotMng->isReady),downtake,0);
 
 		SendData();

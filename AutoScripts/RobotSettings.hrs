@@ -10,12 +10,13 @@
 //SetAuto 151 is MIDDLEGEAR_CLOSEHOPPER
 //SetAuto 152 is MIDDLEGEAR_SHOOT
 //SetAuto 161 is CLOSEHOPPER_MOVING_SHOT_RIGHT
+//SetAuto 171 is LEFTGEAR_OPPHOPPER
 //SetAuto 241 is RIGHTGEAR_FARHOPPER_BLUETWEAK
 //SetAuto 242 is RIGHTGEAR_CLOSEHOPPER_BLUETWEAK
 //SetAuto 251 is MIDDLEGEAR_CLOSEHOPPER_BLUETWEAK
 //SetAuto 999 is EMPTY
 
-SetAuto 142
+SetAuto 171
 DriveTrainSettings .007
 
 //ShooterWheelSettings P I D F
@@ -24,12 +25,13 @@ DriveTrainSettings .007
 // 2 motor with dragmtrr ShooterWheelSettings .0 .00 .0000 .0001
 //1:1
 //3 motor with mass 
-ShooterWheelSettings .00015 .00001 .00001 .000025
+//ShooterWheelSettings .0002 .00000125 .000001 .000025 good shooter settings new mass
+ShooterWheelSettings .0003 .000001 .0000005 .000025
 
 
 //TurretSettings P I D Min_Cmd
-//TurretSettings 0.0012 0.0000011 0.00000 .05
-TurretSettings 0.0012 0.0000011 0.00000 .05
+//TurretSettings 0.002 0.0000022 0.000005 .06
+TurretSettings 0.001 0.000001 0.00000 .00
 TurretYawCorrection 0.007
 
 //.013

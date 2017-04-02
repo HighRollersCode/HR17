@@ -224,8 +224,9 @@ void MyRobotClass::OperatorControl(void)
 		{
 			RPM = 0;
 		}
-		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,-((turretStick->GetZ() + 1.0f)* .5f),
-				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity());
+		float normz =	1.0f-((turretStick->GetZ() + 1.0f)* .5f);
+		ShotMng->Update(TURRET_MOTOR_CMD,TRACKING_ENABLE,SHOOTER_ENABLE_MTR,SHOOTER_ENABLE_OVERRIDE,normz,
+				RPM,TargClient->Get_XOffset(),TargClient->Get_Cal_X(),TargClient->Get_YOffset(),Compute_Robot_Velocity(),normz);
 
 		TargClient->Set_Moving_Target_Offset(ShotMng->AdjustAngle,ShotMng->AdjustRPM);
 

@@ -24,8 +24,6 @@ ShotManager::~ShotManager() {
 void ShotManager::EnterState(RobotMode mode)
 {
 	currentMode = mode;
-	state = 0;
-	transitioning = true;
 }
 void ShotManager::StartTracking(float Enable)
 {
@@ -38,8 +36,8 @@ void ShotManager::StartTracking(float Enable)
 		currentMode = RobotMode::Free;
 	}
 }
-void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool EnableOverride,float OverrideMtr,float OverideRPM,
-		float tx,float calx,float ty,Vector2 RobotVelocity)
+void ShotManager::Update(float turret,bool ShootingState,bool EnableOverrideMtr,bool EnableOverride,float OverrideMtr,float OverideRPM,
+		float tx,float calx,float ty,Vector2 RobotVelocity,float ManualBoost)
 {
 	ShooterState_Prev = ShooterState_Cur;
 	ShooterState_Cur = ShootingState;
@@ -139,7 +137,7 @@ void ShotManager::Update(float turret,bool ShootingState,bool EnableLow,bool Ena
 
 	Turret->Update(turret,ShouldTrack);
 	Turret->HandleTarget(tx,calx,ty,false,AdjustAngle);
-	ShooterWheel->UpdateShooter(EnableLow,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty,AdjustForward);
+	ShooterWheel->UpdateShooter(EnableOverrideMtr,EnableOverride,OverrideMtr,OverideRPM,ShouldTrack,ty,AdjustForward,ManualBoost);
 
 	if(ShouldTrack)
 	{
