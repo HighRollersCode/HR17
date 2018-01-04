@@ -4,9 +4,9 @@ Tracking 0
 Shooting 0 0
 
 DriveTicksHeading .9 -40 0 //788 guessed encoder ticks
-DriveTicksHeading .7 -75 0
+DriveTicksHeading .7 -192 0
 DriveTicksHeading .3 -275 45
-DriveTicksHeading .3 -300 60
+DriveTicksHeading .3 -375 60
 DriveTimed .2 0 .2
 GearManipulator 1 0
 Wait .3

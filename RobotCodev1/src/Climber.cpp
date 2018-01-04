@@ -18,7 +18,7 @@ ClimberClass::ClimberClass() {
 ClimberClass::~ClimberClass() {
 	// TODO Auto-generated destructor stub
 }
-void ClimberClass::UpdateClimber(bool ClimbUp, bool ClimberSlow)
+void ClimberClass::UpdateClimber(bool ClimbUp)
 {
 	/*if(Climber->GetOutputCurrent() > 100.0f)
 	{
@@ -41,11 +41,6 @@ void ClimberClass::UpdateClimber(bool ClimbUp, bool ClimberSlow)
 			Climber->Set(0.25f);
 			Climber_2->Set(0.25f);
 		}*/
-	}
-	else if(ClimberSlow)
-	{
-		Climber->Set(0.25f);
-		Climber_2->Set(0.25f);
 	}
 	else
 	{

@@ -1,0 +1,54 @@
+//SetAuto 111 is GEAR_RIGHT
+
+//SetAuto 112 is GEAR_MIDDLE
+
+//SetAuto 113 is GEAR_LEFT
+
+//SetAuto 121 is FARHOPPER_RIGHT
+
+//SetAuto 122 is FARHOPPER_MIDDLE
+
+//SetAuto 131 is CLOSEHOPPER_RIGHT
+
+//SetAuto 132 is CLOSEHOPPER_MIDDLE
+
+//SetAuto 141 is RIGHTGEAR_FARHOPPER
+
+//SetAuto 142 is RIGHTGEAR_CLOSEHOPPER
+
+//SetAuto 151 is MIDDLEGEAR_CLOSEHOPPER
+
+//SetAuto 999 is EMPTY
+
+
+
+SetAuto 121
+
+
+DriveTrainSettings .007
+
+
+
+//ShooterWheelSettings P I D F K_Down
+
+//ShooterWheelSettings .00005 .0 .00000007 .000015 .000025
+
+ShooterWheelSettings .0001 0 .000125 .000025 .000025
+
+
+
+//TurretSettings P I D Min_Cmd
+
+//TurretSettings 0.00125 0.0000007 0.0 0.60 really good
+
+
+TurretSettings 0.00125 0.0000007 0.0 0.60
+
+
+//Talon Control TurretSettings 0.00025 0.00000125 0.0 0.60
+
+
+//.013
+
+//EBrakeSettings .5
+

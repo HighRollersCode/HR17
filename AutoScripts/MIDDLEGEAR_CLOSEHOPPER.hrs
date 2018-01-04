@@ -7,19 +7,24 @@ TurretEnablePID 1
 Turret 1000
 Wait 0.1
 
-DriveTicksHeading .5 -325 0
-DriveTurnTimed 1 0 .5
+DriveTicksHeading .3 -75 0
+DriveTicksHeading .5 -150 0
+DriveTicksHeading .6 -130 0
+DriveTimed .7 0 .1
 Wait .2
 GearManipulator 1 0
 Wait .3
-DriveTicksHeading .5 175 -45
+DriveTicksHeading .5 125 -45
 GearManipulator 0 1
+Intake 1
 DriveTicksHeading .5 150 -110
 GearManipulator 0 0
 DriveTicksHeading .5 150 -200
-DriveTicksHeading .5 400 -95
+DriveTicksHeading .5 425 -95
 Tracking 1
 DriveTicksHeading .4 250 -90
+intake 0
+WaitForTarget 5
 Shooting 1 0
 Drive .2 0
 Wait 10

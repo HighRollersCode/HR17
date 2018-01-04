@@ -239,7 +239,7 @@ void MyRobotClass::OperatorControl(void)
 
 		GearMpltr->UpdateGear(GEAR_DOWN_INTAKE,GEAR_DOWN_OUTAKE,GEAR_INTAKE,GEAR_UP);
 
-		Climber->UpdateClimber(CLIMBER_UP,CLIMBER_SLOW);
+		Climber->UpdateClimber(CLIMBER_UP);
 
 		if(SET_CAM_FRONT)
 		{

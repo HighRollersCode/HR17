@@ -1,7 +1,7 @@
 //100 Ticks = 16 3/4 in.
 
 TurretEnablePID 1
-Turret 450
+Turret 750
 
 Tracking 0
 Shooting 0 0
@@ -10,7 +10,7 @@ DriveTicksHeading .3 -75 0
 DriveTicksHeading .5 -150 0
 DriveTicksHeading .6 -125 0
 DriveTurnTimed 1 0 .5
-Wait .15
+Wait .2
 GearManipulator 1 0
 Wait .3
 DriveTicksHeading .5 125 -45
@@ -31,15 +31,11 @@ Tracking 0
 Wait .3
 GyroTurnTimed -180 1
 Intake 1
-//+1275
-DriveTicksHeading 1.0 600 -180
-DriveTicksHeading .8 975 -240
-DriveTimed .5 0 .2
-//DriveTicksHeading .8 100 -180
-//DriveTicksHeading .7 50 -160
-//DriveTicksHeadiing .5 50 -140
+DriveTicksHeading 1.0 1050 -180
+DriveTicksHeading .8 100 -180
+DriveTicksHeading .7 50 -160
+DriveTicksHeadiing .5 50 -140
 Intake 0
-//GyroTurnTimed -90 1.0
-//DriveTicksHeading .5 280 -90
-Drive 0 0
+GyroTurnTimed -90 1.0
+DriveTicksHeading .5 200 -90
 Wait 10

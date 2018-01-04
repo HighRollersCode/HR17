@@ -9,8 +9,8 @@
 #define SRC_MYROBOT_H_
 
 #include "WPILib.h"
-#include <unistd.h>
-#include <stdio.h>
+//#include <unistd.h>
+//#include <stdio.h>
 #include <Uptake.h>
 #include "Spark.h"
 #include "CANTalon.h"

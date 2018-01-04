@@ -22,7 +22,7 @@ Tracking 1
 DriveTicksHeading .5 410 -90
 GearManipulator 0 0
 Drive .2 0
-Wait .3
+WaitForTarget 5
 Shooting 1 0
 Wait 10
 

@@ -23,7 +23,7 @@ public:
 	ClimberClass();
 	virtual ~ClimberClass();
 
-	void UpdateClimber(bool ClimbUp,bool ClimberSlow);
+	void UpdateClimber(bool ClimbUp);
 	void SendData();
 
 };

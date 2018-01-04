@@ -33,8 +33,7 @@ struct Vector2
 #define GEAR_UP leftStick->GetRawButton(5)
 #define GEAR_DOWN_INTAKE leftStick->GetRawButton(4)
 
-#define CLIMBER_UP leftStick->GetRawButton(6)
-#define CLIMBER_SLOW leftStick->GetRawButton(7)
+#define CLIMBER_UP leftStick->GetRawButton(7)
 
 #define GEAR_RESET leftStick->GetRawButton(10)
 

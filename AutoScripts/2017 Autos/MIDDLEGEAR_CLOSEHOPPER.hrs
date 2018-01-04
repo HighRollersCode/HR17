@@ -1,0 +1,9 @@
+//100 Ticks = 16 3/4 in.
+DriveTicksHeading .5 -325 0
+DriveTurnTimed 1 0 .5
+Wait 1
+DriveTicksHeading .5 150 -45
+DriveTicksHeading .5 150 -110
+DriveTicksHeading .5 150 -200
+DriveTicksHeading .5 400 -95
+DriveTicksHeading .4 250 -90

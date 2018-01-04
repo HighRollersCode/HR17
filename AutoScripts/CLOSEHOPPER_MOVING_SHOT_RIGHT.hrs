@@ -15,7 +15,7 @@ DriveTicksHeading .2 200 85
 Tracking 1
 DriveTicksHeading .2 75 85
 Drive .15 0
-Wait .2
+WaitForTarget 5
 Shooting 1 0
 Wait 1.0
 Drive 0 0

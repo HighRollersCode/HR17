@@ -4,27 +4,28 @@ Tracking 0
 Shooting 0 0
 
 TurretEnablePID 1
-Turret 1000
+Turret 1250
 Wait 0.1
 
 DriveTicksHeading .9 -40 0 //788 guessed encoder ticks
-DriveTicksHeading .7 -192 0
+DriveTicksHeading .7 -152 0
 DriveTicksHeading .3 -275 -45
 DriveTicksHeading .3 -375 -60
-DriveTurnTimed 1 0 .5
+
+DriveTurnTimed -1 0 .5
 GearManipulator 1 0
 Wait .3
 DriveTicksHeading .9 100 -60
 GearManipulator 0 1
-DriveTicksHeading .7 75 -80
+DriveTicksHeading .7 85 -80
 GearManipulator 0 0
 Tracking 1
 DriveTicksHeading .5 100 -90
 DriveTicksHeading .5 180 -90
-Drive .15 0
-Wait .2
+Drive .3 0
+WaitForTarget 5
 Shooting 1 0
-Wait 1.0
+Wait 0.5
 Drive 0 0
 Wait 10
 

@@ -1,0 +1,8 @@
+//100 Ticks = 16 3/4 in.
+DriveTicksHeading .9 -30 0 //788 guessed encoder ticks
+DriveTicksHeading .7 -83 0
+DriveTicksHeading .3 -275 -45
+DriveTicksHeading .25 -150 -45
+DriveTicksHeading .2 -200 -45
+DriveTurnTimed 1 0 .5
+Wait 1.0

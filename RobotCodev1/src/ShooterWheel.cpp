@@ -263,7 +263,8 @@ void ShooterWheelClass::WheelOff()
 	Shooter_2->Set(0.0f);
 	State = ShooterState_off;
 }
-void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,float ty,float AdjustForward,float ManualBoost)//,double RobotTime,float crossY)
+void ShooterWheelClass::UpdateShooter(int EnableOverrideMtr,int EnableOverrideRPM,float OverrideMtr,float OverrideRPM,bool TrackingEnable,
+		float ty,float AdjustForward,float ManualBoost)//,double RobotTime,float crossY)
 {
 
 	PrevOverridePower = CurOverridePower;

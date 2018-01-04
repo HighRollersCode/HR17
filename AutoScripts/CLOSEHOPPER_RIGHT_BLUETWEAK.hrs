@@ -10,16 +10,16 @@ Turret 1497
 DriveTicksHeading .9 140 0
 
 //DriveTicksHeading .7 120 0
-DriveTicksHeading .7 115 0
+DriveTicksHeading .7 125 0
 
-DriveTicksHeading .3 150 45
+DriveTicksHeading .3 125 45
 //RPMOverride 1 2945
-DriveTicksHeading .25 150 60
-DriveTicksHeading .2 200 85
+DriveTicksHeading .25 150 70
+DriveTicksHeading .2 150 85
 //RPMOverride 0 0
 Tracking 1
 DriveTimed .5 0 0.5
-Drive .5 0
+Drive .3 0
 WaitForTarget .125
 Drive 0 0
 WaitForTarget 2.25
